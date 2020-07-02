@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<!-- LOGGED LINKS  -->
+<th:block th:fragment="logged-links">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="ctx" th:href="@{/}" />
+</th:block>
+
+<!-- LOGGED CSS  -->
+<th:block th:fragment="logged-css">
+    <style type="text/css">
+        .loader {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 10000;
+            position: fixed;
+            left: 0px;
+            top: 0px;
+        }
+        
+        .loader>img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 10%;
+            padding-top: 220px;
+        }
+    </style>
+    <link rel="shortcut icon" type="image/ico" th:href="@{/images/favicon.png}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400italic,400" rel="stylesheet">
+    <link th:href="@{/theme/css/theme.css}" rel="stylesheet">
+    <link th:href="@{/custom/css/publicStyle.css}" rel="stylesheet">
+</th:block>
+
+<!-- LOGGED SIDEBAR  -->
+<th:block th:fragment="logged-sidebar">
+    <nav id="menu">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-user"></i> Hi, <span sec:authentication="principal.username"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/user}"><i class="fas fa-home" aria-hidden="true"></i> Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/user/change-password}"><i class="fas fa-key fa-fw"
+                        aria-hidden="true"></i> Change Password</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}"><i class="fas fa-sign-out-alt fa-fw" aria-hidden="true"></i>
+                    Logout</a>
+            </li>
+        </ul>
+    </nav>
+</th:block>
+
+<!-- LOGGED NAVBAR  -->
+<th:block th:fragment="logged-navbar">
+    <div class="loader"><img th:src="@{/images/loader.gif}"></div>
+    <nav class="navbar navbar-expand-lg navbar-light mb-0 pb-0" id="mainNav">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/user}">
+                <img class="img-fluid" th:src="@{/images/ap-logo.png}" alt="GMDA">
+            </a>
+            <button class="navbar-toggler navbar-toggler-left toggle-button" type="button" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fa fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ml-auto"></ul>
+            </div>
+        </div>
+    </nav>
+
+    <nav class="p-2 mb-2 bg-primary text-white mt-0 pt-0 text-uppercase" id="lowernav">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <strong>Assam Police Vehicle Management System</strong>
+                </div>
+            </div>
+        </div>
+    </nav>
+</th:block>
+
+
+<!-- LOGGED FOOTER  -->
+<th:block th:fragment="logged-footer">
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <p class="copyright text-muted text-small">
+                        The site is best viewed in Google Chrome, Mozilla Firefox, Microsoft Edge and Safari browser.
+                    </p>
+                    <p class="copyright text-muted">
+                        Copyright &copy; Assam Police 2020
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</th:block>
+
+<!-- LOGGED JAVASCRIPT -->
+<th:block th:fragment="logged-js-scripts">
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    <script th:src="@{/theme/js/slideout.min.js}"></script>
+    <script th:src="@{/theme/js/theme.js}"></script>
+    <script src="https://kit.fontawesome.com/dd6cee5b12.js" crossorigin="anonymous"></script>
+    <script>
+        var meta = $("meta[name=ctx]");
+        var contextPath = meta.attr("href");
+    </script>
+    <script>
+        $(function() {
+            $('.loader').fadeOut();
+        });
+    </script>
+    </th:blocks>
+
+</html>

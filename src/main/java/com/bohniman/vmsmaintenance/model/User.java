@@ -47,4 +47,7 @@ public class User {
 	@OneToOne
 	private MasterMTODetails masterMTODetails;
 
+	@Column(columnDefinition = "tinyint(1) default 0")
+    private boolean isEnabled = false;
+
 }

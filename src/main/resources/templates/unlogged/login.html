@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/unlogged_fragments :: unlogged-links"></th:block>
+    <th:block th:replace="fragments/unlogged_fragments :: unlogged-css"></th:block>
+    <title>APVMS | MAINTENANCE</title>
+</head>
+
+<body>
+    <th:block th:replace="fragments/unlogged_fragments :: unlogged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/unlogged_fragments :: unlogged-navbar"></th:block>
+            <div class="container-fluid  main-content" style="min-height: 70vh;">
+                <div class="row">
+                    <div class="col-4 d-none d-lg-block">
+
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                        <form method="POST" th:action="@{/}" class="mt-5 mb-5 pt-5 pb-5">
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-12 col-form-label  text-center">
+                                    <h3>LOGIN TO ENTER</h3>
+                                </label>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" name="username" placeholder="Username" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                                </div>
+                            </div>
+                            <div th:if="${param.error != null}" class="form-group row">
+                                <div class="col-sm-12 text-center text-danger">
+                                    <strong th:text="${param.error[0]}"></strong>
+                                </div>
+                            </div>
+                            <div class="form-group row mt-3">
+                                <div class="col-sm-6 offset-sm-3">
+                                    <button type="submit" class="btn btn-primary w-100">Sign in</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/unlogged_fragments :: unlogged-footer"></th:block>
+        </div>
+    </main>
+    <th:block th:replace="fragments/unlogged_fragments :: unlogged-js-scripts"></th:block>
+</body>
+
+</html>
