@@ -1,0 +1,35 @@
+#mainNav {
+    color: #495057 !important;
+    background-color: white !important;
+    border-bottom: 4px solid #0085a1;
+}
+
+.nav-link,
+.toggle-button {
+    color: #495057 !important;
+}
+
+.main-content {
+    min-height: 80vh;
+}
+
+.bg-primary {
+    background-color: #495057 !important;
+}
+
+#mainNav .navbar-brand img {
+    max-height: 80px;
+}
+
+form {
+    margin-bottom: unset;
+}
+
+.img-thumbnail {
+    max-width: 60px;
+    max-height: 80px;
+}
+
+.error-message {
+    color: red;
+}
