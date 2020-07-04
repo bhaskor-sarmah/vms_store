@@ -19,8 +19,8 @@ public class MasterVehicleInventory {
 
     private String name;
 
-    private String category; // Consumable/Invemtory
+    private String category; // Consumable/Inventory
 
-    private Long qualtityInStore;
+    private Long quantityInStore;
 
 }

@@ -10,7 +10,7 @@
 }
 
 .main-content {
-    min-height: 80vh;
+    min-height: 70vh;
 }
 
 .bg-primary {
@@ -32,4 +32,10 @@ form {
 
 .error-message {
     color: red;
+}
+
+.tab-pane {
+    border-bottom: 1px solid lightgray;
+    border-left: 1px solid lightgray;
+    border-right: 1px solid lightgray;
 }
