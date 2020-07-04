@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <title>APVMS | STORE</title>
+</head>
+
+<body>
+    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <div class="container-fluid main-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <i class="fas fa-car"></i> Vehicle Search
+                                <span class="float-right">Total Vehicles Registered : 109</span>
+                            </div>
+                            <div class="card-body">
+                                <ol>
+                                    <li>Vehicle Search</li>
+                                    <li>New Vehicle Entry</li>
+                                    <li>Assign Inventory</li>
+                                    <li>Remove Inventory</li>
+                                </ol>
+                                <a th:href="@{/store/vehicle}" class="btn btn-primary">Enter Vehicle Section</a>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-box-open"></i> Inventory</a>
+                                <span class="float-right">Total Items : 57</span>
+                            </div>
+                            <div class="card-body">
+                                <ol>
+                                    <li>Inventory Search</li>
+                                    <li>Add Items to Inventory</li>
+                                </ol>
+                                <a th:href="@{/store/inventory}" class="btn btn-primary">Enter Inventory</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+        </div>
+    </main>
+
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script>
+        $(function() {
+            $('#side-link-dashboard').addClass('list-group-item-secondary');
+        });
+    </script>
+</body>
+
+</html>
