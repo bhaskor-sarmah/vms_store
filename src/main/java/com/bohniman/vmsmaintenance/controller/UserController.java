@@ -31,10 +31,4 @@ public class UserController {
         return mv;
     }
 
-    @PostMapping(value = { "/getVehicle" })
-    @ResponseBody
-    public List<MasterVehicle> getVehicleList(@RequestParam("vehicleNo") String vehicleNo) {
-        return userService.getVehicleList(vehicleNo);
-    }
-
 }

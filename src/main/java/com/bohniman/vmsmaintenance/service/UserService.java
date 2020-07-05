@@ -25,9 +25,6 @@ public class UserService {
         @Autowired
         RoleRepository roleRepository;
 
-        @Autowired
-        MasterVehicleRepository masterVehicleRepository;
-
         public Optional<User> findUserByUsername(String username) {
                 return userRepository.findByUsername(username);
         }
@@ -38,10 +35,6 @@ public class UserService {
 
         public Role findRoleByRole(String string) {
                 return roleRepository.findByRole(string);
-        }
-
-        public List<MasterVehicle> getVehicleList(String vehicleNo) {
-                return masterVehicleRepository.findAllByVehicleRegistrationNo(vehicleNo);
         }
 
 }

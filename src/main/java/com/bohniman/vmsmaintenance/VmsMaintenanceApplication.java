@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
-public class VmsMaintenanceApplication extends SpringBootServletInitializer{
+public class VmsMaintenanceApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(VmsMaintenanceApplication.class, args);
@@ -16,6 +16,7 @@ public class VmsMaintenanceApplication extends SpringBootServletInitializer{
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+		System.out.println(bCryptPasswordEncoder.encode("bhaskor"));
 		return bCryptPasswordEncoder;
 	}
 }
