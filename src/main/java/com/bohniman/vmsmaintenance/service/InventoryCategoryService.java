@@ -16,8 +16,8 @@ public class InventoryCategoryService {
 
     public List<CategoryPayload> getAll() {
         List<CategoryPayload> list = new ArrayList<CategoryPayload>();
-        list.add(new CategoryPayload(1, "Own"));
-        list.add(new CategoryPayload(2, "Hired"));
+        list.add(new CategoryPayload(1, "Consumable"));
+        list.add(new CategoryPayload(2, "Inventory"));
         return list;
     }
 

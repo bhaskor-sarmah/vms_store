@@ -126,7 +126,7 @@
 
             $(document).on('click', '#btn-search', (e) => {
                 $('#div-search-results').html(`
-                        <table id="table-vehicle" class="display table ">
+                        <table id="table-vehicle" class="display table" style="width:100%;">
                             <thead class="text-center">
                                 <tr>
                                     <th>SL No.</th>
@@ -134,8 +134,18 @@
                                     <th>Vehicle Type</th>
                                     <th>Category</th>
                                     <th>Model No</th>
-                                    <th ></th>
-                                    <th >Action</th>
+                                    <th colspan="4">Action</th>
+                                </tr>
+                                <tr class="d-none">
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody class="text-center">
@@ -146,62 +156,76 @@
                                     <td>Bus</td>
                                     <td>234234</td>
                                     <td>
+                                        <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">OPEN JOB CARD</a>
+                                    </td>
+                                    <td>
                                         <a class="btn btn-primary p-1" href="${contextPath}store/vehicle/1010">VIEW</a>
                                     </td>
                                     <td>
                                         <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">EDIT</a>
                                     </td>
+                                    <td>
+                                        <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">DELETE</a>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>1</td>
+                                    <td>2</td>
                                     <td>AS-01-3234</td>
                                     <td><span class="badge badge-danger">Hired</span></td>
                                     <td>Bus</td>
                                     <td>234234</td>
                                     <td>
+                                        <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">OPEN JOB CARD</a>
+                                    </td>
+                                    <td>
                                         <a class="btn btn-primary p-1" href="${contextPath}store/vehicle/1010">VIEW</a>
                                     </td>
                                     <td>
                                         <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">EDIT</a>
                                     </td>
+                                    <td>
+                                        <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">DELETE</a>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>1</td>
+                                    <td>3</td>
                                     <td>AS-01-3234</td>
                                     <td><span class="badge badge-success">Owned</span></td>
                                     <td>Bus</td>
                                     <td>234234</td>
                                     <td>
+                                        <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">OPEN JOB CARD</a>
+                                    </td>
+                                    <td>
                                         <a class="btn btn-primary p-1" href="${contextPath}store/vehicle/1010">VIEW</a>
                                     </td>
                                     <td>
                                         <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">EDIT</a>
                                     </td>
+                                    <td>
+                                        <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">DELETE</a>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>1</td>
+                                    <td>4</td>
                                     <td>AS-01-3234</td>
                                     <td><span class="badge badge-danger">Hired</span></td>
                                     <td>Bus</td>
                                     <td>234234</td>
                                     <td>
+                                        <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">OPEN JOB CARD</a>
+                                    </td>
+                                    <td>
                                         <a class="btn btn-primary p-1" href="${contextPath}store/vehicle/1010">VIEW</a>
                                     </td>
                                     <td>
                                         <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">EDIT</a>
                                     </td>
+                                    <td>
+                                        <a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal">DELETE</a>
+                                    </td>
                                 </tr>
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>SL No.</th>
-                                    <th>Registration No</th>
-                                    <th>Vehicle Type</th>
-                                    <th>Category</th>
-                                    <th>Model No</th>
-                                    <th colspan="2">Action</th>
-                                </tr>
-                            </tfoot>
                         </table>
             `);
                 $('#table-vehicle').DataTable();

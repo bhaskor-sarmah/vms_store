@@ -68,7 +68,7 @@
     <nav class="navbar navbar-expand-lg navbar-light mb-0 pb-0" id="mainNav">
         <div class="container-fluid">
             <a class="navbar-brand" th:href="@{/user}">
-                <img class="img-fluid" th:src="@{/images/ap-logo.png}" alt="GMDA">
+                <img class="img-fluid" th:src="@{/images/logo-v1.png}" alt="GMDA">
             </a>
             <button class="navbar-toggler navbar-toggler-left toggle-button" type="button" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fa fa-bars"></i>
@@ -83,7 +83,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12 text-center">
-                    <strong>Assam Police Vehicle Management System</strong>
+                    <strong>Digitization Project of M.T. Branch, Police Commissionerate, Guwahati</strong>
                 </div>
             </div>
         </div>
@@ -107,6 +107,63 @@
         <a th:href="@{/store/vehicle}" class="list-group-item list-group-item-action" id="side-link-vehicle"><i class="fas fa-car"></i> Vehicle Search</a>
         <a th:href="@{/store/inventory}" class="list-group-item list-group-item-action" id="side-link-inventory"><i class="fas fa-box-open"></i> Inventory</a>
         <a th:href="@{/store/change-password}" class="list-group-item list-group-item-action"><i class="fas fa-key"></i> Change Password</a>
+        <a th:href="@{/logout}" class="list-group-item list-group-item-action"><i class="fas fa-sign-out-alt fa-fw" aria-hidden="true"></i> Logout</a>
+    </div>
+</th:block>
+
+<!-- VENDOR SIDEBAR  -->
+<th:block th:fragment="logged-vendor-sidebar">
+    <div class="list-group">
+        <a href="javascript:void(0);" class="list-group-item list-group-item-dark ">
+            <div class="row">
+                <div class="col-3">
+                    <i class="fas fa-warehouse fa-3x"></i>
+                </div>
+                <div class="col-9">
+                    <h4>VENDOR</h4>
+                </div>
+            </div>
+        </a>
+        <a th:href="@{/vendor}" class="list-group-item list-group-item-action" id="side-link-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a th:href="@{/vendor/change-password}" class="list-group-item list-group-item-action"><i class="fas fa-key"></i> Change Password</a>
+        <a th:href="@{/logout}" class="list-group-item list-group-item-action"><i class="fas fa-sign-out-alt fa-fw" aria-hidden="true"></i> Logout</a>
+    </div>
+</th:block>
+
+<!-- MTOADMIN SIDEBAR  -->
+<th:block th:fragment="logged-mtoadmin-sidebar">
+    <div class="list-group">
+        <a href="javascript:void(0);" class="list-group-item list-group-item-dark ">
+            <div class="row">
+                <div class="col-3">
+                    <i class="fas fa-warehouse fa-3x"></i>
+                </div>
+                <div class="col-9">
+                    <h4>MTO ADMIN</h4>
+                </div>
+            </div>
+        </a>
+        <a th:href="@{/mtoadmin}" class="list-group-item list-group-item-action" id="side-link-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a th:href="@{/mtoadmin/change-password}" class="list-group-item list-group-item-action"><i class="fas fa-key"></i> Change Password</a>
+        <a th:href="@{/logout}" class="list-group-item list-group-item-action"><i class="fas fa-sign-out-alt fa-fw" aria-hidden="true"></i> Logout</a>
+    </div>
+</th:block>
+
+<!-- HEADMECHANIC SIDEBAR  -->
+<th:block th:fragment="logged-headmechanic-sidebar">
+    <div class="list-group">
+        <a href="javascript:void(0);" class="list-group-item list-group-item-dark ">
+            <div class="row">
+                <div class="col-3">
+                    <i class="fas fa-warehouse fa-3x"></i>
+                </div>
+                <div class="col-9">
+                    <h4>HEAD MECHANIC</h4>
+                </div>
+            </div>
+        </a>
+        <a th:href="@{/headmechanic}" class="list-group-item list-group-item-action" id="side-link-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a th:href="@{/headmechanic/change-password}" class="list-group-item list-group-item-action"><i class="fas fa-key"></i> Change Password</a>
         <a th:href="@{/logout}" class="list-group-item list-group-item-action"><i class="fas fa-sign-out-alt fa-fw" aria-hidden="true"></i> Logout</a>
     </div>
 </th:block>

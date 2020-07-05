@@ -12,8 +12,12 @@ import org.springframework.stereotype.Component;
 public class InventoryUnitService {
     public List<CategoryPayload> getAll() {
         List<CategoryPayload> list = new ArrayList<CategoryPayload>();
-        list.add(new CategoryPayload(1, "Own"));
-        list.add(new CategoryPayload(2, "Hired"));
+        list.add(new CategoryPayload(1, "Litre"));
+        list.add(new CategoryPayload(2, "Gram"));
+        list.add(new CategoryPayload(3, "Kilogram"));
+        list.add(new CategoryPayload(4, "Piece"));
+        list.add(new CategoryPayload(5, "Unit"));
+        list.add(new CategoryPayload(6, "Other"));
         return list;
     }
 

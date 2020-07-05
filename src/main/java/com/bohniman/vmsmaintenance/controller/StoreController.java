@@ -2,11 +2,22 @@ package com.bohniman.vmsmaintenance.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
+import com.bohniman.vmsmaintenance.exception.BadRequestException;
+import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
+import com.bohniman.vmsmaintenance.payload.JsonResponse;
+import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
+import com.bohniman.vmsmaintenance.service.InventoryUnitService;
 import com.bohniman.vmsmaintenance.service.StoreService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,26 +71,60 @@ public class StoreController {
     @GetMapping(value = "/inventory")
     public ModelAndView pageInventory(ModelAndView mv) {
         mv = new ModelAndView("store/inventory");
-
+        mv.addObject("categoryList", new InventoryCategoryService().getAll());
+        mv.addObject("unitList", new InventoryUnitService().getAll());
         return mv;
     }
 
     // ========================================================================
-    // ADD NEW INVENTORY
+    // ADD NEW INVENTORY ITEM
     // ========================================================================
-    @PostMapping(value = { "/addInventory" })
+    @PostMapping(value = { "/inventory/add" })
     @ResponseBody
-    public boolean addInventory(@ModelAttribute("newInventory") MasterVehicleInventory newInventory) {
-        return storeService.saveNewInventory(newInventory);
+    public ResponseEntity<JsonResponse> addInventory(
+            @Valid @ModelAttribute MasterVehicleInventory masterVehicleInventory, BindingResult bindingResult)
+            throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewInventory(masterVehicleInventory);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // LIST ALL INVENTORY
+    // ========================================================================
+    @GetMapping(value = { "/inventory/all" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllInventory() {
+
+        JsonResponse res = storeService.getAllInventory();
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
     }
 
     // ========================================================================
     // DELETE INVENTORY
     // ========================================================================
-    @PostMapping(value = { "/deleteInventory/{inventoryId}" })
+    @DeleteMapping(value = { "/inventory/delete/{inventoryId}" })
     @ResponseBody
-    public boolean deleteInventory(@PathVariable("inventoryId") Long inventoryId) {
-        return storeService.deleteInventoryById(inventoryId);
+    public ResponseEntity<JsonResponse> deleteInventory(@PathVariable("inventoryId") Long inventoryId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteInventoryById(inventoryId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
     }
 
     // ========================================================================
@@ -91,14 +136,7 @@ public class StoreController {
         return storeService.findInventoryById(inventoryId);
     }
 
-    // ========================================================================
-    // LIST ALL INVENTORY
-    // ========================================================================
-    @PostMapping(value = { "/getAllInventory" })
-    @ResponseBody
-    public List<MasterVehicleInventory> getAllInventory() {
-        return storeService.findAllInventory();
-    }
+    
 
     // ========================================================================
     // ADD NEW VEHICLE
