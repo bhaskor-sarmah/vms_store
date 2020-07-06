@@ -3,11 +3,15 @@ package com.bohniman.vmsmaintenance.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
+import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleInventoryRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleRepository;
+import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,9 @@ public class StoreService {
 
     @Autowired
     MasterVehicleInventoryRepository masterVehicleInventoryRepository;
+
+    @Autowired
+    MasterVendorRepository masterVendorRepository;
 
     // ========================================================================
     // ADD NEW INVENTORY ITEM
@@ -47,16 +54,16 @@ public class StoreService {
     }
 
     public JsonResponse getAllInventory() {
-		JsonResponse res = new JsonResponse();
+        JsonResponse res = new JsonResponse();
 
         List<MasterVehicleInventory> itemList = masterVehicleInventoryRepository.findByIsDeletedOrderByNameAsc(false);
-        
+
         res.setResult(true);
         res.setPayload(itemList);
         res.setMessage("Inventory List fetched successfully.");
 
         return res;
-	}
+    }
 
     public MasterVehicleInventory findInventoryById(Long inventoryId) {
         return masterVehicleInventoryRepository.findById(inventoryId).get();
@@ -66,30 +73,39 @@ public class StoreService {
         return masterVehicleRepository.save(newVehicle) != null;
     }
 
-    public List<MasterVehicle> getVehicleByNumber(String vehicleNo,Long category) {
-        if(category == 0){
+    public List<MasterVehicle> getVehicleByNumber(String vehicleNo, Long category) {
+        if (category == 0) {
             // HIRE + OWN
             return masterVehicleRepository.findAllByVehicleRegistrationNo(vehicleNo);
         }
         return null;
-        
+
     }
 
-	public boolean deleteVehicleById(Long vehicleId) {
-		return false;
-	}
+    public boolean deleteVehicleById(Long vehicleId) {
+        return false;
+    }
 
-	public MasterVehicle findVehicleById(Long vehicleId) {
-		return null;
-	}
+    public MasterVehicle findVehicleById(Long vehicleId) {
+        return null;
+    }
 
-	public List<MasterVehicle> findAllVehicleByNumber(String vehicleNo, Long category) {
-		return null;
-	}
+    public List<MasterVehicle> findAllVehicleByNumber(String vehicleNo, Long category) {
+        return null;
+    }
 
-	public List<MasterVehicle> findAllVehicle() {
-		return null;
-	}
+    public List<MasterVehicle> findAllVehicle() {
+        return null;
+    }
 
-	
+    // ========================================================================
+    // ADD NEW VENDOR
+    // ========================================================================
+    public JsonResponse saveNewVendor(MasterVendor masterVendor) {
+        JsonResponse res = new JsonResponse();
+        masterVendorRepository.save(masterVendor);
+        res.setResult(true);
+        res.setMessage("Vendor Saved Successfully");
+        return res;
+    }
 }

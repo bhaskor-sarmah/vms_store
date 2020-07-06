@@ -8,6 +8,7 @@ import com.bohniman.vmsmaintenance.exception.BadRequestException;
 import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
+import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
 import com.bohniman.vmsmaintenance.service.InventoryUnitService;
@@ -52,6 +53,46 @@ public class StoreController {
     public ModelAndView pageVehicleSearch(ModelAndView mv) {
         mv = new ModelAndView("store/vehicle_search");
 
+        return mv;
+    }
+
+    // ========================================================================
+    // VENDOR PAGE
+    // ========================================================================
+    @GetMapping(value = "/vendor")
+    public ModelAndView pageVendorSearch(ModelAndView mv) {
+        mv = new ModelAndView("store/vendor_search");
+
+        return mv;
+    }
+
+    // ========================================================================
+    // ADD NEW VENDOR
+    // ========================================================================
+    @PostMapping(value = { "/vendor/add" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addVendor(@Valid @ModelAttribute MasterVendor masterVendor,
+            BindingResult bindingResult) throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewVendor(masterVendor);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // VENDOR DETAILS PAGE
+    // ========================================================================
+    @GetMapping(value = { "/vendor/{vendorId}" })
+    public ModelAndView pageVendorDetail(ModelAndView mv, @PathVariable("vendorId") Long vendorId) {
+        mv = new ModelAndView("store/vendor_detail");
+        mv.addObject("unitList", new InventoryUnitService().getAll());
+        mv.addObject("vendorId", vendorId);
         return mv;
     }
 
@@ -135,8 +176,6 @@ public class StoreController {
     public MasterVehicleInventory getInventoryById(@PathVariable("inventoryId") Long inventoryId) {
         return storeService.findInventoryById(inventoryId);
     }
-
-    
 
     // ========================================================================
     // ADD NEW VEHICLE
