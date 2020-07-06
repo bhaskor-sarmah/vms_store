@@ -222,4 +222,33 @@ public class StoreController {
     public List<MasterVehicle> getAllVehicle() {
         return storeService.findAllVehicle();
     }
+
+    // ========================================================================
+    // OPEN JOB CARD
+    // ========================================================================
+    @GetMapping(value = "/vehicle/{vehicleId}/open-job-card")
+    public ModelAndView openJobCard(ModelAndView mv, @PathVariable("vehicleId") Long vehicleId) {
+        mv = new ModelAndView("store/open_job_card");
+        mv.addObject("vehicleId", vehicleId);
+        return mv;
+    }
+
+    // ========================================================================
+    // VIEW JOB CARD
+    // ========================================================================
+    @GetMapping(value = "/vehicle/{vehicleId}/view-job-card")
+    public ModelAndView viewJobCard(ModelAndView mv, @PathVariable("vehicleId") Long vehicleId) {
+        mv = new ModelAndView("store/view_job_card");
+        mv.addObject("vehicleId", vehicleId);
+        return mv;
+    }
+
+    // ========================================================================
+    // PAGE JOB CARD HOME
+    // ========================================================================
+    @GetMapping(value = "/job-card")
+    public ModelAndView obCardHome(ModelAndView mv) {
+        mv = new ModelAndView("store/job_card_home");
+        return mv;
+    }
 }
