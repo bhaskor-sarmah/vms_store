@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <title>APVMS | STORE</title>
+</head>
+
+<body>
+    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <div class="container-fluid main-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                    </div>
+                    <div class="col-md-9">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item">
+                                    Order Sheet
+                                </li>
+                            </ol>
+                        </nav>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h3><i class="fas fa-list"></i> Order Sheet</h3>
+                                            </div>
+                                            <div class="col-1">
+
+                                            </div>
+                                            <div class="col-8">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="">From</span>
+                                                    </div>
+                                                    <input type="text" class="form-control datepicker">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text " id="">To</span>
+                                                    </div>
+                                                    <input type="text" class="form-control datepicker">
+                                                    <div class="input-group-prepend">
+                                                        <button class="btn btn-outline-secondary" type="button"><i
+                                                                class="fas fa-search"></i> Search</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <table class="table table-bordered table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">JOB CARD ID</th>
+                                                            <th scope="col">ORDER NO</th>
+                                                            <th scope="col">VENDOR NAME</th>
+                                                            <th scope="col">TOTAL BILL</th>
+                                                            <th scope="col">CREATED ON</th>
+                                                            <th scope="col">STATUS</th>
+                                                            <th scope="col">ACTION</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="row">1</th>
+                                                            <td>435524</td>
+                                                            <td>12345</td>
+                                                            <td>Bhaskor Jyoti Sarmah</td>
+                                                            <td>9912.00</td>
+                                                            <td>19-07-2020</td>
+                                                            <td><span class="badge badge-warning">PENDING
+                                                                    APPROVAL</span></td>
+                                                            <td><a class="btn btn-primary p-1"
+                                                                    href="/store/view-order-details/12345">VIEW ORDER
+                                                                    SHEET</a></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">2</th>
+                                                            <td>786543</td>
+                                                            <td>52175</td>
+                                                            <td>Bhaskor Jyoti Sarmah</td>
+                                                            <td>8500.00</td>
+                                                            <td>06-07-2020</td>
+                                                            <td><span class="badge badge-success">ORDER PLACED</span>
+                                                            </td>
+                                                            <td><a class="btn btn-primary p-1"
+                                                                    href="/store/view-order-details/52175">VIEW ORDER
+                                                                    SHEET</a></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">3</th>
+                                                            <td>654776</td>
+                                                            <td>45678</td>
+                                                            <td>Bhaskor Jyoti Sarmah</td>
+                                                            <td>14235.00</td>
+                                                            <td>28-06-2020</td>
+                                                            <td><span class="badge badge-secondary">ORDER
+                                                                    DELIVERED</span>
+                                                            </td>
+                                                            <td><a class="btn btn-primary p-1"
+                                                                    href="/store/view-order-details/45678">VIEW ORDER
+                                                                    SHEET</a></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+        </div>
+    </main>
+
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#side-link-view-job-card').addClass('list-group-item-secondary');
+
+            $(".datepicker").datepicker({
+                dateFormat: 'dd-mm-yy'
+            });
+            $(".datepicker").datepicker("setDate", new Date());
+        });
+    </script>
+</body>
+
+</html>

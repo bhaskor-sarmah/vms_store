@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <title>APVMS | STORE</title>
+</head>
+
+<body>
+    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <div class="container-fluid main-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                    </div>
+                    <div class="col-md-9">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item"><a th:href="@{/store/order-sheet}">Order Sheet</a></li>
+                                <li class="breadcrumb-item text-success">
+                                    12345
+                                </li>
+                                <li class="breadcrumb-item">
+                                    VIEW ORDER DETAILS
+                                </li>
+                            </ol>
+                        </nav>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h4><i class="fas fa-list"></i>VIEW ORDER DETAILS</h4>
+                                            </div>
+                                            <div class="col-3">
+                                                <h4><span class="badge badge-success p-2">Order ID : 12345</span>
+                                                </h4>
+                                            </div>
+                                            <div class="col-3">
+                                                <button class="btn btn-secondary p-2 float-right"
+                                                    data-target="#modalForward" data-toggle="modal" disabled>DOWNLOAD
+                                                    ORDER SHEET</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Job Card Id</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title"> : 435524</h5>
+                                            </div>
+                                        </div> -->
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Vendor Name</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title"> : 435524</h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Total Amount</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title"> : 9912.00</h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Created On</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title"> : 19-07-2020</h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Status</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title"> : <span class="badge badge-danger">Pending
+                                                        Approval</span>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Order Date</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title"> : ---</h5>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <table class="table table-bordered table-sm">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th scope="col" colspan="4">ADDED ITEM LIST</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Item Name</th>
+                                                            <th scope="col">Quantity</th>
+                                                            <th scope="col">Price</th>
+                                                            <th scope="col">GST (18%)</th>
+                                                            <th scope="col">Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="row">1</th>
+                                                            <td>Wheel</td>
+                                                            <td>3 piece</td>
+                                                            <td>2200</td>
+                                                            <td>396</td>
+                                                            <td>2596</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">2</th>
+                                                            <td>Window Pane</td>
+                                                            <td>1 pair</td>
+                                                            <td>1500</td>
+                                                            <td>270</td>
+                                                            <td>1770</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">3</th>
+                                                            <td>Engine Oil</td>
+                                                            <td>1 litre</td>
+                                                            <td>1200</td>
+                                                            <td>216</td>
+                                                            <td>1416</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">4</th>
+                                                            <td>Tyre</td>
+                                                            <td>2 piece</td>
+                                                            <td>3500</td>
+                                                            <td>630</td>
+                                                            <td>4130</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" colspan="5" class="text-right"><b>Total
+                                                                    Amount : </b></th>
+                                                            <td><b>9912.00</b></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+        </div>
+    </main>
+    <!-- Modal Item-->
+    <div class="modal fade" id="modalForward" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-credit-card"></i> Forward Job Card
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Select Whom To forward</label>
+                            <select class="form-control">
+                                <option value="">---Please Select---</option>
+                                <option value="Lathi">Ritusmoi Kaushik (Head Mechanic)</option>
+                                <option value="Lathi">Pallab Handique (Head Mechanic)</option>
+                                <option value="Lathi">Sanjay Das (Head Mechanic)</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Forward</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#side-link-vehicle').addClass('list-group-item-secondary');
+
+            $('#div-item-list').html(`
+                        <table id="table-items" class="display table ">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>SL No.</th>
+                                    <th>Item Name</th>
+                                    <th>Category</th>
+                                    <th>Quantity In Store</th>
+                                    <th >Action</th>
+                                    <th ></th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr>
+                                    <td>1</td>
+                                    <td>Screw Driver</td>
+                                    <td>Inventory</td>
+                                    <td>25 piece</td>
+                                    <td>
+                                        <a class="btn btn-primary p-1 deleteItem" href="javascript:void(0)">DELETE</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal">EDIT</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Stick</td>
+                                    <td>Inventory</td>
+                                    <td>100 piece</td>
+                                    <td>
+                                        <a class="btn btn-primary p-1 deleteItem" href="javascript:void(0)">DELETE</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal">EDIT</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>SL No.</th>
+                                    <th>Item Name</th>
+                                    <th>Category</th>
+                                    <th>Quantity In Store</th>
+                                    <th >Action</th>
+                                    <th ></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+            `);
+            $('#table-items').DataTable();
+        });
+    </script>
+</body>
+
+</html>

@@ -107,6 +107,16 @@ public class StoreController {
     }
 
     // ========================================================================
+    // ORDER DETAIL PAGE
+    // ========================================================================
+    @GetMapping(value = "/view-order-details/{orderId}")
+    public ModelAndView pageOrderDetail(ModelAndView mv, @PathVariable("orderId") Long orderId) {
+        mv = new ModelAndView("store/view_order_details");
+        mv.addObject("orderId", orderId);
+        return mv;
+    }
+
+    // ========================================================================
     // INVENTORY PAGE
     // ========================================================================
     @GetMapping(value = "/inventory")
@@ -247,8 +257,17 @@ public class StoreController {
     // PAGE JOB CARD HOME
     // ========================================================================
     @GetMapping(value = "/job-card")
-    public ModelAndView obCardHome(ModelAndView mv) {
+    public ModelAndView jobCardHome(ModelAndView mv) {
         mv = new ModelAndView("store/job_card_home");
+        return mv;
+    }
+
+    // ========================================================================
+    // PAGE ORDER SHEET HOME
+    // ========================================================================
+    @GetMapping(value = "/order-sheet")
+    public ModelAndView orderSheetHome(ModelAndView mv) {
+        mv = new ModelAndView("store/order_sheet_home");
         return mv;
     }
 }
