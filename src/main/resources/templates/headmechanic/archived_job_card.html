@@ -17,15 +17,14 @@
             <div class="container-fluid main-content">
                 <div class="row">
                     <div class="col-md-3">
-                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                        <th:block th:replace="fragments/logged_fragments :: logged-headmechanic-sidebar"></th:block>
                     </div>
                     <div class="col-md-9">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
-                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item">
-                                    Order Sheet
+                                    Archived Job Card
                                 </li>
                             </ol>
                         </nav>
@@ -34,13 +33,10 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <div class="row">
-                                            <div class="col-3">
-                                                <h3><i class="fas fa-list"></i> Order Sheet</h3>
+                                            <div class="col-5">
+                                                <h2><i class="fas fa-credit-card"></i> Archived Job Card</h2>
                                             </div>
-                                            <div class="col-1">
-
-                                            </div>
-                                            <div class="col-8">
+                                            <div class="col-7">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" id="">From</span>
@@ -51,8 +47,7 @@
                                                     </div>
                                                     <input type="text" class="form-control datepicker">
                                                     <div class="input-group-prepend">
-                                                        <button class="btn btn-outline-secondary" type="button"><i
-                                                                class="fas fa-search"></i> Search</button>
+                                                        <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i> Search</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -65,52 +60,68 @@
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">#</th>
+                                                            <th scope="col">REGN NO</th>
                                                             <th scope="col">JOB CARD ID</th>
-                                                            <th scope="col">ORDER NO</th>
-                                                            <th scope="col">VENDOR NAME</th>
-                                                            <th scope="col">TOTAL BILL</th>
-                                                            <th scope="col">CREATED ON</th>
                                                             <th scope="col">STATUS</th>
+                                                            <th scope="col">OPENED ON</th>
+                                                            <th scope="col">CLOSED ON</th>
                                                             <th scope="col">ACTION</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
                                                             <th scope="row">1</th>
+                                                            <td>AS-01-2342</td>
                                                             <td>435524</td>
-                                                            <td>12345</td>
-                                                            <td>Bhaskor Jyoti Sarmah</td>
-                                                            <td>9912.00</td>
-                                                            <td>19-07-2020</td>
-                                                            <td><span class="badge badge-warning">PENDING
-                                                                    APPROVAL</span></td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/view-order-details/12345">VIEW ORDER
-                                                                    SHEET</a></td>
+                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
+                                                            <td>2nd June 2019</td>
+                                                            <td>2nd June 2019</td>
+                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
                                                         </tr>
                                                         <tr>
                                                             <th scope="row">2</th>
-                                                            <td>786543</td>
-                                                            <td>52175</td>
-                                                            <td>Bhaskor Jyoti Sarmah</td>
-                                                            <td>8500.00</td>
-                                                            <td>06-07-2020</td>
-                                                            <td><span class="badge badge-success">ORDER PLACED</span>
-                                                            </td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/view-order-details/52175">VIEW ORDER
-                                                                    SHEET</a></td>
+                                                            <td>AS-01-6554</td>
+                                                            <td>456775</td>
+                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
+                                                            <td>1st Feb 2019</td>
+                                                            <td>21st Feb 2019</td>
+                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
                                                         </tr>
                                                         <tr>
                                                             <th scope="row">3</th>
+                                                            <td>AS-01-5434</td>
+                                                            <td>435524</td>
+                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
+                                                            <td>2nd Oct 2017</td>
+                                                            <td>2nd Oct 2017</td>
+                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">4</th>
+                                                            <td>AS-01-5466</td>
+                                                            <td>786543</td>
+                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
+                                                            <td>2nd June 2019</td>
+                                                            <td>2nd June 2019</td>
+                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">5</th>
+                                                            <td>AS-01-7867</td>
+                                                            <td>123546</td>
+                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
+                                                            <td>1st Feb 2019</td>
+                                                            <td>21st Feb 2019</td>
+                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">6</th>
+                                                            <td>AS-01-3456</td>
                                                             <td>654776</td>
-                                                            <td>45678</td>
-                                                            <td>Bhaskor Jyoti Sarmah</td>
-                                                            <td>14235.00</td>
-                                                            <td>28-06-2020</td>
-                                                            <td><span class="badge badge-secondary">ORDER
-                                                                    DELIVERED</span>
-                                                            </td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/view-order-details/45678">VIEW ORDER
-                                                                    SHEET</a></td>
+                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
+                                                            <td>2nd Oct 2017</td>
+                                                            <td>10th Oct 2017</td>
+                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -134,7 +145,7 @@
 
     <script>
         $(function() {
-            $('#side-link-order-sheet').addClass('list-group-item-secondary');
+            $('#side-link-archived-job-card').addClass('list-group-item-secondary');
 
             $(".datepicker").datepicker({
                 dateFormat: 'dd-mm-yy'
