@@ -133,7 +133,7 @@ public class StoreService {
         JsonResponse res = new JsonResponse();
         try {
             masterVendorRepository.deleteById(vendorId);
-            res.setMessage("Vedor Deleted Successfully.");
+            res.setMessage("Vendor Deleted Successfully.");
             res.setResult(true);
         } catch (Exception e) {
             res.setMessage("Vendor could not be deleted.");
@@ -155,6 +155,35 @@ public class StoreService {
         masterVendorItemRepository.save(masterVendorItem);
         res.setResult(true);
         res.setMessage("Vendor Item Saved Successfully");
+        return res;
+    }
+
+    public JsonResponse deleteVendorItemById(Long itemId) {
+        JsonResponse res = new JsonResponse();
+        try {
+            masterVendorItemRepository.deleteById(itemId);
+            res.setMessage("Vendor Item Deleted Successfully.");
+            res.setResult(true);
+        } catch (Exception e) {
+            res.setMessage("Vendor Item could not be deleted.");
+            res.setResult(false);
+        }
+        return res;
+    }
+
+    public JsonResponse getAllVendorItems(Long vendorId) {
+        JsonResponse res = new JsonResponse();
+
+        List<MasterVendorItem> vendorItemList = masterVendorItemRepository
+                .findAllByMasterVendor_idOrderByItemNameAsc(vendorId);
+
+        res.setResult(true);
+        res.setPayload(vendorItemList);
+        if (vendorItemList.isEmpty() || vendorItemList.size() == 0) {
+            res.setMessage("No Vendor Item records found.");
+        } else {
+            res.setMessage("Vendor Item List fetched successfully.");
+        }
         return res;
     }
 }

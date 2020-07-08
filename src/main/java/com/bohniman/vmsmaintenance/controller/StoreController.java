@@ -68,12 +68,26 @@ public class StoreController {
     }
 
     // ========================================================================
-    // VENDOR PAGE
+    // VENDOR ALL LIST
     // ========================================================================
     @GetMapping(value = "/vendor/all")
     @ResponseBody
     public ResponseEntity<JsonResponse> getAllVendors() {
         JsonResponse res = storeService.getAllVendors();
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // VENDOR ALL ITEMS PAGE
+    // ========================================================================
+    @GetMapping(value = "/vendor/allItems/{vendorId}")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllVendorItem(@PathVariable("vendorId") Long vendorId) {
+        JsonResponse res = storeService.getAllVendorItems(vendorId);
         if (res.getResult()) {
             return ResponseEntity.ok(res);
         } else {
@@ -133,6 +147,7 @@ public class StoreController {
     @ResponseBody
     public ResponseEntity<JsonResponse> addVendorItem(@Valid @ModelAttribute MasterVendorItem masterVendorItem,
             BindingResult bindingResult) throws BindException {
+        System.out.println(masterVendorItem);
         if (!bindingResult.hasErrors()) {
             JsonResponse res = storeService.saveNewVendorItem(masterVendorItem);
             if (res.getResult()) {
@@ -142,6 +157,21 @@ public class StoreController {
             }
         } else {
             throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // DELETE VENDOR ITEM
+    // ========================================================================
+    @DeleteMapping(value = { "/vendor/deleteItem/{itemId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteVendorItem(@PathVariable("itemId") Long itemId) {
+        JsonResponse res = new JsonResponse();
+        res = storeService.deleteVendorItemById(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
         }
     }
 
