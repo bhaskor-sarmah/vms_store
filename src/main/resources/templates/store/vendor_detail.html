@@ -26,7 +26,7 @@
                                             class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item"><a th:href="@{/store/vedor}">Vendors</a></li>
                                 <li class="breadcrumb-item text-success">
-                                    ID - <span th:text="${vendorId}"></span>
+                                    ID - <span th:text="${vendor.id}"></span>
                                 </li>
                             </ol>
                         </nav>
@@ -40,7 +40,7 @@
                                             </div>
                                             <div class="col-6 text-right">
                                                 <h4><span class="badge badge-success p-2">
-                                                        ID - <span th:text="${vendorId}"></span></span>
+                                                        ID - <span th:text="${vendor.id}"></span></span>
                                                 </h4>
                                             </div>
                                         </div>
@@ -51,7 +51,9 @@
                                                 <h5 class="card-title">Vendor Name</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: Bhaskor Jyoti Sarmah</h5>
+                                                <h5 class="card-title">: <th:block th:text="${vendor.vendorName}">
+                                                    </th:block>
+                                                </h5>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -59,7 +61,9 @@
                                                 <h5 class="card-title">Vendor Details</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: Hardware Supplier</h5>
+                                                <h5 class="card-title">: <th:block th:text="${vendor.vendorDetails}">
+                                                    </th:block>
+                                                </h5>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -67,7 +71,9 @@
                                                 <h5 class="card-title">Contract From</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: 19-04-2020</h5>
+                                                <h5 class="card-title">: <th:block th:text="${#dates.format(vendor.vendorContractFromDate, 'dd-MM-yyyy')}">
+                                                    </th:block>
+                                                </h5>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -75,7 +81,9 @@
                                                 <h5 class="card-title">Contract Untill</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: 18-04-2021</h5>
+                                                <h5 class="card-title">: <th:block th:text="${#dates.format(vendor.vendorContractToDate, 'dd-MM-yyyy')}">
+                                                    </th:block>
+                                                </h5>
                                             </div>
                                         </div>
                                         <hr>
@@ -179,18 +187,19 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="form-item">
+                        <input type="hidden" class="form-control" id="masterVendor.id">
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Item Name</label>
-                            <input type="text" class="form-control" id="exampleFormControlInput1">
+                            <input type="text" class="form-control" id="itemName" name="itemName">
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Item Details</label>
-                            <input type="text" class="form-control" id="exampleFormControlInput1">
+                            <input type="text" class="form-control" id="itemDetails" name="itemDetails">
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Select Unit</label>
-                            <select class="form-control">
+                            <select class="form-control" id="itemUnit" name="itemUnit">
                                 <option value="">---Please Select---</option>
                                 <th:block th:if="${not #lists.isEmpty(unitList)}">
                                     <option th:each="x:${unitList}" th:text="${x.name}" th:value="${x.name}">Consumable
@@ -200,13 +209,13 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Price per unit</label>
-                            <input type="number" class="form-control" id="exampleFormControlInput1">
+                            <input type="number" class="form-control" id="itemPrice" name="itemPrice">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Assign</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#form-item').submit();">Save</button>
                 </div>
             </div>
         </div>
@@ -219,7 +228,73 @@
 
     <script>
         $(function () {
-            $('#side-link-vehicle').addClass('list-group-item-secondary');
+            $('#side-link-vendor').addClass('list-group-item-secondary');
+
+            $(document).on("submit", "#form-item", function (e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you submit the form ?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/vendor/addItem",
+                                timeout: 600000,
+                                beforeSend: function () {
+                                    $('body').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: $("#form-item").serialize(),
+                                success: function (response) {
+                                    $('#form-item').trigger('reset');
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: "Vendor Item Saved Successfully",
+                                        type: 'green',
+                                        typeAnimated: true
+                                    });
+                                    getItemList();
+                                    $('#modalItem').modal('hide');
+                                },
+                                error: function (e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        $.each(e.responseJSON.errorMessages, function (key,
+                                            value) {
+                                            $("#form-item").contents().find(
+                                                '[name=' + key + ']').after(
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
+                                            $('#' + key).html(
+                                                '<span class="error-message">' +
+                                                value + '</span>');
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function () {
+                                    $('body').unblock();
+                                }
+                            });
+                        },
+                        cancel: function () { }
+                    }
+                });
+            });
 
             $('#div-item-list').html(`
                         <table id="table-items" class="display table ">

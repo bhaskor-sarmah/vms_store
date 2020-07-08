@@ -9,6 +9,7 @@ import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
+import com.bohniman.vmsmaintenance.model.MasterVendorItem;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
 import com.bohniman.vmsmaintenance.service.InventoryUnitService;
@@ -67,6 +68,20 @@ public class StoreController {
     }
 
     // ========================================================================
+    // VENDOR PAGE
+    // ========================================================================
+    @GetMapping(value = "/vendor/all")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllVendors() {
+        JsonResponse res = storeService.getAllVendors();
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
     // ADD NEW VENDOR
     // ========================================================================
     @PostMapping(value = { "/vendor/add" })
@@ -92,8 +107,42 @@ public class StoreController {
     public ModelAndView pageVendorDetail(ModelAndView mv, @PathVariable("vendorId") Long vendorId) {
         mv = new ModelAndView("store/vendor_detail");
         mv.addObject("unitList", new InventoryUnitService().getAll());
-        mv.addObject("vendorId", vendorId);
+        mv.addObject("vendor", storeService.getVendorById(vendorId));
         return mv;
+    }
+
+    // ========================================================================
+    // DELETE VENDOR DETAILS
+    // ========================================================================
+    @DeleteMapping(value = { "/vendor/delete/{vendorId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteVendor(@PathVariable("vendorId") Long vendorId) {
+        JsonResponse res = new JsonResponse();
+        res = storeService.deleteVendorById(vendorId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // ADD NEW VENDOR ITEM
+    // ========================================================================
+    @PostMapping(value = { "/vendor/addItem" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addVendorItem(@Valid @ModelAttribute MasterVendorItem masterVendorItem,
+            BindingResult bindingResult) throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewVendorItem(masterVendorItem);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
     }
 
     // ========================================================================

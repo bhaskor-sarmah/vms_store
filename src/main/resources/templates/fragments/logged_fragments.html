@@ -21,7 +21,7 @@
             left: 0px;
             top: 0px;
         }
-        
+
         .loader>img {
             display: block;
             margin-left: auto;
@@ -31,9 +31,12 @@
         }
     </style>
     <link rel="shortcut icon" type="image/ico" th:href="@{/images/favicon.png}" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet'
+        type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400italic,400" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link th:href="@{/theme/css/theme.css}" rel="stylesheet">
     <link th:href="@{/custom/css/publicStyle.css}" rel="stylesheet">
 </th:block>
@@ -70,7 +73,8 @@
             <a class="navbar-brand" th:href="@{/user}">
                 <img class="img-fluid" th:src="@{/images/logo-v1.png}" alt="GMDA">
             </a>
-            <button class="navbar-toggler navbar-toggler-left toggle-button" type="button" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler navbar-toggler-left toggle-button" type="button" aria-expanded="false"
+                aria-label="Toggle navigation">
                 <i class="fa fa-bars"></i>
             </button>
             <div class="collapse navbar-collapse">
@@ -106,7 +110,7 @@
         <a th:href="@{/store}" class="list-group-item list-group-item-action" id="side-link-dashboard"><i
                 class="fas fa-tachometer-alt"></i> Dashboard</a>
         <a th:href="@{/store/vehicle}" class="list-group-item list-group-item-action" id="side-link-vehicle"><i
-                class="fas fa-car"></i>  Vehicle Search</a>
+                class="fas fa-car"></i> Vehicle Search</a>
         <a th:href="@{/store/inventory}" class="list-group-item list-group-item-action" id="side-link-inventory"><i
                 class="fas fa-box-open"></i> Inventory</a>
         <a th:href="@{/store/vendor}" class="list-group-item list-group-item-action" id="side-link-vendor"><i
@@ -179,11 +183,16 @@
                 </div>
             </div>
         </a>
-        <a th:href="@{/headmechanic}" class="list-group-item list-group-item-action" id="side-link-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-        <a th:href="@{/headmechanic/pending-job-card}" class="list-group-item list-group-item-action" id="side-link-pending-job-card"><i class="far fa-address-card"></i> Pending Job Card</a>
-        <a th:href="@{/headmechanic/archived-job-card}" class="list-group-item list-group-item-action" id="side-link-archived-job-card"><i class="fas fa-address-card"></i> Archived Job Card</a>
-        <a th:href="@{/headmechanic/change-password}" class="list-group-item list-group-item-action"><i class="fas fa-key"></i> Change Password</a>
-        <a th:href="@{/logout}" class="list-group-item list-group-item-action"><i class="fas fa-sign-out-alt fa-fw" aria-hidden="true"></i> Logout</a>
+        <a th:href="@{/headmechanic}" class="list-group-item list-group-item-action" id="side-link-dashboard"><i
+                class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a th:href="@{/headmechanic/pending-job-card}" class="list-group-item list-group-item-action"
+            id="side-link-pending-job-card"><i class="far fa-address-card"></i> Pending Job Card</a>
+        <a th:href="@{/headmechanic/archived-job-card}" class="list-group-item list-group-item-action"
+            id="side-link-archived-job-card"><i class="fas fa-address-card"></i> Archived Job Card</a>
+        <a th:href="@{/headmechanic/change-password}" class="list-group-item list-group-item-action"><i
+                class="fas fa-key"></i> Change Password</a>
+        <a th:href="@{/logout}" class="list-group-item list-group-item-action"><i class="fas fa-sign-out-alt fa-fw"
+                aria-hidden="true"></i> Logout</a>
     </div>
 </th:block>
 
@@ -207,12 +216,15 @@
 
 <!-- LOGGED JAVASCRIPT -->
 <th:block th:fragment="logged-js-scripts">
-    <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-    </script>
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"
+        integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+        </script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+        </script>
     <script th:src="@{/theme/js/slideout.min.js}"></script>
     <script th:src="@{/theme/js/theme.js}"></script>
     <script src="https://kit.fontawesome.com/dd6cee5b12.js" crossorigin="anonymous"></script>
@@ -221,7 +233,7 @@
         var contextPath = meta.attr("href");
     </script>
     <script>
-        $(function() {
+        $(function () {
             $('.loader').fadeOut();
         });
     </script>

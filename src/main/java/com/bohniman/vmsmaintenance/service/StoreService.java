@@ -8,9 +8,11 @@ import javax.validation.Valid;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
+import com.bohniman.vmsmaintenance.model.MasterVendorItem;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleInventoryRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleRepository;
+import com.bohniman.vmsmaintenance.repository.MasterVendorItemRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class StoreService {
 
     @Autowired
     MasterVendorRepository masterVendorRepository;
+
+    @Autowired
+    MasterVendorItemRepository masterVendorItemRepository;
 
     // ========================================================================
     // ADD NEW INVENTORY ITEM
@@ -106,6 +111,50 @@ public class StoreService {
         masterVendorRepository.save(masterVendor);
         res.setResult(true);
         res.setMessage("Vendor Saved Successfully");
+        return res;
+    }
+
+    public JsonResponse getAllVendors() {
+        JsonResponse res = new JsonResponse();
+
+        List<MasterVendor> vendorList = masterVendorRepository.findAllByOrderByVendorNameAsc();
+
+        res.setResult(true);
+        res.setPayload(vendorList);
+        if (vendorList.isEmpty() || vendorList.size() == 0) {
+            res.setMessage("No Vendor records found.");
+        } else {
+            res.setMessage("Vendor List fetched successfully.");
+        }
+        return res;
+    }
+
+    public JsonResponse deleteVendorById(Long vendorId) {
+        JsonResponse res = new JsonResponse();
+        try {
+            masterVendorRepository.deleteById(vendorId);
+            res.setMessage("Vedor Deleted Successfully.");
+            res.setResult(true);
+        } catch (Exception e) {
+            res.setMessage("Vendor could not be deleted.");
+            res.setResult(false);
+        }
+        return res;
+    }
+
+    public MasterVendor getVendorById(Long vendorId) {
+        Optional<MasterVendor> vendor = masterVendorRepository.findById(vendorId);
+        if (vendor.isPresent()) {
+            return vendor.get();
+        }
+        return null;
+    }
+
+    public JsonResponse saveNewVendorItem(@Valid MasterVendorItem masterVendorItem) {
+        JsonResponse res = new JsonResponse();
+        masterVendorItemRepository.save(masterVendorItem);
+        res.setResult(true);
+        res.setMessage("Vendor Item Saved Successfully");
         return res;
     }
 }
