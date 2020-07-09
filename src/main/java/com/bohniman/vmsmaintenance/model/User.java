@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -53,8 +54,9 @@ public class User {
 	@Column(name = "username")
 	private String username;
 
-	@OneToOne
-	private MasterMTODetails masterMTODetails;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "fk_mto_details_id", updatable=false)
+	private MasterMTODetails mto;
 
 	@Column(columnDefinition = "tinyint(1) default 0")
     private boolean isEnabled = false;

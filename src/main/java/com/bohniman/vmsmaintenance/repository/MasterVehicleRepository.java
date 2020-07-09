@@ -12,4 +12,13 @@ public interface MasterVehicleRepository extends JpaRepository<MasterVehicle, Lo
 
     List<MasterVehicle> findAllByVehicleRegistrationNo(String vehicleNo);
 
+	List<MasterVehicle> findByStatus(boolean b);
+
+	List<MasterVehicle> findByVehicleRegistrationNoContainingAndStatus(String searchText, boolean b);
+
+	List<MasterVehicle> findByVehicleRegistrationNoContainingAndVehicleType_vehicleTypeIdAndStatus(String searchText,
+			Long searchType, boolean b);
+
+	Boolean existsByVehicleRegistrationNo(String vehicleRegistrationNo);
+
 }

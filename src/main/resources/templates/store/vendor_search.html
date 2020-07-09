@@ -36,8 +36,7 @@
                                                 <h4><i class="fas fa-user"></i> Vendors</h4>
                                             </div>
                                             <div class="col-3">
-                                                <button type="button" data-target="#modalVendor" data-toggle="modal"
-                                                    class="btn btn-primary float-right" data-vendor-id="0">New
+                                                <button type="button" data-target="#modalVendor" data-toggle="modal" class="btn btn-primary float-right" data-vendor-id="0">New
                                                     Vendor</button>
                                             </div>
                                         </div>
@@ -59,8 +58,7 @@
         </div>
     </main>
     <!-- Modal Vendor-->
-    <div class="modal fade" id="modalVendor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="modalVendor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -82,13 +80,11 @@
                         </div>
                         <div class="form-group">
                             <label for="vendorContractFromDate">Vendor Contract From</label>
-                            <input type="text" class="form-control" id="vendorContractFromDate"
-                                name="vendorContractFromDate">
+                            <input type="text" class="form-control" id="vendorContractFromDate" name="vendorContractFromDate">
                         </div>
                         <div class="form-group">
                             <label for="vendorContractToDate">Vendor Contract Untill</label>
-                            <input type="text" class="form-control" id="vendorContractToDate"
-                                name="vendorContractToDate">
+                            <input type="text" class="form-control" id="vendorContractToDate" name="vendorContractToDate">
                         </div>
                     </form>
                 </div>
@@ -108,9 +104,9 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-        $(function () {
+        $(function() {
             // SIDEBAR LINK ACTIVE
-            $('#side-link-inventory').addClass('list-group-vendor-secondary');
+            $('#side-link-vendor').addClass('list-group-item-secondary');
 
             //GET VENDORS
 
@@ -124,7 +120,7 @@
                 // changeMonth: true,
                 // changeYear: true,
                 dateFormat: 'dd/mm/yy'
-                // format: 'dd/mm/yyyy'
+                    // format: 'dd/mm/yyyy'
             });
 
             $("#vendorContractToDate").datepicker({
@@ -133,11 +129,11 @@
                 // changeMonth: true,
                 // changeYear: true,
                 dateFormat: 'dd/mm/yy'
-                // format: 'dd/mm/yyyy'
+                    // format: 'dd/mm/yyyy'
             });
 
             // NEW VENDOR
-            $(document).on("submit", "#form-vendor", function (e) {
+            $(document).on("submit", "#form-vendor", function(e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -146,12 +142,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function () {
+                        confirm: function() {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/vendor/add",
                                 timeout: 600000,
-                                beforeSend: function () {
+                                beforeSend: function() {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -160,7 +156,7 @@
                                     });
                                 },
                                 data: $("#form-vendor").serialize(),
-                                success: function (response) {
+                                success: function(response) {
                                     $('#form-vendor').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
@@ -171,15 +167,15 @@
                                     getVendorList();
                                     $('#modalVendor').modal('hide');
                                 },
-                                error: function (e) {
+                                error: function(e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function (key,
+                                        $.each(e.responseJSON.errorMessages, function(key,
                                             value) {
                                             $("#form-vendor").contents().find(
                                                 '[name=' + key + ']').after(
-                                                    '<span class="error-message">' +
-                                                    value + '</span>');
+                                                '<span class="error-message">' +
+                                                value + '</span>');
                                             // $('#' + key).html(
                                             //     '<span class="error-message">' +
                                             //     value + '</span>');
@@ -193,18 +189,18 @@
                                         });
                                     }
                                 },
-                                complete: function () {
+                                complete: function() {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function () { }
+                        cancel: function() {}
                     }
                 });
             });
 
             //DELETE VENDOR
-            $(document).on('click', '.delete-vendor', function (e) {
+            $(document).on('click', '.delete-vendor', function(e) {
                 e.preventDefault();
                 var ajax_return;
                 let vendorId = e.target.dataset.vendorId;
@@ -214,18 +210,18 @@
                     type: 'red',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function () {
+                        confirm: function() {
                             $.confirm({
-                                content: function () {
+                                content: function() {
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "DELETE",
                                         url: contextPath + "store/vendor/delete/" + vendorId
-                                    }).done(function (response) {
+                                    }).done(function(response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
                                         self.setContent(response.message);
-                                    }).fail(function (e) {
+                                    }).fail(function(e) {
                                         self.setTitle(e.responseJSON.httpStatus);
                                         self.setType("red");
                                         self.setContent("ERROR");
@@ -233,22 +229,23 @@
                                     return true;
                                 },
                                 buttons: {
-                                    ok: function () {
-                                        ajax_return.done(function (message) {
+                                    ok: function() {
+                                        ajax_return.done(function(message) {
                                             getVendorList();
                                         })
                                     }
                                 }
                             });
                         },
-                        cancel: function () { }
+                        cancel: function() {}
                     }
                 });
             });
         });
 
         // ON MODAL SHOW
-        $(document).on('show.bs.modal', '#modalVendor', function (e) {
+        $(document).on('show.bs.modal', '#modalVendor', function(e) {
+            $('.error-message').remove();
             let vendorId = e.relatedTarget.dataset.vendorId;
             if (vendorId == 0) {
                 $("#form-vendor").contents().find('[name=id]').val("");
@@ -268,7 +265,7 @@
                 type: "GET",
                 url: contextPath + "store/vendor/all",
                 timeout: 600000,
-                beforeSend: function () {
+                beforeSend: function() {
                     $('body').block({
                         message: '<h3>Please wait...</h3>',
                         css: {
@@ -276,7 +273,7 @@
                         }
                     });
                 },
-                success: function (response) {
+                success: function(response) {
                     var content = `
                         <table id="table-vendor" class="table table-striped jambo_table text-black" style="width:100%">
                             <thead class="text-center">
@@ -307,7 +304,7 @@
                             "targets": [0, 1, 2, 3, 4, 5, 6, 7]
                         }]
                     });
-                    $.each(response.payload, function (key, vendor) {
+                    $.each(response.payload, function(key, vendor) {
                         tableItems.row.add([
                             `<b>${key + 1}</b>`,
                             `${vendor.vendorName}`,
@@ -320,10 +317,10 @@
                         ]).draw(false);
                     });
                 },
-                error: function (e) {
+                error: function(e) {
                     console.log(e);
                 },
-                complete: function () {
+                complete: function() {
                     $('body').unblock();
                 }
             });

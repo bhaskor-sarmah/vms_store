@@ -11,18 +11,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * MasterVehiceType
+ * MasterFuelType
  */
 @Entity
 @Data
 @NoArgsConstructor
-public class MasterVehicleType {
+public class MasterFuelType {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long vehicleTypeId;
+	private Long fuelTypeId;
 
-	@NotBlank(message = "Vehicle type name required")
+	@NotBlank(message = "Fuel type name required")
 	private String title;
 
 	@Column(columnDefinition = "tinyint(1) default 1")

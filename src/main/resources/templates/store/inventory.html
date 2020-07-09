@@ -227,20 +227,21 @@
                     }
                 });
             });
-        });
 
-        //ON MODAL SHOW
-        $(document).on('show.bs.modal', '#modalItem', function(e) {
-            let itemId = e.relatedTarget.dataset.itemId;
-            if (itemId == 0) {
-                $("#form-item").contents().find('[name=id]').val("");
-            } else {
-                $("#form-item").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
-                $("#form-item").contents().find('[name=name]').val(e.relatedTarget.dataset.name);
-                $("#form-item").contents().find('[name=category]').val(e.relatedTarget.dataset.category);
-                $("#form-item").contents().find('[name=quantityInStore]').val(e.relatedTarget.dataset.quantityInStore);
-                $("#form-item").contents().find('[name=unit]').val(e.relatedTarget.dataset.unit);
-            }
+
+            //ON MODAL SHOW
+            $(document).on('show.bs.modal', '#modalItem', function(e) {
+                let itemId = e.relatedTarget.dataset.itemId;
+                if (itemId == 0) {
+                    $("#form-item").contents().find('[name=id]').val("");
+                } else {
+                    $("#form-item").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
+                    $("#form-item").contents().find('[name=name]').val(e.relatedTarget.dataset.name);
+                    $("#form-item").contents().find('[name=category]').val(e.relatedTarget.dataset.category);
+                    $("#form-item").contents().find('[name=quantityInStore]').val(e.relatedTarget.dataset.quantityInStore);
+                    $("#form-item").contents().find('[name=unit]').val(e.relatedTarget.dataset.unit);
+                }
+            });
         });
     </script>
     <script>

@@ -1,19 +1,29 @@
 package com.bohniman.vmsmaintenance.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.bohniman.vmsmaintenance.model.MasterFuelType;
+import com.bohniman.vmsmaintenance.model.MasterMTODetails;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
+import com.bohniman.vmsmaintenance.model.MasterVehicleCategory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
+import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.model.MasterVendorItem;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
+import com.bohniman.vmsmaintenance.repository.MasterFuelTypeRepository;
+import com.bohniman.vmsmaintenance.repository.MasterMTODetailsRepository;
+import com.bohniman.vmsmaintenance.repository.MasterVehicleCategoryRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleInventoryRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorItemRepository;
+import com.bohniman.vmsmaintenance.repository.MasterVehicleTypeRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
+import com.bohniman.vmsmaintenance.utilities.LoggedInUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +43,18 @@ public class StoreService {
     @Autowired
     MasterVendorItemRepository masterVendorItemRepository;
 
+    @Autowired
+    MasterVehicleCategoryRepository masterVehicleCategoryRepository;
+
+    @Autowired
+    MasterVehicleTypeRepository masterVehicleTypeRepository;
+
+    @Autowired
+    MasterFuelTypeRepository masterFuelTypeRepository;
+
+    @Autowired
+    MasterMTODetailsRepository masterMTODetailsRepository;
+
     // ========================================================================
     // ADD NEW INVENTORY ITEM
     // ========================================================================
@@ -49,7 +71,7 @@ public class StoreService {
         try {
             MasterVehicleInventory result = masterVehicleInventoryRepository.getOne(inventoryId);
             result.setIsDeleted(true);
-            masterVehicleInventoryRepository.deleteById(inventoryId);
+            masterVehicleInventoryRepository.save(result);
             res.setResult(true);
             res.setMessage("Item Deleted Successfully.");
         } catch (Exception e) {
@@ -74,10 +96,6 @@ public class StoreService {
         return masterVehicleInventoryRepository.findById(inventoryId).get();
     }
 
-    public boolean saveNewVehicle(MasterVehicle newVehicle) {
-        return masterVehicleRepository.save(newVehicle) != null;
-    }
-
     public List<MasterVehicle> getVehicleByNumber(String vehicleNo, Long category) {
         if (category == 0) {
             // HIRE + OWN
@@ -85,10 +103,6 @@ public class StoreService {
         }
         return null;
 
-    }
-
-    public boolean deleteVehicleById(Long vehicleId) {
-        return false;
     }
 
     public MasterVehicle findVehicleById(Long vehicleId) {
@@ -186,4 +200,128 @@ public class StoreService {
         }
         return res;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ========================================================================
+// # RITUSMOI KAUSHIK
+// ========================================================================
+
+
+	public List<MasterVehicleCategory> getAllVehicleCategoryList() {
+		return masterVehicleCategoryRepository.findByStatus(true);
+	}
+
+	public List<MasterVehicleType> getAllVehicleTypeList() {
+		return masterVehicleTypeRepository.findByStatus(true);
+	}
+
+	public List<MasterFuelType> getAllFuelTypeList() {
+		return masterFuelTypeRepository.findByStatus(true);
+	}
+
+	public JsonResponse saveNewVehicle(@Valid MasterVehicle masterVehicle) {
+        JsonResponse res = new JsonResponse();
+        MasterMTODetails mto = masterMTODetailsRepository.getOne(LoggedInUser.getLoggedInUser().getMtoId());
+        masterVehicle.setMto(mto);
+        masterVehicleRepository.save(masterVehicle);
+        res.setResult(true);
+        res.setMessage("Vehicle Saved Successfully");
+        return res;
+	}
+
+	public JsonResponse deleteVehicleById(Long vehicleId) {
+		JsonResponse res = new JsonResponse();
+        try {
+            MasterVehicle masterVehicle = masterVehicleRepository.getOne(vehicleId);
+            masterVehicle.setStatus(false);
+            masterVehicleRepository.save(masterVehicle);
+            res.setResult(true);
+            res.setMessage("Vehicle Deleted Successfully.");
+        } catch (Exception e) {
+            res.setMessage("Vehicle could not be deleted.");
+        }
+        return res;
+	}
+
+	public JsonResponse searchVehicle(Long searchType,  String searchText) {
+		JsonResponse res = new JsonResponse();
+        List<MasterVehicle> vehicleList = null;
+        if(Objects.equals(searchType, 0L)){
+             vehicleList = masterVehicleRepository.findByVehicleRegistrationNoContainingAndStatus(searchText,true);
+        }
+        else{
+            vehicleList = masterVehicleRepository.findByVehicleRegistrationNoContainingAndVehicleType_vehicleTypeIdAndStatus(searchText,searchType,true);
+        }
+        
+
+        res.setResult(true);
+        res.setPayload(vehicleList);
+        res.setMessage("Vehicle List fetched successfully.");
+
+        return res;
+	}
+
+	public Boolean existsByVehicleRegistrationNo(String vehicleRegistrationNo) {
+		return masterVehicleRepository.existsByVehicleRegistrationNo(vehicleRegistrationNo);
+	}
+
+	public MasterVehicle getVehicleById(Long id) {
+		return masterVehicleRepository.getOne(id);
+	}
 }

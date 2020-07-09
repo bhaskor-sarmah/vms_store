@@ -1,13 +1,17 @@
 package com.bohniman.vmsmaintenance.controller;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.validation.Valid;
 
 import com.bohniman.vmsmaintenance.exception.BadRequestException;
 import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
+import com.bohniman.vmsmaintenance.model.MasterFuelType;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
+import com.bohniman.vmsmaintenance.model.MasterVehicleCategory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
+import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.model.MasterVendorItem;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
@@ -43,16 +47,6 @@ public class StoreController {
     @GetMapping(value = "")
     public ModelAndView pageStoreDashboard(ModelAndView mv) {
         mv = new ModelAndView("store/dashboard");
-
-        return mv;
-    }
-
-    // ========================================================================
-    // VEHICLE SEARCH PAGE
-    // ========================================================================
-    @GetMapping(value = "/vehicle")
-    public ModelAndView pageVehicleSearch(ModelAndView mv) {
-        mv = new ModelAndView("store/vehicle_search");
 
         return mv;
     }
@@ -267,24 +261,6 @@ public class StoreController {
     }
 
     // ========================================================================
-    // ADD NEW VEHICLE
-    // ========================================================================
-    @PostMapping(value = { "/addVehicle" })
-    @ResponseBody
-    public boolean addVehicle(@ModelAttribute("newVehicle") MasterVehicle newVehicle) {
-        return storeService.saveNewVehicle(newVehicle);
-    }
-
-    // ========================================================================
-    // DELETE VEHICLE
-    // ========================================================================
-    @PostMapping(value = { "/deleteVehicle/{vehicleId}" })
-    @ResponseBody
-    public boolean deleteVehicle(@PathVariable("vehicleId") Long vehicleId) {
-        return storeService.deleteVehicleById(vehicleId);
-    }
-
-    // ========================================================================
     // LIST ONE VEHICLE
     // ========================================================================
     @PostMapping(value = { "/getVehicleById/{vehicleId}" })
@@ -349,4 +325,177 @@ public class StoreController {
         mv = new ModelAndView("store/order_sheet_home");
         return mv;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ========================================================================
+    // # RITUSMOI KAUSHIK
+    // ========================================================================
+
+
+    
+    @GetMapping(value = "/vehicle")
+    public ModelAndView pageVehicleSearch(ModelAndView mv) {
+        mv = new ModelAndView("store/vehicle_search");
+
+        List<MasterVehicleCategory> vehicleCategoryList = storeService.getAllVehicleCategoryList();
+        mv.addObject("vehicleCategoryList", vehicleCategoryList);
+        List<MasterVehicleType> vehicleTypeList = storeService.getAllVehicleTypeList();
+        mv.addObject("vehicleTypeList", vehicleTypeList);
+        List<MasterFuelType> fuelTypeList = storeService.getAllFuelTypeList();
+        mv.addObject("fuelTypeList", fuelTypeList);
+
+        return mv;
+    }
+
+    // ========================================================================
+    // ADD NEW VEHICLE
+    // ========================================================================
+    @PostMapping(value = { "/vehicle/add" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addVehicle(@Valid @ModelAttribute MasterVehicle masterVehicle,
+            BindingResult bindingResult) throws BindException {
+
+        // FOR NEW VEHICLE
+        if (Objects.equals(masterVehicle.getId(), null)) {
+            Boolean vehicleExists = storeService
+                    .existsByVehicleRegistrationNo(masterVehicle.getVehicleRegistrationNo());
+            if (vehicleExists) {
+                bindingResult.rejectValue("vehicleRegistrationNo", "error.vehicleRegistrationNo",
+                        " * Vehicle Already Exists");
+            }
+        }
+        // FOR EDIT
+        else {
+            MasterVehicle editVehicle = storeService.getVehicleById(masterVehicle.getId());
+            if (!Objects.equals(editVehicle, null) && !Objects.equals(masterVehicle.getVehicleRegistrationNo(),
+                    editVehicle.getVehicleRegistrationNo())) {
+                Boolean vehicleExists = storeService
+                        .existsByVehicleRegistrationNo(masterVehicle.getVehicleRegistrationNo());
+                if (vehicleExists) {
+                    bindingResult.rejectValue("vehicleRegistrationNo", "error.vehicleRegistrationNo",
+                            " * Vehicle Already Exists");
+                }
+            }
+        }
+
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewVehicle(masterVehicle);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // SEARCH VEHICLE
+    // ========================================================================
+    @GetMapping(value = { "/vehicle/search" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> searchVehicle(@RequestParam("searchType") Long searchType, @RequestParam("searchText") String searchText) {
+        JsonResponse res = storeService.searchVehicle(searchType,searchText);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE VEHICLE
+    // ========================================================================
+    @DeleteMapping(value = { "/vehicle/delete/{vehicleId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteVehicle(@PathVariable("vehicleId") Long vehicleId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteVehicleById(vehicleId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
 }
