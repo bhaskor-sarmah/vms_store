@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <title>APVMS | STORE</title>
+</head>
+
+<body>
+    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <div class="container-fluid main-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                    </div>
+                    <div class="col-md-9">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-old-car-parts text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard / </a></li>
+                                <li class="breadcrumb-old-car-parts"><a href="#">Old/Damage Car Parts</a></li>
+                            </ol>
+                        </nav>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <h4><i class="fas fa-user"></i> Old/Damage Car Parts</h4>
+                                            </div>
+                                            <div class="col-3">
+                                                <button type="button" data-target="#modalRack" data-toggle="modal"
+                                                    class="btn btn-primary float-right" data-rack-id="0">New
+                                                    Rack</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12" id="div-rack-list">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+        </div>
+    </main>
+    <!-- Modal Rack-->
+    <div class="modal fade" id="modalRack" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-car"></i> Add/Edit Rack</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-rack">
+                        <div><input type="hidden" class="form-control" name="id"></div>
+                        <div class="form-group">
+                            <label for="rackName">Rack Name</label>
+                            <input type="text" class="form-control" id="rackName" name="rackName">
+                        </div>
+                        <div class="form-group">
+                            <label for="rackDetails">Rack Details</label>
+                            <input type="text" class="form-control" id="rackDetails" name="rackDetails">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#form-rack').submit();">Save
+                        changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            // SIDEBAR LINK ACTIVE
+            $('#side-link-old-car-parts').addClass('list-group-item-secondary');
+
+            //GET RACKS
+
+            getRackList();
+
+            // NEW RACK
+            $(document).on("submit", "#form-rack", function (e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you submit the form ?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/rack/add",
+                                timeout: 600000,
+                                beforeSend: function () {
+                                    $('body').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: $("#form-rack").serialize(),
+                                success: function (response) {
+                                    $('#form-rack').trigger('reset');
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: "New Rack Saved Successfully",
+                                        type: 'green',
+                                        typeAnimated: true
+                                    });
+                                    getRackList();
+                                    $('#modalRack').modal('hide');
+                                },
+                                error: function (e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        $.each(e.responseJSON.errorMessages, function (key,
+                                            value) {
+                                            $("#form-rack").contents().find(
+                                                '[name=' + key + ']').after(
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
+                                            // $('#' + key).html(
+                                            //     '<span class="error-message">' +
+                                            //     value + '</span>');
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function () {
+                                    $('body').unblock();
+                                }
+                            });
+                        },
+                        cancel: function () { }
+                    }
+                });
+            });
+
+            //DELETE RACK
+            $(document).on('click', '.delete-rack', function (e) {
+                e.preventDefault();
+                var ajax_return;
+                let rackId = e.target.dataset.rackId;
+                $.confirm({
+                    title: 'Warning!',
+                    content: "Are you sure you want to delete this Rack?",
+                    type: 'red',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function () {
+                            $.confirm({
+                                content: function () {
+                                    var self = this;
+                                    return ajax_return = $.ajax({
+                                        type: "DELETE",
+                                        url: contextPath + "store/rack/delete/" + rackId
+                                    }).done(function (response) {
+                                        self.setTitle("Success!");
+                                        self.setType("green");
+                                        self.setContent(response.message);
+                                    }).fail(function (e) {
+                                        self.setTitle(e.responseJSON.httpStatus);
+                                        self.setType("red");
+                                        self.setContent("ERROR");
+                                    })
+                                    return true;
+                                },
+                                buttons: {
+                                    ok: function () {
+                                        ajax_return.done(function (message) {
+                                            getRackList();
+                                        })
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function () { }
+                    }
+                });
+            });
+        });
+
+        // ON MODAL SHOW
+        $(document).on('show.bs.modal', '#modalRack', function (e) {
+            $('.error-message').remove();
+            let rackId = e.relatedTarget.dataset.rackId;
+            if (rackId == 0) {
+                $("#form-rack").contents().find('[name=id]').val("");
+            } else {
+                $("#form-rack").contents().find('[name=id]').val(e.relatedTarget.dataset.rackId);
+                $("#form-rack").contents().find('[name=rackName]').val(e.relatedTarget.dataset.rackName);
+                $("#form-rack").contents().find('[name=rackDetails]').val(e.relatedTarget.dataset.rackDetails);
+            }
+        });
+    </script>
+    <script>
+        // GET RACK LIST
+        function getRackList() {
+            $.ajax({
+                type: "GET",
+                url: contextPath + "store/rack/all",
+                timeout: 600000,
+                beforeSend: function () {
+                    $('body').block({
+                        message: '<h3>Please wait...</h3>',
+                        css: {
+                            border: '3px solid darkgrey'
+                        }
+                    });
+                },
+                success: function (response) {
+                    var content = `
+                        <table id="table-rack" class="table table-striped jambo_table text-black" style="width:100%">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>SL No.</th>
+                                    <th>Rack Name</th>
+                                    <th>Rack Details</th>
+                                    <th>Total Shelves</th>
+                                    <th>Total Items</th>
+                                    <th colspan="3">Action</th>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                        </table>`;
+                    $('#div-rack-list').html(content);
+                    var tableItems = $('#table-rack').DataTable({
+                        "columnDefs": [{
+                            "className": "text-center",
+                            "targets": [0, 1, 2, 3, 4, 5, 6, 7]
+                        }]
+                    });
+                    $.each(response.payload, function (key, rack) {
+                        tableItems.row.add([
+                            `<b>${key + 1}</b>`,
+                            `${rack.rackName}`,
+                            `${rack.rackDetails}`,
+                            `${rack.totalShelves}`,
+                            `${rack.totalItems}`,
+                            `<a class="btn btn-primary p-1 view-rack" href="${contextPath + "store/rack/" + rack.id}">VIEW</a>`,
+                            `<a class="btn btn-danger p-1 delete-rack" data-rack-id="${rack.id}" href="javascript:void(0)">DELETE</a>`,
+                            `<a class="btn btn-primary p-1" href="#modalRack" data-toggle="modal" data-rack-id="${rack.id}" data-rack-name="${rack.rackName}" data-rack-details="${rack.rackDetails}">EDIT</a>`
+                        ]).draw(false);
+                    });
+                },
+                error: function (e) {
+                    console.log(e);
+                },
+                complete: function () {
+                    $('body').unblock();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

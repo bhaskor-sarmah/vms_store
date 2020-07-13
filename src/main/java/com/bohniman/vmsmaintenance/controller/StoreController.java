@@ -8,6 +8,8 @@ import javax.validation.Valid;
 import com.bohniman.vmsmaintenance.exception.BadRequestException;
 import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
 import com.bohniman.vmsmaintenance.model.MasterFuelType;
+import com.bohniman.vmsmaintenance.model.MasterRack;
+import com.bohniman.vmsmaintenance.model.MasterShelves;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
 import com.bohniman.vmsmaintenance.model.MasterVehicleCategory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
@@ -326,91 +328,10 @@ public class StoreController {
         return mv;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // ========================================================================
     // # RITUSMOI KAUSHIK
     // ========================================================================
 
-
-    
     @GetMapping(value = "/vehicle")
     public ModelAndView pageVehicleSearch(ModelAndView mv) {
         mv = new ModelAndView("store/vehicle_search");
@@ -473,8 +394,9 @@ public class StoreController {
     // ========================================================================
     @GetMapping(value = { "/vehicle/search" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> searchVehicle(@RequestParam("searchType") Long searchType, @RequestParam("searchText") String searchText) {
-        JsonResponse res = storeService.searchVehicle(searchType,searchText);
+    public ResponseEntity<JsonResponse> searchVehicle(@RequestParam("searchType") Long searchType,
+            @RequestParam("searchText") String searchText) {
+        JsonResponse res = storeService.searchVehicle(searchType, searchText);
         if (res.getResult()) {
             return ResponseEntity.ok(res);
         } else {
@@ -498,4 +420,146 @@ public class StoreController {
         }
     }
 
+    // ========================================================================
+    // OLD/DAMAGE CAR PARTS PAGE
+    // ========================================================================
+    @GetMapping(value = "/old-car-parts")
+    public ModelAndView pageOldDamageCarParts(ModelAndView mv) {
+        mv = new ModelAndView("store/old_car_parts");
+
+        return mv;
+    }
+
+    // ========================================================================
+    // LIST ALL RACK
+    // ========================================================================
+    @GetMapping(value = { "/rack/all" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllRacks() {
+
+        JsonResponse res = storeService.getAllRacks();
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // ADD NEW RACK
+    // ========================================================================
+    @PostMapping(value = { "/rack/add" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addRack(@Valid @ModelAttribute MasterRack masterRack,
+            BindingResult bindingResult) throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewRack(masterRack);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // DELETE A RACK
+    // ========================================================================
+    @DeleteMapping(value = { "/rack/delete/{rackId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteRack(@PathVariable("rackId") Long rackId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteRackById(rackId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // RACK DETAILS PAGE
+    // ========================================================================
+    @GetMapping(value = { "/rack/{rackId}" })
+    public ModelAndView pageRackDetail(ModelAndView mv, @PathVariable("rackId") Long rackId) {
+        mv = new ModelAndView("store/rack_detail");
+        mv.addObject("rack", storeService.getRackById(rackId));
+        return mv;
+    }
+
+    // ========================================================================
+    // ADD NEW SHELVES
+    // ========================================================================
+    @PostMapping(value = { "/rack/addShelves" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addShelve(@Valid @ModelAttribute MasterShelves masterShelves,
+            BindingResult bindingResult) throws BindException {
+        System.out.println(masterShelves);
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewShelves(masterShelves);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // DELETE SHELVES RECORD
+    // ========================================================================
+    @DeleteMapping(value = { "/rack/deleteShelves/{shelveId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteShelve(@PathVariable("shelveId") Long shelveId) {
+        JsonResponse res = new JsonResponse();
+        res = storeService.deleteShelveById(shelveId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // ALL SHELVES LIST
+    // ========================================================================
+    @GetMapping(value = "/rack/allShelves/{rackId}")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllShelves(@PathVariable("rackId") Long rackId) {
+        JsonResponse res = storeService.getAllShelvesByRackId(rackId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // SHELVE DETAILS PAGE
+    // ========================================================================
+    @GetMapping(value = { "/shelve/{shelveId}" })
+    public ModelAndView pageShelveDetail(ModelAndView mv, @PathVariable("shelveId") Long shelveId) {
+        mv = new ModelAndView("store/shelve_detail");
+        mv.addObject("shelve", storeService.getShelveById(shelveId));
+        return mv;
+    }
+
+    // ========================================================================
+    // ALL SHELVE ITEM LIST
+    // ========================================================================
+    @GetMapping(value = "/shelve/allItems/{shelveId}")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllShelveItem(@PathVariable("shelveId") Long shelveId) {
+        JsonResponse res = storeService.getAllShelveItemByShelveId(shelveId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
 }

@@ -22,11 +22,11 @@
                     <div class="col-md-9">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
-                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                                <li class="breadcrumb-item"><a th:href="@{/store/vendor}">Vendors</a></li>
+                                <li class="breadcrumb-old-car-parts text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard / </a></li>
+                                <li class="breadcrumb-old-car-parts"><a href="#">Old/Damage Car Parts</a> /</li>
                                 <li class="breadcrumb-item text-success">
-                                    ID - <span th:text="${vendor.id}"></span>
+                                    Rack ID - <span th:text="${rack.id}"></span>
                                 </li>
                             </ol>
                         </nav>
@@ -36,11 +36,11 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-6">
-                                                <h4><i class="fas fa-car"></i> Vendor Details</h4>
+                                                <h4><i class="fas fa-car"></i> Rack Details</h4>
                                             </div>
                                             <div class="col-6 text-right">
                                                 <h4><span class="badge badge-success p-2">
-                                                        ID - <span th:text="${vendor.id}"></span></span>
+                                                        ID - <span th:text="${rack.id}"></span></span>
                                                 </h4>
                                             </div>
                                         </div>
@@ -48,40 +48,20 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-3">
-                                                <h5 class="card-title">Vendor Name</h5>
+                                                <h5 class="card-title">Rack Name</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: <th:block th:text="${vendor.vendorName}">
+                                                <h5 class="card-title">: <th:block th:text="${rack.rackName}">
                                                     </th:block>
                                                 </h5>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-3">
-                                                <h5 class="card-title">Vendor Details</h5>
+                                                <h5 class="card-title">Rack Details</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: <th:block th:text="${vendor.vendorDetails}">
-                                                    </th:block>
-                                                </h5>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <h5 class="card-title">Contract From</h5>
-                                            </div>
-                                            <div class="col-8">
-                                                <h5 class="card-title">: <th:block th:text="${#dates.format(vendor.vendorContractFromDate, 'dd-MM-yyyy')}">
-                                                    </th:block>
-                                                </h5>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <h5 class="card-title">Contract Untill</h5>
-                                            </div>
-                                            <div class="col-8">
-                                                <h5 class="card-title">: <th:block th:text="${#dates.format(vendor.vendorContractToDate, 'dd-MM-yyyy')}">
+                                                <h5 class="card-title">: <th:block th:text="${rack.rackDetails}">
                                                     </th:block>
                                                 </h5>
                                             </div>
@@ -93,7 +73,7 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link active" id="home-tab" data-toggle="tab"
                                                             href="#home" role="tab" aria-controls="home"
-                                                            aria-selected="true">Vendor Items</a>
+                                                            aria-selected="true">Rack Shelves</a>
                                                     </li>
                                                 </ul>
                                                 <div class="tab-content" id="myTabContent">
@@ -101,16 +81,19 @@
                                                         aria-labelledby="home-tab">
                                                         <div class="row">
                                                             <div class="col-4">
-                                                                <h5 class="card-title">List of Items</h5>
+                                                                <h5 class="card-title">List of Shelves</h5>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <h5 class="card-title"> </h5>
                                                             </div>
                                                             <div class="col-4">
                                                                 <a class="btn btn-primary p-1 float-right" href="#"
-                                                                    data-target="#modalItem" data-toggle="modal">Add
-                                                                    New Item</a>
+                                                                    data-target="#modalShelves" data-toggle="modal">Add
+                                                                    New Shelves</a>
                                                             </div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-12" id="div-item-list">
+                                                            <div class="col-12" id="div-shelves-list">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -127,49 +110,36 @@
             <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
         </div>
     </main>
-    <!-- Modal Item-->
-    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <!-- Modal Shelves-->
+    <div class="modal fade" id="modalShelves" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Add new Items for
-                        Vendor ID - <span th:text="${vendor.id}"></span></h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Add new Shelves for
+                        Rack ID - <span th:text="${rack.id}"></span></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-item">
-                        <input type="hidden" class="form-control" id="masterVendor.id" name="masterVendor.id" th:value="${vendor.id}">
+                    <form id="form-shelves">
+                        <input type="hidden" class="form-control" id="masterRack.id" name="masterRack.id"
+                            th:value="${rack.id}">
                         <div><input type="hidden" class="form-control" name="id"></div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">Item Name</label>
-                            <input type="text" class="form-control" id="itemName" name="itemName">
+                            <label for="exampleFormControlInput1">Shelves Name</label>
+                            <input type="text" class="form-control" id="shelveName" name="shelveName">
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">Item Details</label>
-                            <input type="text" class="form-control" id="itemDetails" name="itemDetails">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Select Unit</label>
-                            <select class="form-control" id="itemUnit" name="itemUnit">
-                                <option value="">---Please Select---</option>
-                                <th:block th:if="${not #lists.isEmpty(unitList)}">
-                                    <option th:each="x:${unitList}" th:text="${x.name}" th:value="${x.name}">Consumable
-                                    </option>
-                                </th:block>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Price per unit</label>
-                            <input type="number" class="form-control" id="itemPrice" name="itemPrice">
+                            <label for="exampleFormControlInput1">Shelves Details</label>
+                            <input type="text" class="form-control" id="shelveDetails" name="shelveDetails">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="$('#form-item').submit();">Save</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#form-shelves').submit();">Save</button>
                 </div>
             </div>
         </div>
@@ -181,14 +151,14 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        var vendorId = /*[[${vendor.id}]]*/ '0';
+        var rackId = /*[[${rack.id}]]*/ '0';
          /*]]>*/
     </script>
     <script>
         $(function () {
-            $('#side-link-vendor').addClass('list-group-item-secondary');
-            getItemList();
-            $(document).on("submit", "#form-item", function (e) {
+            $('#side-link-old-car-parts').addClass('list-group-item-secondary');
+            getShelvesList();
+            $(document).on("submit", "#form-shelves", function (e) {
                 e.preventDefault();
                 // alert($("#form-item").serialize());
                 $('.error-message').remove();
@@ -201,7 +171,7 @@
                         confirm: function () {
                             $.ajax({
                                 type: "POST",
-                                url: contextPath + "store/vendor/addItem",
+                                url: contextPath + "store/rack/addShelves",
                                 timeout: 600000,
                                 beforeSend: function () {
                                     $('body').block({
@@ -211,24 +181,24 @@
                                         }
                                     });
                                 },
-                                data: $("#form-item").serialize(),
+                                data: $("#form-shelves").serialize(),
                                 success: function (response) {
-                                    $('#form-item').trigger('reset');
+                                    $('#form-shelves').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
-                                        content: "Vendor Item Saved Successfully",
+                                        content: "Shelve Saved Successfully",
                                         type: 'green',
                                         typeAnimated: true
                                     });
-                                    getItemList();
-                                    $('#modalItem').modal('hide');
+                                    getShelvesList();
+                                    $('#modalShelves').modal('hide');
                                 },
                                 error: function (e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
                                         $.each(e.responseJSON.errorMessages, function (key,
                                             value) {
-                                            $("#form-item").contents().find(
+                                            $("#form-shelves").contents().find(
                                                 '[name=' + key + ']').after(
                                                     '<span class="error-message">' +
                                                     value + '</span>');
@@ -256,13 +226,13 @@
             });
 
             //DELETE ITEM
-            $(document).on('click', '.delete-item', function (e) {
+            $(document).on('click', '.delete-shelve', function (e) {
                 e.preventDefault();
                 var ajax_return;
-                let itemId = e.target.dataset.itemId;
+                let shelveId = e.target.dataset.shelveId;
                 $.confirm({
                     title: 'Warning!',
-                    content: "Are you sure you want to delete this Item?",
+                    content: "Are you sure you want to delete this Shelve?",
                     type: 'red',
                     typeAnimated: true,
                     buttons: {
@@ -272,7 +242,7 @@
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "DELETE",
-                                        url: contextPath + "store/vendor/deleteItem/" + itemId
+                                        url: contextPath + "store/rack/deleteShelves/" + shelveId
                                     }).done(function (response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
@@ -287,7 +257,7 @@
                                 buttons: {
                                     ok: function () {
                                         ajax_return.done(function (message) {
-                                            getItemList();
+                                            getShelvesList();
                                         })
                                     }
                                 }
@@ -300,25 +270,23 @@
         });
 
         // ON MODAL SHOW
-        $(document).on('show.bs.modal', '#modalItem', function (e) {
-            let itemId = e.relatedTarget.dataset.itemId;
-            if (itemId == 0) {
-                $("#form-item").contents().find('[name=id]').val("");
+        $(document).on('show.bs.modal', '#modalShelves', function (e) {
+            let shelveId = e.relatedTarget.dataset.shelveId;
+            if (shelveId == 0) {
+                $("#form-shelves").contents().find('[name=id]').val("");
             } else {
-                $("#form-item").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
-                $("#form-item").contents().find('[name=itemName]').val(e.relatedTarget.dataset.itemName);
-                $("#form-item").contents().find('[name=itemDetails]').val(e.relatedTarget.dataset.itemDetails);
-                $("#form-item").contents().find('[name=itemUnit]').val(e.relatedTarget.dataset.itemUnit);
-                $("#form-item").contents().find('[name=itemPrice]').val(e.relatedTarget.dataset.itemPrice);
+                $("#form-shelves").contents().find('[name=id]').val(e.relatedTarget.dataset.shelveId);
+                $("#form-shelves").contents().find('[name=shelveName]').val(e.relatedTarget.dataset.shelveName);
+                $("#form-shelves").contents().find('[name=shelveDetails]').val(e.relatedTarget.dataset.shelveDetails);
             }
         });
     </script>
     <script>
-        // GET VENDOR LIST
-        function getItemList() {
+        // GET SHELVES LIST
+        function getShelvesList() {
             $.ajax({
                 type: "GET",
-                url: contextPath + "store/vendor/allItems/" + vendorId,
+                url: contextPath + "store/rack/allShelves/" + rackId,
                 timeout: 600000,
                 beforeSend: function () {
                     $('body').block({
@@ -330,35 +298,34 @@
                 },
                 success: function (response) {
                     var content = `
-                        <table id="table-items" class="display table ">
+                        <table id="table-shelves" class="display table ">
                             <thead class="text-center">
                                 <tr>
                                     <th>SL No.</th>
-                                    <th>Item Name</th>
-                                    <th>Item Details</th>
-                                    <th>Unit</th>
-                                    <th>Price</th>
+                                    <th>Shelve Name</th>
+                                    <th>Shelve Details</th>
+                                    <th>Total Items</th>
                                     <th>Action</th>
                                     <th></th>
                                 </tr>
                             </thead>
                         </table>`;
-                    $('#div-item-list').html(content);
-                    var tableItems = $('#table-items').DataTable({
+                    $('#div-shelves-list').html(content);
+                    var tableShelves = $('#table-shelves').DataTable({
                         "columnDefs": [{
                             "className": "text-center",
-                            "targets": [0, 1, 2, 3, 4]
+                            "targets": [0, 1, 2, 3]
                         }]
                     });
-                    $.each(response.payload, function (key, item) {
-                        tableItems.row.add([
+                    $.each(response.payload, function (key, shelve) {
+                        tableShelves.row.add([
                             `<b>${key + 1}</b>`,
-                            `${item.itemName}`,
-                            `${item.itemDetails}`,
-                            `${item.itemUnit}`,
-                            `${item.itemPrice}`,
-                            `<a class="btn btn-danger p-1 delete-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a>`,
-                            `<a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal" data-item-id="${item.id}" data-item-name="${item.itemName}" data-item-details="${item.itemDetails}" data-item-unit="${item.itemUnit}" data-item-price="${item.itemPrice}">EDIT</a>`
+                            `${shelve.shelveName}`,
+                            `${shelve.shelveDetails}`,
+                            `${shelve.totalItems}`,
+                            `<a class="btn btn-primary p-1 view-shelve" href="${contextPath + "store/shelve/" + shelve.id}">VIEW</a>`,
+                            `<a class="btn btn-danger p-1 delete-shelve" data-shelve-id="${shelve.id}" href="javascript:void(0)">DELETE</a>`,
+                            `<a class="btn btn-primary p-1" href="#modalShelves" data-toggle="modal" data-shelve-id="${shelve.id}" data-shelve-name="${shelve.shelveName}" data-shelve-details="${shelve.shelveDetails}">EDIT</a>`
                         ]).draw(false);
                     });
                 },
