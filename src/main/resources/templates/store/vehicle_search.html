@@ -256,6 +256,7 @@
 
             //ON MODAL SHOW
             $(document).on('show.bs.modal', '#modalVehicle', function(e) {
+                $('.error-message').remove();
                 let vehicleId = e.relatedTarget.dataset.vehicleId;
                 $("#form-vehicle").contents().find('[name=mileage]').val("0");
                 if (vehicleId == 0) {
@@ -329,6 +330,12 @@
                     });
 
                     $.each(response.payload, function(key, vehicle) {
+                        let jobCardButton = `<a class="btn btn-primary p-1" href="${contextPath}store/vehicle/${vehicle.id}/open-job-card">OPEN JOB CARD</a>`;
+                        if (vehicle.latestJobCardStatus == "CREATED") {
+                            jobCardButton = `<a class="btn btn-success p-1" href="${contextPath}store/vehicle/job-card/${vehicle.latestJobCardId}">FORWARD JOB CARD</a>`;
+                        } else if (vehicle.latestJobCardStatus == "FORWARDED") {
+                            jobCardButton = `<a class="btn btn-danger p-1" href="${contextPath}store/vehicle/job-card/${vehicle.latestJobCardId}">VIEW JOB CARD</a>`;
+                        }
                         tableVehicle.row.add([
                             `<b>${key + 1}</b>`,
                             `${vehicle.vehicleRegistrationNo}`,
@@ -336,8 +343,8 @@
                             `${vehicle.vehicleCategory.title}`,
                             `${vehicle.vehicleModel}`,
                             `${vehicle.fuelType.title}`,
-                            `<a class="btn btn-primary p-1 delete-item" href="${contextPath}store/vehicle/1010">OPEN JOB CARD</a>`,
-                            `<a class="btn btn-primary p-1 delete-item" href="${contextPath}store/vehicle/${vehicle.id}">VIEW</a>`,
+                            `${jobCardButton}`,
+                            `<a class="btn btn-primary p-1" href="${contextPath}store/vehicle/${vehicle.id}">VIEW</a>`,
                             `<a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal" data-vehicle-id="${vehicle.id}" data-vehicle-registration-no="${vehicle.vehicleRegistrationNo}" data-vehicle-type-id="${vehicle.vehicleType.vehicleTypeId}"
                             data-vehicle-model="${vehicle.vehicleModel}" data-vehicle-category-id="${vehicle.vehicleCategory.vehicleCategoryId}" data-fuel-type-id="${vehicle.fuelType.fuelTypeId}" data-mileage="${vehicle.mileage}"  >EDIT</a>`,
                             `<a class="btn btn-primary p-1 delete-vehicle" data-vehicle-id="${vehicle.id}" href="javascript:void(0)">DELETE</a>`

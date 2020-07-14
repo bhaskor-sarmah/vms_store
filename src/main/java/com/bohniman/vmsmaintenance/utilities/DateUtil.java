@@ -42,9 +42,10 @@ public class DateUtil {
     }
 
     public static Date getDateFromString(String date) throws ParseException {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         return df.parse(date);
     }
+
 
     public static String getFormattedTime(Date date) {
         SimpleDateFormat df = new SimpleDateFormat("hh:mm:ss a");

@@ -83,8 +83,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">Quantity In Store</label>
-                            <input type="number" class="form-control" name="quantityInStore" min="0">
+                            <label for="exampleFormControlInput1">Quantity Bought</label>
+                            <input type="number" class="form-control" name="quantityBought" min="0">
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Unit</label>
@@ -238,7 +238,7 @@
                     $("#form-item").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
                     $("#form-item").contents().find('[name=name]').val(e.relatedTarget.dataset.name);
                     $("#form-item").contents().find('[name=category]').val(e.relatedTarget.dataset.category);
-                    $("#form-item").contents().find('[name=quantityInStore]').val(e.relatedTarget.dataset.quantityInStore);
+                    $("#form-item").contents().find('[name=quantityBought]').val(e.relatedTarget.dataset.quantityBought);
                     $("#form-item").contents().find('[name=unit]').val(e.relatedTarget.dataset.unit);
                 }
             });
@@ -286,9 +286,9 @@
                             `<b>${key + 1}</b>`,
                             `${item.name}`,
                             `${item.category}`,
-                            `${item.quantityInStore} ${item.unit}`,
+                            `${item.quantityBought} ${item.unit}`,
                             `<a class="btn btn-primary p-1 delete-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a>`,
-                            `<a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal" data-item-id="${item.id}" data-name="${item.name}" data-category="${item.category}" data-unit="${item.unit}" data-quantity-in-store="${item.quantityInStore}">EDIT</a>`
+                            `<a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal" data-item-id="${item.id}" data-name="${item.name}" data-category="${item.category}" data-unit="${item.unit}" data-quantity-in-store="${item.quantityBought}">EDIT</a>`
                         ]).draw(false);
                     });
                 },

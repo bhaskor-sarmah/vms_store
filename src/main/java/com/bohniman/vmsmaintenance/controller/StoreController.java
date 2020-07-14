@@ -1,7 +1,10 @@
 package com.bohniman.vmsmaintenance.controller;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -16,10 +19,12 @@ import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.model.MasterVendorItem;
+import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
 import com.bohniman.vmsmaintenance.service.InventoryUnitService;
 import com.bohniman.vmsmaintenance.service.StoreService;
+import com.bohniman.vmsmaintenance.utilities.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +35,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -171,15 +177,17 @@ public class StoreController {
         }
     }
 
+    // TO BE DELETED
     // ========================================================================
     // VEHICLE DETAIL PAGE
     // ========================================================================
-    @GetMapping(value = "/vehicle/{vehicleId}")
-    public ModelAndView pageVehicleDetail(ModelAndView mv, @PathVariable("vehicleId") Long vehicleId) {
-        mv = new ModelAndView("store/vehicle_detail");
-        mv.addObject("vehicleId", vehicleId);
-        return mv;
-    }
+    // @GetMapping(value = "/vehicle/{vehicleId}")
+    // public ModelAndView pageVehicleDetail(ModelAndView mv,
+    // @PathVariable("vehicleId") Long vehicleId) {
+    // mv = new ModelAndView("store/vehicle_detail");
+    // mv.addObject("vehicleId", vehicleId);
+    // return mv;
+    // }
 
     // ========================================================================
     // ORDER DETAIL PAGE
@@ -290,34 +298,29 @@ public class StoreController {
         return storeService.findAllVehicle();
     }
 
-    // ========================================================================
+    // TO BE
+    // DELETED========================================================================
     // OPEN JOB CARD
     // ========================================================================
-    @GetMapping(value = "/vehicle/{vehicleId}/open-job-card")
-    public ModelAndView openJobCard(ModelAndView mv, @PathVariable("vehicleId") Long vehicleId) {
-        mv = new ModelAndView("store/open_job_card");
-        mv.addObject("vehicleId", vehicleId);
-        return mv;
-    }
+    // @GetMapping(value = "/vehicle/{vehicleId}/open-job-card")
+    // public ModelAndView openJobCard(ModelAndView mv, @PathVariable("vehicleId")
+    // Long vehicleId) {
+    // mv = new ModelAndView("store/open_job_card");
+    // mv.addObject("vehicleId", vehicleId);
+    // return mv;
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // VIEW JOB CARD
     // ========================================================================
-    @GetMapping(value = "/vehicle/{vehicleId}/view-job-card")
-    public ModelAndView viewJobCard(ModelAndView mv, @PathVariable("vehicleId") Long vehicleId) {
-        mv = new ModelAndView("store/view_job_card");
-        mv.addObject("vehicleId", vehicleId);
-        return mv;
-    }
-
-    // ========================================================================
-    // PAGE JOB CARD HOME
-    // ========================================================================
-    @GetMapping(value = "/job-card")
-    public ModelAndView jobCardHome(ModelAndView mv) {
-        mv = new ModelAndView("store/job_card_home");
-        return mv;
-    }
+    // @GetMapping(value = "/vehicle/{vehicleId}/view-job-card")
+    // public ModelAndView viewJobCard(ModelAndView mv, @PathVariable("vehicleId")
+    // Long vehicleId) {
+    // mv = new ModelAndView("store/view_job_card");
+    // mv.addObject("vehicleId", vehicleId);
+    // return mv;
+    // }
 
     // ========================================================================
     // PAGE ORDER SHEET HOME
@@ -426,7 +429,18 @@ public class StoreController {
     @GetMapping(value = "/old-car-parts")
     public ModelAndView pageOldDamageCarParts(ModelAndView mv) {
         mv = new ModelAndView("store/old_car_parts");
+        return mv;
+    }
 
+    // ========================================================================
+    // VEHICLE DETAIL PAGE
+    // ========================================================================
+    @GetMapping(value = "/vehicle/{vehicleId}")
+    public ModelAndView pageVehicleDetail(ModelAndView mv, @PathVariable("vehicleId") Long vehicleId) {
+        mv = new ModelAndView("store/vehicle_detail");
+        MasterVehicle masterVehicle = storeService.getVehicleById(vehicleId);
+
+        mv.addObject("masterVehicle", masterVehicle);
         return mv;
     }
 
@@ -465,6 +479,33 @@ public class StoreController {
     }
 
     // ========================================================================
+    // OPEN JOB CARD
+    // ========================================================================
+    @GetMapping(value = "/vehicle/{vehicleId}/open-job-card")
+    public ModelAndView openJobCard(ModelAndView mv, @PathVariable("vehicleId") Long vehicleId) {
+        mv = new ModelAndView("store/open_job_card");
+        MasterVehicle masterVehicle = storeService.getVehicleById(vehicleId);
+
+        mv.addObject("masterVehicle", masterVehicle);
+        return mv;
+    }
+
+    // ========================================================================
+    // # GET SEARCHED VENDOR ITEM
+    // ========================================================================
+    @GetMapping(value = { "/get-search-vendor-item" })
+    public ResponseEntity<JsonResponse> getSearchVendorItem(@RequestParam(value = "searchText") String searchText) {
+
+        JsonResponse res = storeService.getSearchVendorItem(searchText);
+
+        if (Objects.equals(res.getResult(), true)) {
+            return ResponseEntity.ok().body(res);
+        } else {
+            throw new BadRequestException("Operation Failed");
+        }
+    }
+
+    // ========================================================================
     // DELETE A RACK
     // ========================================================================
     @DeleteMapping(value = { "/rack/delete/{rackId}" })
@@ -481,12 +522,40 @@ public class StoreController {
     }
 
     // ========================================================================
+    // OPEN JOB CARD
+    // ========================================================================
+    @PostMapping(value = { "/vehicle/job-card/open" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> openJobCard(@Valid @ModelAttribute TransVehicleJobCard transVehicleJobCard,
+            BindingResult bindingResult) throws BindException {
+
+        JsonResponse res = storeService.openJobCard(transVehicleJobCard);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
     // RACK DETAILS PAGE
     // ========================================================================
     @GetMapping(value = { "/rack/{rackId}" })
     public ModelAndView pageRackDetail(ModelAndView mv, @PathVariable("rackId") Long rackId) {
         mv = new ModelAndView("store/rack_detail");
         mv.addObject("rack", storeService.getRackById(rackId));
+        return mv;
+    }  
+
+    // ========================================================================
+    // VIEW JOB CARD
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/{jobCardId}")
+    public ModelAndView viewJobCard(ModelAndView mv, @PathVariable("jobCardId") Long jobCardId) {
+        mv = new ModelAndView("store/view_job_card");
+
+        TransVehicleJobCard transVehicleJobCard = storeService.getJobCardById(jobCardId);
+        mv.addObject("transVehicleJobCard", transVehicleJobCard);
         return mv;
     }
 
@@ -526,6 +595,22 @@ public class StoreController {
     }
 
     // ========================================================================
+    // FORWARD JOB CARD
+    // ========================================================================
+    @PutMapping(value = { "/vehicle/job-card/forward" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> openJobCard(@RequestParam("jobCardId") Long jobCardId,
+            @RequestParam("username") String username) throws BindException {
+
+        JsonResponse res = storeService.forwardJobCard(jobCardId, username);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
     // ALL SHELVES LIST
     // ========================================================================
     @GetMapping(value = "/rack/allShelves/{rackId}")
@@ -536,6 +621,21 @@ public class StoreController {
             return ResponseEntity.ok(res);
         } else {
             throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // # GET SEARCHED FORWARD USER
+    // ========================================================================
+    @GetMapping(value = { "/vehicle/job-card/search-forward-user" })
+    public ResponseEntity<JsonResponse> searchForwardUser(@RequestParam(value = "searchText") String searchText) {
+
+        JsonResponse res = storeService.searchForwardUser(searchText);
+
+        if (Objects.equals(res.getResult(), true)) {
+            return ResponseEntity.ok().body(res);
+        } else {
+            throw new BadRequestException("Operation Failed");
         }
     }
 
@@ -562,4 +662,24 @@ public class StoreController {
             throw new MyResourceNotFoundException(res.getMessage());
         }
     }
+    // PAGE JOB CARD HOME
+    // ========================================================================
+    @GetMapping(value = "/job-card")
+    public ModelAndView jobCardHome(ModelAndView mv, @RequestParam Optional<String> fromDate,
+            @RequestParam Optional<String> toDate) throws ParseException {
+        Date dateFrom = new Date();
+        Date dateTo = new Date();
+        if(fromDate.isPresent() && toDate.isPresent()){
+            dateFrom = DateUtil.getDateFromString(fromDate.get());
+            dateTo = DateUtil.getDateFromString(toDate.get());
+        }
+
+        mv = new ModelAndView("store/job_card_home");
+
+        List<TransVehicleJobCard> jobCards = storeService.getJobCardsByDateRange(dateFrom, dateTo);
+        mv.addObject("jobCards", jobCards);
+
+        return mv;
+    }
+
 }

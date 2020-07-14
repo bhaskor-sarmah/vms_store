@@ -12,4 +12,6 @@ public interface MasterVendorItemRepository extends JpaRepository<MasterVendorIt
 
     List<MasterVendorItem> findAllByMasterVendor_idOrderByItemNameAsc(Long vendorId);
 
+	List<MasterVendorItem> findByItemNameContaining(String searchText);
+
 }

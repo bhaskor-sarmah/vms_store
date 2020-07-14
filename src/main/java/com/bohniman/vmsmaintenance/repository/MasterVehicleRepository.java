@@ -21,4 +21,6 @@ public interface MasterVehicleRepository extends JpaRepository<MasterVehicle, Lo
 
 	Boolean existsByVehicleRegistrationNo(String vehicleRegistrationNo);
 
+	MasterVehicle findByIdAndMto_id(Long id, Long mtoId);
+
 }

@@ -40,94 +40,57 @@
 
                                             </div>
                                             <div class="col-8">
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="">From</span>
+                                                <form method="GET" th:ction="@{/store/job-card}">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="">From</span>
+                                                        </div>
+                                                        <input type="text" class="form-control datepicker" name="fromDate">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text " id="">To</span>
+                                                        </div>
+                                                        <input type="text" class="form-control datepicker" name="toDate">
+                                                        <div class="input-group-prepend">
+                                                            <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i> Search</button>
+                                                        </div>
                                                     </div>
-                                                    <input type="text" class="form-control datepicker">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text " id="">To</span>
-                                                    </div>
-                                                    <input type="text" class="form-control datepicker">
-                                                    <div class="input-group-prepend">
-                                                        <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i> Search</button>
-                                                    </div>
-                                                </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <table class="table table-bordered table-sm">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">#</th>
-                                                            <th scope="col">REGN NO</th>
-                                                            <th scope="col">JOB CARD ID</th>
-                                                            <th scope="col">STATUS</th>
-                                                            <th scope="col">OPENED ON</th>
-                                                            <th scope="col">CLOSED ON</th>
-                                                            <th scope="col">ACTION</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <th scope="row">1</th>
-                                                            <td>AS-01-2342</td>
-                                                            <td>435524</td>
-                                                            <td><span class="badge badge-success">FRESH</span></td>
-                                                            <td>2nd June 2019</td>
-                                                            <td>--</td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">2</th>
-                                                            <td>AS-01-6554</td>
-                                                            <td>456775</td>
-                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
-                                                            <td>1st Feb 2019</td>
-                                                            <td>21st Feb 2019</td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">3</th>
-                                                            <td>AS-01-5434</td>
-                                                            <td>435524</td>
-                                                            <td><span class="badge badge-success">FRESH</span></td>
-                                                            <td>2nd Oct 2017</td>
-                                                            <td>--</td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">4</th>
-                                                            <td>AS-01-5466</td>
-                                                            <td>786543</td>
-                                                            <td><span class="badge badge-success">FRESH</span></td>
-                                                            <td>2nd June 2019</td>
-                                                            <td>--</td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">5</th>
-                                                            <td>AS-01-7867</td>
-                                                            <td>123546</td>
-                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
-                                                            <td>1st Feb 2019</td>
-                                                            <td>21st Feb 2019</td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">6</th>
-                                                            <td>AS-01-3456</td>
-                                                            <td>654776</td>
-                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
-                                                            <td>2nd Oct 2017</td>
-                                                            <td>10th Oct 2017</td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                                <div class="row" th:if="${not #lists.isEmpty(jobCards)}">
+                                                    <div class="col-md-12">
+                                                        <table class="table table-bordered table-sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">#</th>
+                                                                    <th scope="col">JOB CARD ID</th>
+                                                                    <th scope="col">STATUS</th>
+                                                                    <th scope="col">OPENED ON</th>
+                                                                    <th scope="col">CLOSED ON</th>
+                                                                    <th scope="col">ACTION</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr th:each="x,iterator :${jobCards}">
+                                                                    <th scope="row" th:text="${iterator.count}">1</th>
+                                                                    <td th:text="${x.id}"></td>
+                                                                    <td>
+                                                                        <span class="badge badge-success" th:if="${x.status == 'CREATED'}" th:text="${x.status}"></span>
+                                                                        <span class="badge badge-danger" th:if="${x.status == 'FORWARDED'}" th:text="${x.status}"></span>
+                                                                        <span class="badge badge-secondary" th:if="${x.status == 'CLOSED'}" th:text="${x.status}"></span>
+                                                                    </td>
+                                                                    <td><span th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy HH:mm a')}"></span></td>
+                                                                    <td><span th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy HH:mm a')}"></span></td>
+                                                                    <td><a class="btn btn-primary p-1" th:href="@{/store/vehicle/job-card/__${x.id}__}">VIEW JOB CARD</a></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

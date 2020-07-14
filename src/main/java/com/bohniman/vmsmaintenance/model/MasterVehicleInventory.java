@@ -37,7 +37,13 @@ public class MasterVehicleInventory extends Auditable{
 
     @NotNull(message="* Quantity is required")
     @Min(value = 1)
+    private BigDecimal quantityBought;
+
+    private BigDecimal quantityAssigned;
+
     private BigDecimal quantityInStore;
+
+    private BigDecimal quantityDamaged;
 
     @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
     private Boolean isDeleted = false;

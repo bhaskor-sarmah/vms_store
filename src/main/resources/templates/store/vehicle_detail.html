@@ -24,12 +24,10 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item"><a th:href="@{/store/vehicle}">Vehicle</a></li>
-                                <li class="breadcrumb-item text-success">
-                                    AS-01-2020
-                                </li>
+                                <li class="breadcrumb-item text-success" th:if="${masterVehicle != null}" th:text="${masterVehicle.vehicleRegistrationNo}"></li>
                             </ol>
                         </nav>
-                        <div class="row">
+                        <div class="row" th:if="${masterVehicle != null}">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -38,7 +36,8 @@
                                                 <h4><i class="fas fa-car"></i> Vehicle Details</h4>
                                             </div>
                                             <div class="col-6 text-right">
-                                                <h4><span class="badge badge-success p-2">Regn. No : AS-01-2020</span></h4>
+                                                <h4><span class="badge badge-success p-2">Regn. No : <span th:text="${masterVehicle.vehicleRegistrationNo}"></span></span>
+                                                </h4>
                                             </div>
                                         </div>
                                     </div>
@@ -48,7 +47,7 @@
                                                 <h5 class="card-title">Registration No</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: AS-01-2020</h5>
+                                                <h5 class="card-title">: <span th:text="${masterVehicle.vehicleRegistrationNo}"></span></h5>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -56,7 +55,7 @@
                                                 <h5 class="card-title">Vehicle Type</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: Owned</h5>
+                                                <h5 class="card-title">: <span th:text="${masterVehicle.vehicleType.title}"></span></h5>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -64,7 +63,7 @@
                                                 <h5 class="card-title">Category</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: Car</h5>
+                                                <h5 class="card-title">: <span th:text="${masterVehicle.vehicleCategory.title}"></span></h5>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -72,7 +71,7 @@
                                                 <h5 class="card-title">Model No</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: 232323</h5>
+                                                <h5 class="card-title">: <span th:text="${masterVehicle.vehicleModel}"></span></h5>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -80,7 +79,7 @@
                                                 <h5 class="card-title">Mileage</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: 23487</h5>
+                                                <h5 class="card-title">: <span th:text="${masterVehicle.mileage + ' km/litre'}"></span></h5>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -88,7 +87,7 @@
                                                 <h5 class="card-title">Fuel Type</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title">: Diesel</h5>
+                                                <h5 class="card-title">: <span th:text="${masterVehicle.fuelType.title}"></span></h5>
                                             </div>
                                         </div>
                                         <hr>
@@ -196,38 +195,14 @@
                                                         </table>
                                                     </div>
                                                     <div class="tab-pane fade p-3" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">
-                                                        <div class="row">
+                                                        <div class="row" th:if="${not #lists.isEmpty(masterVehicle.health)}">
                                                             <div class="col-md-12">
                                                                 <h4>Health Timeline</h4>
                                                                 <ul class="timeline">
-                                                                    <li>
-                                                                        <a target="_blank" href="javascript:void(0)"><strong>25 July, 2017</strong></a>
-                                                                        <a href="javascript:void(0)" class="float-right"><small>By-admin</small></a>
-                                                                        <p class="mt-2 pl-3">Job Card Closed and vehicle released..</p>
-                                                                        <hr>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a target="_blank" href="javascript:void(0)"><strong>20 July, 2017</strong></a>
-                                                                        <a href="javascript:void(0)" class="float-right"><small>By-admin</small></a>
-                                                                        <p class="mt-2 pl-3">Bonnet and Front Glass Changed.</p>
-                                                                        <hr>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a target="_blank" href="javascript:void(0)"><strong>10 July, 2017</strong></a>
-                                                                        <a href="javascript:void(0)" class="float-right"><small>By-admin</small></a>
-                                                                        <p class="mt-2 pl-3">Opened Job Card.</p>
-                                                                        <hr>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a target="_blank" href="javascript:void(0)"><strong>3 July, 2017</strong></a>
-                                                                        <a href="javascript:void(0)" class="float-right"><small>By-admin</small></a>
-                                                                        <p class="mt-2 pl-3">Met with an accident in Bharalumukh.</p>
-                                                                        <hr>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a target="_blank" href="javascript:void(0)"><strong>21 March, 2014</strong></a>
-                                                                        <a href="javascript:void(0)" class="float-right"><small>By-admin</small></a>
-                                                                        <p class="mt-2 pl-3">Vehicle has been created in the store.</p>
+                                                                    <li th:each="x:${masterVehicle.health}">
+                                                                        <a target="_blank" href="javascript:void(0)"><strong th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy')}"></strong></a>
+                                                                        <a href="javascript:void(0)" class="float-right"><small>By-<span th:text="${x.createdBy}"></span></small></a>
+                                                                        <p class="mt-2 pl-3" th:text="${x.remarks}"></p>
                                                                         <hr>
                                                                     </li>
                                                                 </ul>
@@ -235,7 +210,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane fade p-3" id="job-card" role="tabpanel" aria-labelledby="job-card-tab">
-                                                        <div class="row">
+                                                        <div class="row" th:if="${not #lists.isEmpty(masterVehicle.jobCards)}">
                                                             <div class="col-md-12">
                                                                 <table class="table table-bordered table-sm">
                                                                     <thead>
@@ -249,29 +224,17 @@
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        <tr>
-                                                                            <th scope="row">1</th>
-                                                                            <td>435524</td>
-                                                                            <td><span class="badge badge-success">FRESH</span></td>
-                                                                            <td>2nd June 2019</td>
-                                                                            <td>--</td>
-                                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <th scope="row">2</th>
-                                                                            <td>456775</td>
-                                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
-                                                                            <td>1st Feb 2019</td>
-                                                                            <td>21st Feb 2019</td>
-                                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <th scope="row">3</th>
-                                                                            <td>435524</td>
-                                                                            <td><span class="badge badge-secondary">CLOSED</span></td>
-                                                                            <td>2nd Oct 2017</td>
-                                                                            <td>10th Oct 2017</td>
-                                                                            <td><a class="btn btn-primary p-1" href="/store/vehicle/1010/view-job-card">VIEW JOB CARD</a></td>
+                                                                        <tr th:each="x,iterator :${masterVehicle.jobCards}">
+                                                                            <th scope="row" th:text="${iterator.count}">1</th>
+                                                                            <td th:text="${x.id}"></td>
+                                                                            <td>
+                                                                                <span class="badge badge-success" th:if="${x.status == 'CREATED'}" th:text="${x.status}"></span>
+                                                                                <span class="badge badge-danger" th:if="${x.status == 'FORWARDED'}" th:text="${x.status}"></span>
+                                                                                <span class="badge badge-secondary" th:if="${x.status == 'CLOSED'}" th:text="${x.status}"></span>
+                                                                            </td>
+                                                                            <td><span th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy HH:mm a')}"></span></td>
+                                                                            <td><span th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy HH:mm a')}"></span></td>
+                                                                            <td><a class="btn btn-primary p-1" th:href="@{/store/vehicle/job-card/__${x.id}__}">VIEW JOB CARD</a></td>
                                                                         </tr>
                                                                     </tbody>
                                                                 </table>

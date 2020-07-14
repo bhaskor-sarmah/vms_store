@@ -1,7 +1,10 @@
 package com.bohniman.vmsmaintenance.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -51,7 +55,7 @@ public class MasterVehicle extends Auditable{
 	private MasterFuelType fuelType;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fk_mto_details_id", updatable=false)
+	@JoinColumn(name = "fk_mto_details_id")
 	private MasterMTODetails mto;
 
 	@NotNull(message = "Mileage is required")
@@ -59,5 +63,10 @@ public class MasterVehicle extends Auditable{
 
 	@Column(columnDefinition = "tinyint(1) default 1")
 	private Boolean status = true;
-
+	
+    @OneToMany(mappedBy = "masterVehicle", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
+	private List<TransVehicleHealth> health = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "masterVehicle", fetch = FetchType.LAZY)
+    private List<TransVehicleJobCard> jobCards = new ArrayList<>();
 }
