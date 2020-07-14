@@ -157,20 +157,20 @@
                             </thead>
                         </table>`;
                     $('#div-items-list').html(content);
-                    var tableShelves = $('#table-shelves').DataTable({
+                    var tableShelves = $('#table-items').DataTable({
                         "columnDefs": [{
                             "className": "text-center",
                             "targets": [0, 1, 2, 3, 4]
                         }]
                     });
                     $.each(response.payload, function (key, item) {
-                        tableItems.row.add([
+                        tableShelves.row.add([
                             `<b>${key + 1}</b>`,
                             `${item.itemName}`,
                             `${item.itemDetails}`,
                             `${moment(item.replacedDate).format('DD/MM/YYYY')}`,
-                            `<a class="btn btn-primary p-1 view-item" href="#">VIEW</a>`,
-                            `<a class="btn btn-primary p-1 view-job-card" href="#">VIEW</a>`
+                            `<a class="btn btn-primary p-1 view-item" href="#">VIEW ITEM</a>`,
+                            `<a class="btn btn-success p-1 view-job-card" href="${contextPath}store/vehicle/job-card/${item.transVehicleJobCard.id}">VIEW JOB CARD</a>`
                         ]).draw(false);
                     });
                 },
