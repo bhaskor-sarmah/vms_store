@@ -33,7 +33,7 @@ public class TransVendorItem {
     private String currentStatus; // ACTIVE , INACTIVE
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_master_item_trans")
+    @JoinColumn(name = "fk_master_item_brand")
     private MasterItemBrand masterItemBrand;
 
     @ManyToOne(fetch = FetchType.LAZY)

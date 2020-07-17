@@ -227,7 +227,7 @@ public class StoreService {
         JsonResponse res = new JsonResponse();
 
         List<TransVendorItem> vendorItemList = transVendorItemRepository
-                .findAllByMasterVendor_idOrderByItemNameAsc(vendorId);
+                .findAllByMasterVendor_idOrderByMasterItemBrand_item_itemNameAsc(vendorId);
 
         res.setResult(true);
         res.setPayload(vendorItemList);
@@ -498,7 +498,8 @@ public class StoreService {
         JsonResponse res = new JsonResponse();
         PageableObjectPayload orgData = new PageableObjectPayload();
 
-        List<TransVendorItem> itemList = transVendorItemRepository.findByItemNameContaining(searchText);
+        List<TransVendorItem> itemList = transVendorItemRepository
+                .findByMasterItemBrand_item_itemNameContaining(searchText);
 
         for (TransVendorItem item : itemList) {
             item.setMasterVendor(null);

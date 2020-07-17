@@ -4,6 +4,9 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -15,10 +18,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TransDisposeItem {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Date disposeDate;
 
-    MasterItemBrand masterItem;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_master_item_brand")
+    MasterItemBrand masterItemBrand;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_trans_vehicle_jobcard")
     TransVehicleJobCard transVehicleJobCard;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransVendorItemRepository extends JpaRepository<TransVendorItem, Long> {
 
-    List<TransVendorItem> findAllByMasterVendor_idOrderByItemNameAsc(Long vendorId);
+    List<TransVendorItem> findAllByMasterVendor_idOrderByMasterItemBrand_item_itemNameAsc(Long vendorId);
 
-    List<TransVendorItem> findByItemNameContaining(String searchText);
+    List<TransVendorItem> findByMasterItemBrand_item_itemNameContaining(String searchText);
 
 }
