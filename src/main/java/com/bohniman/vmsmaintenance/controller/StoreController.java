@@ -59,123 +59,137 @@ public class StoreController {
         return mv;
     }
 
+    // TO BE DELETED
     // ========================================================================
     // VENDOR PAGE
     // ========================================================================
-    @GetMapping(value = "/vendor")
-    public ModelAndView pageVendorSearch(ModelAndView mv) {
-        mv = new ModelAndView("store/vendor_search");
+    // @GetMapping(value = "/vendor")
+    // public ModelAndView pageVendorSearch(ModelAndView mv) {
+    // mv = new ModelAndView("store/vendor_search");
 
-        return mv;
-    }
+    // return mv;
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // VENDOR ALL LIST
     // ========================================================================
-    @GetMapping(value = "/vendor/all")
-    @ResponseBody
-    public ResponseEntity<JsonResponse> getAllVendors() {
-        JsonResponse res = storeService.getAllVendors();
-        if (res.getResult()) {
-            return ResponseEntity.ok(res);
-        } else {
-            throw new MyResourceNotFoundException(res.getMessage());
-        }
-    }
+    // @GetMapping(value = "/vendor/all")
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> getAllVendors() {
+    // JsonResponse res = storeService.getAllVendors();
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new MyResourceNotFoundException(res.getMessage());
+    // }
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // VENDOR ALL ITEMS PAGE
     // ========================================================================
-    @GetMapping(value = "/vendor/allItems/{vendorId}")
-    @ResponseBody
-    public ResponseEntity<JsonResponse> getAllVendorItem(@PathVariable("vendorId") Long vendorId) {
-        JsonResponse res = storeService.getAllVendorItems(vendorId);
-        if (res.getResult()) {
-            return ResponseEntity.ok(res);
-        } else {
-            throw new MyResourceNotFoundException(res.getMessage());
-        }
-    }
+    // @GetMapping(value = "/vendor/allItems/{vendorId}")
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse>
+    // getAllVendorItem(@PathVariable("vendorId") Long vendorId) {
+    // JsonResponse res = storeService.getAllVendorItems(vendorId);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new MyResourceNotFoundException(res.getMessage());
+    // }
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // ADD NEW VENDOR
     // ========================================================================
-    @PostMapping(value = { "/vendor/add" })
-    @ResponseBody
-    public ResponseEntity<JsonResponse> addVendor(@Valid @ModelAttribute MasterVendor masterVendor,
-            BindingResult bindingResult) throws BindException {
-        if (!bindingResult.hasErrors()) {
-            JsonResponse res = storeService.saveNewVendor(masterVendor);
-            if (res.getResult()) {
-                return ResponseEntity.ok(res);
-            } else {
-                throw new BadRequestException(res.getMessage());
-            }
-        } else {
-            throw new BindException(bindingResult);
-        }
-    }
+    // @PostMapping(value = { "/vendor/add" })
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> addVendor(@Valid @ModelAttribute
+    // MasterVendor masterVendor,
+    // BindingResult bindingResult) throws BindException {
+    // if (!bindingResult.hasErrors()) {
+    // JsonResponse res = storeService.saveNewVendor(masterVendor);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new BadRequestException(res.getMessage());
+    // }
+    // } else {
+    // throw new BindException(bindingResult);
+    // }
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // VENDOR DETAILS PAGE
     // ========================================================================
-    @GetMapping(value = { "/vendor/{vendorId}" })
-    public ModelAndView pageVendorDetail(ModelAndView mv, @PathVariable("vendorId") Long vendorId) {
-        mv = new ModelAndView("store/vendor_detail");
-        mv.addObject("unitList", new InventoryUnitService().getAll());
-        mv.addObject("vendor", storeService.getVendorById(vendorId));
-        return mv;
-    }
+    // @GetMapping(value = { "/vendor/{vendorId}" })
+    // public ModelAndView pageVendorDetail(ModelAndView mv,
+    // @PathVariable("vendorId") Long vendorId) {
+    // mv = new ModelAndView("store/vendor_detail");
+    // mv.addObject("unitList", new InventoryUnitService().getAll());
+    // mv.addObject("vendor", storeService.getVendorById(vendorId));
+    // return mv;
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // DELETE VENDOR DETAILS
     // ========================================================================
-    @DeleteMapping(value = { "/vendor/delete/{vendorId}" })
-    @ResponseBody
-    public ResponseEntity<JsonResponse> deleteVendor(@PathVariable("vendorId") Long vendorId) {
-        JsonResponse res = new JsonResponse();
-        res = storeService.deleteVendorById(vendorId);
-        if (res.getResult()) {
-            return ResponseEntity.ok(res);
-        } else {
-            throw new BadRequestException(res.getMessage());
-        }
-    }
+    // @DeleteMapping(value = { "/vendor/delete/{vendorId}" })
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> deleteVendor(@PathVariable("vendorId")
+    // Long vendorId) {
+    // JsonResponse res = new JsonResponse();
+    // res = storeService.deleteVendorById(vendorId);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new BadRequestException(res.getMessage());
+    // }
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // ADD NEW VENDOR ITEM
     // ========================================================================
-    @PostMapping(value = { "/vendor/addItem" })
-    @ResponseBody
-    public ResponseEntity<JsonResponse> addVendorItem(@Valid @ModelAttribute TransVendorItem masterVendorItem,
-            BindingResult bindingResult) throws BindException {
-        System.out.println(masterVendorItem);
-        if (!bindingResult.hasErrors()) {
-            JsonResponse res = storeService.saveNewVendorItem(masterVendorItem);
-            if (res.getResult()) {
-                return ResponseEntity.ok(res);
-            } else {
-                throw new BadRequestException(res.getMessage());
-            }
-        } else {
-            throw new BindException(bindingResult);
-        }
-    }
+    // @PostMapping(value = { "/vendor/addItem" })
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> addVendorItem(@Valid @ModelAttribute
+    // TransVendorItem masterVendorItem,
+    // BindingResult bindingResult) throws BindException {
+    // System.out.println(masterVendorItem);
+    // if (!bindingResult.hasErrors()) {
+    // JsonResponse res = storeService.saveNewVendorItem(masterVendorItem);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new BadRequestException(res.getMessage());
+    // }
+    // } else {
+    // throw new BindException(bindingResult);
+    // }
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // DELETE VENDOR ITEM
     // ========================================================================
-    @DeleteMapping(value = { "/vendor/deleteItem/{itemId}" })
-    @ResponseBody
-    public ResponseEntity<JsonResponse> deleteVendorItem(@PathVariable("itemId") Long itemId) {
-        JsonResponse res = new JsonResponse();
-        res = storeService.deleteVendorItemById(itemId);
-        if (res.getResult()) {
-            return ResponseEntity.ok(res);
-        } else {
-            throw new BadRequestException(res.getMessage());
-        }
-    }
+    // @DeleteMapping(value = { "/vendor/deleteItem/{itemId}" })
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> deleteVendorItem(@PathVariable("itemId")
+    // Long itemId) {
+    // JsonResponse res = new JsonResponse();
+    // res = storeService.deleteVendorItemById(itemId);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new BadRequestException(res.getMessage());
+    // }
+    // }
 
     // TO BE DELETED
     // ========================================================================
@@ -423,14 +437,15 @@ public class StoreController {
         }
     }
 
+    // TO BE DELETED
     // ========================================================================
     // OLD/DAMAGE CAR PARTS PAGE
     // ========================================================================
-    @GetMapping(value = "/old-car-parts")
-    public ModelAndView pageOldDamageCarParts(ModelAndView mv) {
-        mv = new ModelAndView("store/old_car_parts");
-        return mv;
-    }
+    // @GetMapping(value = "/old-car-parts")
+    // public ModelAndView pageOldDamageCarParts(ModelAndView mv) {
+    // mv = new ModelAndView("store/old_car_parts");
+    // return mv;
+    // }
 
     // ========================================================================
     // VEHICLE DETAIL PAGE
@@ -444,39 +459,42 @@ public class StoreController {
         return mv;
     }
 
+    // TO BE DELETED
     // ========================================================================
     // LIST ALL RACK
     // ========================================================================
-    @GetMapping(value = { "/rack/all" })
-    @ResponseBody
-    public ResponseEntity<JsonResponse> getAllRacks() {
+    // @GetMapping(value = { "/rack/all" })
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> getAllRacks() {
 
-        JsonResponse res = storeService.getAllRacks();
-        if (res.getResult()) {
-            return ResponseEntity.ok(res);
-        } else {
-            throw new MyResourceNotFoundException(res.getMessage());
-        }
-    }
+    // JsonResponse res = storeService.getAllRacks();
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new MyResourceNotFoundException(res.getMessage());
+    // }
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // ADD NEW RACK
     // ========================================================================
-    @PostMapping(value = { "/rack/add" })
-    @ResponseBody
-    public ResponseEntity<JsonResponse> addRack(@Valid @ModelAttribute MasterRack masterRack,
-            BindingResult bindingResult) throws BindException {
-        if (!bindingResult.hasErrors()) {
-            JsonResponse res = storeService.saveNewRack(masterRack);
-            if (res.getResult()) {
-                return ResponseEntity.ok(res);
-            } else {
-                throw new BadRequestException(res.getMessage());
-            }
-        } else {
-            throw new BindException(bindingResult);
-        }
-    }
+    // @PostMapping(value = { "/rack/add" })
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> addRack(@Valid @ModelAttribute MasterRack
+    // masterRack,
+    // BindingResult bindingResult) throws BindException {
+    // if (!bindingResult.hasErrors()) {
+    // JsonResponse res = storeService.saveNewRack(masterRack);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new BadRequestException(res.getMessage());
+    // }
+    // } else {
+    // throw new BindException(bindingResult);
+    // }
+    // }
 
     // ========================================================================
     // OPEN JOB CARD
@@ -505,21 +523,23 @@ public class StoreController {
         }
     }
 
+    // TO BE DELETED
     // ========================================================================
     // DELETE A RACK
     // ========================================================================
-    @DeleteMapping(value = { "/rack/delete/{rackId}" })
-    @ResponseBody
-    public ResponseEntity<JsonResponse> deleteRack(@PathVariable("rackId") Long rackId) {
-        JsonResponse res = new JsonResponse();
+    // @DeleteMapping(value = { "/rack/delete/{rackId}" })
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> deleteRack(@PathVariable("rackId") Long
+    // rackId) {
+    // JsonResponse res = new JsonResponse();
 
-        res = storeService.deleteRackById(rackId);
-        if (res.getResult()) {
-            return ResponseEntity.ok(res);
-        } else {
-            throw new BadRequestException(res.getMessage());
-        }
-    }
+    // res = storeService.deleteRackById(rackId);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new BadRequestException(res.getMessage());
+    // }
+    // }
 
     // ========================================================================
     // OPEN JOB CARD
@@ -537,15 +557,17 @@ public class StoreController {
         }
     }
 
+    // TO BE DELETED
     // ========================================================================
     // RACK DETAILS PAGE
     // ========================================================================
-    @GetMapping(value = { "/rack/{rackId}" })
-    public ModelAndView pageRackDetail(ModelAndView mv, @PathVariable("rackId") Long rackId) {
-        mv = new ModelAndView("store/rack_detail");
-        mv.addObject("rack", storeService.getRackById(rackId));
-        return mv;
-    }
+    // @GetMapping(value = { "/rack/{rackId}" })
+    // public ModelAndView pageRackDetail(ModelAndView mv, @PathVariable("rackId")
+    // Long rackId) {
+    // mv = new ModelAndView("store/rack_detail");
+    // mv.addObject("rack", storeService.getRackById(rackId));
+    // return mv;
+    // }
 
     // ========================================================================
     // VIEW JOB CARD
@@ -559,40 +581,44 @@ public class StoreController {
         return mv;
     }
 
+    // TO BE DELETED
     // ========================================================================
     // ADD NEW SHELVES
     // ========================================================================
-    @PostMapping(value = { "/rack/addShelves" })
-    @ResponseBody
-    public ResponseEntity<JsonResponse> addShelve(@Valid @ModelAttribute MasterShelves masterShelves,
-            BindingResult bindingResult) throws BindException {
-        System.out.println(masterShelves);
-        if (!bindingResult.hasErrors()) {
-            JsonResponse res = storeService.saveNewShelves(masterShelves);
-            if (res.getResult()) {
-                return ResponseEntity.ok(res);
-            } else {
-                throw new BadRequestException(res.getMessage());
-            }
-        } else {
-            throw new BindException(bindingResult);
-        }
-    }
+    // @PostMapping(value = { "/rack/addShelves" })
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> addShelve(@Valid @ModelAttribute
+    // MasterShelves masterShelves,
+    // BindingResult bindingResult) throws BindException {
+    // System.out.println(masterShelves);
+    // if (!bindingResult.hasErrors()) {
+    // JsonResponse res = storeService.saveNewShelves(masterShelves);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new BadRequestException(res.getMessage());
+    // }
+    // } else {
+    // throw new BindException(bindingResult);
+    // }
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // DELETE SHELVES RECORD
     // ========================================================================
-    @DeleteMapping(value = { "/rack/deleteShelves/{shelveId}" })
-    @ResponseBody
-    public ResponseEntity<JsonResponse> deleteShelve(@PathVariable("shelveId") Long shelveId) {
-        JsonResponse res = new JsonResponse();
-        res = storeService.deleteShelveById(shelveId);
-        if (res.getResult()) {
-            return ResponseEntity.ok(res);
-        } else {
-            throw new BadRequestException(res.getMessage());
-        }
-    }
+    // @DeleteMapping(value = { "/rack/deleteShelves/{shelveId}" })
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> deleteShelve(@PathVariable("shelveId")
+    // Long shelveId) {
+    // JsonResponse res = new JsonResponse();
+    // res = storeService.deleteShelveById(shelveId);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new BadRequestException(res.getMessage());
+    // }
+    // }
 
     // ========================================================================
     // FORWARD JOB CARD
@@ -610,19 +636,21 @@ public class StoreController {
         }
     }
 
+    // TO BE DELETED
     // ========================================================================
     // ALL SHELVES LIST
     // ========================================================================
-    @GetMapping(value = "/rack/allShelves/{rackId}")
-    @ResponseBody
-    public ResponseEntity<JsonResponse> getAllShelves(@PathVariable("rackId") Long rackId) {
-        JsonResponse res = storeService.getAllShelvesByRackId(rackId);
-        if (res.getResult()) {
-            return ResponseEntity.ok(res);
-        } else {
-            throw new MyResourceNotFoundException(res.getMessage());
-        }
-    }
+    // @GetMapping(value = "/rack/allShelves/{rackId}")
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse> getAllShelves(@PathVariable("rackId")
+    // Long rackId) {
+    // JsonResponse res = storeService.getAllShelvesByRackId(rackId);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new MyResourceNotFoundException(res.getMessage());
+    // }
+    // }
 
     // ========================================================================
     // # GET SEARCHED FORWARD USER
@@ -639,29 +667,33 @@ public class StoreController {
         }
     }
 
+    // TO BE DELETED
     // ========================================================================
     // SHELVE DETAILS PAGE
     // ========================================================================
-    @GetMapping(value = { "/shelve/{shelveId}" })
-    public ModelAndView pageShelveDetail(ModelAndView mv, @PathVariable("shelveId") Long shelveId) {
-        mv = new ModelAndView("store/shelve_detail");
-        mv.addObject("shelve", storeService.getShelveById(shelveId));
-        return mv;
-    }
+    // @GetMapping(value = { "/shelve/{shelveId}" })
+    // public ModelAndView pageShelveDetail(ModelAndView mv,
+    // @PathVariable("shelveId") Long shelveId) {
+    // mv = new ModelAndView("store/shelve_detail");
+    // mv.addObject("shelve", storeService.getShelveById(shelveId));
+    // return mv;
+    // }
 
+    // TO BE DELETED
     // ========================================================================
     // ALL SHELVE ITEM LIST
     // ========================================================================
-    @GetMapping(value = "/shelve/allItems/{shelveId}")
-    @ResponseBody
-    public ResponseEntity<JsonResponse> getAllShelveItem(@PathVariable("shelveId") Long shelveId) {
-        JsonResponse res = storeService.getAllShelveItemByShelveId(shelveId);
-        if (res.getResult()) {
-            return ResponseEntity.ok(res);
-        } else {
-            throw new MyResourceNotFoundException(res.getMessage());
-        }
-    }
+    // @GetMapping(value = "/shelve/allItems/{shelveId}")
+    // @ResponseBody
+    // public ResponseEntity<JsonResponse>
+    // getAllShelveItem(@PathVariable("shelveId") Long shelveId) {
+    // JsonResponse res = storeService.getAllShelveItemByShelveId(shelveId);
+    // if (res.getResult()) {
+    // return ResponseEntity.ok(res);
+    // } else {
+    // throw new MyResourceNotFoundException(res.getMessage());
+    // }
+    // }
 
     // PAGE JOB CARD HOME
     // ========================================================================
