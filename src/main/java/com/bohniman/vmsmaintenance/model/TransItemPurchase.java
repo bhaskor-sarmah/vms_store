@@ -24,15 +24,13 @@ public class TransItemPurchase {
 
     private Date purchaseDate;
 
-    private String challanNo;
+    private Long puchaseQuantity;
 
-    private String billNo;
+    private Long amount;
 
     private Date issueDate;
 
-    private Long quantity;
-
-    private Long usedQuantity;
+    private Long issueQuantity;
 
     private String itemStatus; // Fresh, Used, Auction, Scrap
 
@@ -42,16 +40,12 @@ public class TransItemPurchase {
 
     private String itemType; // OLD , NEW
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "fk_rack")
-    // private MasterRack masterRack;
-
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "fk_shelve")
-    // private MasterShelves masterShelve;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_vendor_item")
     private TransVendorItem transVendorItem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_trans_challan")
+    private TransChallan transChallan;
 
 }

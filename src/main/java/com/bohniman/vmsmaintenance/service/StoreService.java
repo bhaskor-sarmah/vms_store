@@ -12,7 +12,7 @@ import javax.validation.Valid;
 
 import com.bohniman.vmsmaintenance.model.MasterFuelType;
 import com.bohniman.vmsmaintenance.model.MasterMTODetails;
-import com.bohniman.vmsmaintenance.model.MasterOldItem;
+// import com.bohniman.vmsmaintenance.model.MasterOldItem;
 import com.bohniman.vmsmaintenance.model.MasterRack;
 import com.bohniman.vmsmaintenance.model.MasterShelves;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
@@ -20,7 +20,7 @@ import com.bohniman.vmsmaintenance.model.MasterVehicleCategory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
-import com.bohniman.vmsmaintenance.model.MasterVendorItem;
+import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.model.TransVehicleHealth;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.User;
@@ -32,17 +32,18 @@ import com.bohniman.vmsmaintenance.payload.UserDataPayload;
 import com.bohniman.vmsmaintenance.payload.VehiclePayload;
 import com.bohniman.vmsmaintenance.repository.MasterFuelTypeRepository;
 import com.bohniman.vmsmaintenance.repository.MasterMTODetailsRepository;
-import com.bohniman.vmsmaintenance.repository.MasterOldItemRepository;
+// import com.bohniman.vmsmaintenance.repository.MasterOldItemRepository;
 import com.bohniman.vmsmaintenance.repository.MasterRackRepository;
 import com.bohniman.vmsmaintenance.repository.MasterShelvesRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleCategoryRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleInventoryRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleTypeRepository;
-import com.bohniman.vmsmaintenance.repository.MasterVendorItemRepository;
+// import com.bohniman.vmsmaintenance.repository.MasterVendorItemRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleHealthRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardRepository;
+import com.bohniman.vmsmaintenance.repository.TransVendorItemRepository;
 import com.bohniman.vmsmaintenance.repository.UserRepository;
 import com.bohniman.vmsmaintenance.utilities.LoggedInUser;
 
@@ -62,7 +63,7 @@ public class StoreService {
     MasterVendorRepository masterVendorRepository;
 
     @Autowired
-    MasterVendorItemRepository masterVendorItemRepository;
+    TransVendorItemRepository transVendorItemRepository;
 
     @Autowired
     MasterVehicleCategoryRepository masterVehicleCategoryRepository;
@@ -79,8 +80,8 @@ public class StoreService {
     @Autowired
     MasterRackRepository masterRackRepository;
 
-    @Autowired
-    MasterOldItemRepository masterOldItemRepository;
+    // @Autowired
+    // MasterOldItemRepository masterOldItemRepository;
 
     @Autowired
     MasterShelvesRepository masterShelvesRepository;
@@ -88,7 +89,6 @@ public class StoreService {
 
     @Autowired
     TransVehicleJobCardRepository transVehicleJobCardRepository;
-
 
     @Autowired
     UserRepository userRepository;
@@ -202,9 +202,9 @@ public class StoreService {
         return null;
     }
 
-    public JsonResponse saveNewVendorItem(MasterVendorItem masterVendorItem) {
+    public JsonResponse saveNewVendorItem(TransVendorItem transVendorItem) {
         JsonResponse res = new JsonResponse();
-        masterVendorItemRepository.save(masterVendorItem);
+        transVendorItemRepository.save(transVendorItem);
         res.setResult(true);
         res.setMessage("Vendor Item Saved Successfully");
         return res;
@@ -213,7 +213,7 @@ public class StoreService {
     public JsonResponse deleteVendorItemById(Long itemId) {
         JsonResponse res = new JsonResponse();
         try {
-            masterVendorItemRepository.deleteById(itemId);
+            transVendorItemRepository.deleteById(itemId);
             res.setMessage("Vendor Item Deleted Successfully.");
             res.setResult(true);
         } catch (Exception e) {
@@ -226,7 +226,7 @@ public class StoreService {
     public JsonResponse getAllVendorItems(Long vendorId) {
         JsonResponse res = new JsonResponse();
 
-        List<MasterVendorItem> vendorItemList = masterVendorItemRepository
+        List<TransVendorItem> vendorItemList = transVendorItemRepository
                 .findAllByMasterVendor_idOrderByItemNameAsc(vendorId);
 
         res.setResult(true);
@@ -295,7 +295,7 @@ public class StoreService {
         return res;
     }
 
-	public JsonResponse searchVehicle(Long searchType,  String searchText) {
+    public JsonResponse searchVehicle(Long searchType, String searchText) {
         JsonResponse res = new JsonResponse();
         List<VehiclePayload> vehicleDataList = new ArrayList<>();
         VehiclePayload vehiclePayload = null;
@@ -308,8 +308,8 @@ public class StoreService {
                     .findByVehicleRegistrationNoContainingAndVehicleType_vehicleTypeIdAndStatus(searchText, searchType,
                             true);
         }
-        
-        for(MasterVehicle masterVehicle : vehicleList){
+
+        for (MasterVehicle masterVehicle : vehicleList) {
             vehiclePayload = new VehiclePayload();
             vehiclePayload.setId(masterVehicle.getId());
             vehiclePayload.setVehicleRegistrationNo(masterVehicle.getVehicleRegistrationNo());
@@ -319,9 +319,10 @@ public class StoreService {
             vehiclePayload.setFuelType(masterVehicle.getFuelType());
             vehiclePayload.setMileage(masterVehicle.getMileage());
 
-            if(masterVehicle.getJobCards().size()>0){
-                for(TransVehicleJobCard transVehicleJobCard : masterVehicle.getJobCards()){
-                    if(Objects.equals(transVehicleJobCard.getStatus(), "CREATED") || Objects.equals(transVehicleJobCard.getStatus(), "FORWARDED")){
+            if (masterVehicle.getJobCards().size() > 0) {
+                for (TransVehicleJobCard transVehicleJobCard : masterVehicle.getJobCards()) {
+                    if (Objects.equals(transVehicleJobCard.getStatus(), "CREATED")
+                            || Objects.equals(transVehicleJobCard.getStatus(), "FORWARDED")) {
                         vehiclePayload.setLatestJobCardId(transVehicleJobCard.getId());
                         vehiclePayload.setLatestJobCardStatus(transVehicleJobCard.getStatus());
                     }
@@ -343,7 +344,7 @@ public class StoreService {
     }
 
     // public MasterVehicle getVehicleById(Long id) {
-    //     return masterVehicleRepository.getOne(id);
+    // return masterVehicleRepository.getOne(id);
     // }
 
     public JsonResponse getAllRacks() {
@@ -356,7 +357,7 @@ public class StoreService {
             mrp.setId(m.getId());
             mrp.setRackName(m.getRackName());
             mrp.setRackDetails(m.getRackDetails());
-            mrp.setTotalItems(masterOldItemRepository.countByMasterRack_id(m.getId()));
+            mrp.setTotalItems(0L);
             mrp.setTotalShelves(masterShelvesRepository.countByMasterRack_id(m.getId()));
             payloadList.add(mrp);
         }
@@ -384,8 +385,8 @@ public class StoreService {
             Optional<MasterRack> mro = masterRackRepository.findById(rackId);
             if (mro.isPresent()) {
                 try {
-                    masterOldItemRepository.deleteByMasterRack_id(rackId);
-                    System.out.println("All Items of the rack is deleted");
+                    // masterOldItemRepository.deleteByMasterRack_id(rackId);
+                    // System.out.println("All Items of the rack is deleted");
                     masterShelvesRepository.deleteByMasterRack_id(rackId);
                     System.out.println("All Shelves of the rack is deleted");
                     masterRackRepository.deleteById(rackId);
@@ -425,8 +426,8 @@ public class StoreService {
             Optional<MasterShelves> msl = masterShelvesRepository.findById(shelveId);
             if (msl.isPresent()) {
                 try {
-                    masterOldItemRepository.deleteByMasterShelves_id(shelveId);
-                    System.out.println("All Items of the Shelve is deleted");
+                    // masterOldItemRepository.deleteByMasterShelves_id(shelveId);
+                    // System.out.println("All Items of the Shelve is deleted");
                     masterShelvesRepository.deleteById(shelveId);
                     res.setMessage("Shelve Deleted Successfully.");
                     res.setResult(true);
@@ -452,7 +453,7 @@ public class StoreService {
             msf.setId(m.getId());
             msf.setShelveName(m.getShelveName());
             msf.setShelveDetails(m.getShelveDetails());
-            msf.setTotalItems(masterOldItemRepository.countByMasterShelves_id(m.getId()));
+            msf.setTotalItems(0L);
             payloadList.add(msf);
         }
         res.setResult(true);
@@ -476,7 +477,9 @@ public class StoreService {
     public JsonResponse getAllShelveItemByShelveId(Long shelveId) {
         JsonResponse res = new JsonResponse();
 
-        List<MasterOldItem> shelveItemList = masterOldItemRepository.findAllByMasterShelves_id(shelveId);
+        // List<MasterOldItem> shelveItemList =
+        // masterOldItemRepository.findAllByMasterShelves_id(shelveId);
+        List<String> shelveItemList = new ArrayList<>();
         res.setResult(true);
         res.setPayload(shelveItemList);
         if (shelveItemList.isEmpty() || shelveItemList.size() == 0) {
@@ -486,28 +489,29 @@ public class StoreService {
         }
         return res;
     }
-	public MasterVehicle getVehicleById(Long id) {
-		return masterVehicleRepository.findByIdAndMto_id(id,LoggedInUser.getLoggedInUser().getMtoId());
-	}
 
-	public JsonResponse getSearchVendorItem(String searchText) {
-		JsonResponse res = new JsonResponse();
+    public MasterVehicle getVehicleById(Long id) {
+        return masterVehicleRepository.findByIdAndMto_id(id, LoggedInUser.getLoggedInUser().getMtoId());
+    }
+
+    public JsonResponse getSearchVendorItem(String searchText) {
+        JsonResponse res = new JsonResponse();
         PageableObjectPayload orgData = new PageableObjectPayload();
 
-        List<MasterVendorItem> itemList =  masterVendorItemRepository.findByItemNameContaining(searchText);
+        List<TransVendorItem> itemList = transVendorItemRepository.findByItemNameContaining(searchText);
 
-        for(MasterVendorItem item : itemList){
+        for (TransVendorItem item : itemList) {
             item.setMasterVendor(null);
         }
 
         orgData.setObjectList1(itemList);
         res.setPayload(orgData);
         res.setResult(true);
-        
-        return res;
-	}
 
-	public JsonResponse openJobCard(@Valid TransVehicleJobCard transVehicleJobCard) {
+        return res;
+    }
+
+    public JsonResponse openJobCard(@Valid TransVehicleJobCard transVehicleJobCard) {
         JsonResponse res = new JsonResponse();
         transVehicleJobCard.setStatus("CREATED");
         transVehicleJobCard = transVehicleJobCardRepository.save(transVehicleJobCard);
@@ -515,13 +519,13 @@ public class StoreService {
         res.setPayload(transVehicleJobCard.getId());
         res.setMessage("Job Card Opened Successfully");
         return res;
-	}
+    }
 
-	public TransVehicleJobCard getJobCardById(Long jobCardId) {
-		return transVehicleJobCardRepository.findById(jobCardId).get();
-	}
+    public TransVehicleJobCard getJobCardById(Long jobCardId) {
+        return transVehicleJobCardRepository.findById(jobCardId).get();
+    }
 
-	public JsonResponse forwardJobCard(Long jobCardId, String username) {
+    public JsonResponse forwardJobCard(Long jobCardId, String username) {
         JsonResponse res = new JsonResponse();
         TransVehicleJobCard transVehicleJobCard = transVehicleJobCardRepository.findById(jobCardId).get();
         transVehicleJobCard.setStatus("FORWARDED");
@@ -529,19 +533,17 @@ public class StoreService {
         res.setResult(true);
         res.setMessage("Job Card Forarded Successfully");
         return res;
-	}
+    }
 
-	public JsonResponse searchForwardUser(String searchText) {
-		JsonResponse res = new JsonResponse();
+    public JsonResponse searchForwardUser(String searchText) {
+        JsonResponse res = new JsonResponse();
         PageableObjectPayload orgData = new PageableObjectPayload();
         List<UserDataPayload> userDataPayloadList = new ArrayList<>();
-        UserDataPayload  userData = null;
+        UserDataPayload userData = null;
 
-        List<User> userList =  userRepository.findByUsernameContainingAndRoles_role(searchText,"HEADMECHANIC");
+        List<User> userList = userRepository.findByUsernameContainingAndRoles_role(searchText, "HEADMECHANIC");
 
-        
-        
-        for(User user : userList){
+        for (User user : userList) {
             userData = new UserDataPayload();
             userData.setUsername(user.getUsername());
             userData.setName(user.getName());
@@ -553,11 +555,11 @@ public class StoreService {
         orgData.setObjectList1(userDataPayloadList);
         res.setPayload(orgData);
         res.setResult(true);
-        
-        return res;
-	}
 
-	public List<TransVehicleJobCard> getJobCardsByDateRange(Date dateFrom, Date dateTo) {
-		return transVehicleJobCardRepository.findByCreatedAtBetween(dateFrom,dateTo);
-	}
+        return res;
+    }
+
+    public List<TransVehicleJobCard> getJobCardsByDateRange(Date dateFrom, Date dateTo) {
+        return transVehicleJobCardRepository.findByCreatedAtBetween(dateFrom, dateTo);
+    }
 }

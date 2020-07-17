@@ -18,7 +18,7 @@ import com.bohniman.vmsmaintenance.model.MasterVehicleCategory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
-import com.bohniman.vmsmaintenance.model.MasterVendorItem;
+import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
@@ -147,7 +147,7 @@ public class StoreController {
     // ========================================================================
     @PostMapping(value = { "/vendor/addItem" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> addVendorItem(@Valid @ModelAttribute MasterVendorItem masterVendorItem,
+    public ResponseEntity<JsonResponse> addVendorItem(@Valid @ModelAttribute TransVendorItem masterVendorItem,
             BindingResult bindingResult) throws BindException {
         System.out.println(masterVendorItem);
         if (!bindingResult.hasErrors()) {
@@ -545,7 +545,7 @@ public class StoreController {
         mv = new ModelAndView("store/rack_detail");
         mv.addObject("rack", storeService.getRackById(rackId));
         return mv;
-    }  
+    }
 
     // ========================================================================
     // VIEW JOB CARD
@@ -662,6 +662,7 @@ public class StoreController {
             throw new MyResourceNotFoundException(res.getMessage());
         }
     }
+
     // PAGE JOB CARD HOME
     // ========================================================================
     @GetMapping(value = "/job-card")
@@ -669,7 +670,7 @@ public class StoreController {
             @RequestParam Optional<String> toDate) throws ParseException {
         Date dateFrom = new Date();
         Date dateTo = new Date();
-        if(fromDate.isPresent() && toDate.isPresent()){
+        if (fromDate.isPresent() && toDate.isPresent()) {
             dateFrom = DateUtil.getDateFromString(fromDate.get());
             dateTo = DateUtil.getDateFromString(toDate.get());
         }
