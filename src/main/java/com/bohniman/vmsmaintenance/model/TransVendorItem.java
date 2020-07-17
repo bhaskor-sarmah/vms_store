@@ -1,5 +1,7 @@
 package com.bohniman.vmsmaintenance.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,15 +28,19 @@ public class TransVendorItem {
     private Long pricePerUnit;
 
     @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
-    private Boolean isApprovedItem = false;
+    private Boolean isApprovedItem = false; // L1 Default Item
 
     private String currentStatus; // ACTIVE , INACTIVE
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_master_item")
-    private MasterItem item;
+    @JoinColumn(name = "fk_master_item_trans")
+    private MasterItemBrand masterItemBrand;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_vendor")
     private MasterVendor masterVendor;
+
+    private Date validFrom;
+
+    private Date validTo;
 }

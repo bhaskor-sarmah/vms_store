@@ -33,12 +33,6 @@ public class MasterItem {
     @NotBlank(message = "* Select a unit")
     private String itemUnit;
 
-    private String moq; // Minimum Order Quantity in Units
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_brand")
-    private MasterBrand itemBrand;
-
     @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
     private Boolean isDeleted = false;
 }
