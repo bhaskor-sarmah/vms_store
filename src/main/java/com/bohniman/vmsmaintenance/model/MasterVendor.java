@@ -33,6 +33,9 @@ public class MasterVendor {
     @NotBlank(message = "* Vendor Name is required")
     private String vendorName;
 
+    // @NotBlank(message = "* Vendor Name is required")
+    private String vendorDetails;
+
     @NotBlank(message = "* Vendor Mobile is required")
     private String vendorMobile;
 
@@ -113,6 +116,7 @@ public class MasterVendor {
     // ========================================================================
     private String vendorStatus; // ACTIVE , INACTIVE -> DELETED
 
+    @NotBlank(message = "* Pincode is required")
     private String vendorCategory; // CASH PURCHASE , TENDER ITEM
 
     @NotBlank(message = "* GST No is required")

@@ -20,13 +20,13 @@ public class MasterItemBrand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "fk_master_item")
     private MasterItem item;
 
     private String moq; // Minimum Order Quantity in Units
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "fk_brand")
     private MasterBrand itemBrand;
 

@@ -7,6 +7,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <title>APVMS | STORE</title>
+    <style type="text/css">
+        .modal-xlg {
+            max-width: 80vw;
+        }
+
+        .modal-xxlg {
+            max-width: 95vw;
+        }
+
+        .divider {
+            border-bottom: 3px solid #0085a1;
+            margin-top: 12px;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,8 +41,8 @@
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-vendor text-primary"><a th:href="@{/store}"><i
-                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                                <li class="breadcrumb-vendor"><a href="#">Vendors</a></li>
+                                            class="fas fa-tachometer-alt"></i> Dashboard / </a></li>
+                                <li class="breadcrumb-vendor"><a href="#">&nbsp;Vendors</a></li>
                             </ol>
                         </nav>
                         <div class="row">
@@ -36,7 +54,8 @@
                                                 <h4><i class="fas fa-user"></i> Vendors</h4>
                                             </div>
                                             <div class="col-3">
-                                                <button type="button" data-target="#modalVendor" data-toggle="modal" class="btn btn-primary float-right" data-vendor-id="0">New
+                                                <button type="button" data-target="#modalVendor" data-toggle="modal"
+                                                    class="btn btn-primary float-right" data-vendor-id="0">New
                                                     Vendor</button>
                                             </div>
                                         </div>
@@ -58,9 +77,10 @@
         </div>
     </main>
     <!-- Modal Vendor-->
-    <div class="modal fade" id="modalVendor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+    <div class="modal fade" id="modalVendor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xlg modal-dialog-scrollable" role="document">
+            <div class="modal-content" style="padding-left: 20px;padding-right: 20px;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-car"></i> Add/Edit Vendor</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -68,23 +88,226 @@
                     </button>
                 </div>
                 <div class="modal-body">
+
                     <form id="form-vendor">
                         <div><input type="hidden" class="form-control" name="id"></div>
-                        <div class="form-group">
-                            <label for="vendorName">Vendor Name</label>
-                            <input type="text" class="form-control" id="vendorName" name="vendorName">
+                        <div class="divider">
+                            Vendor Basic Details
                         </div>
-                        <div class="form-group">
-                            <label for="vendorDetails">Vendor Details</label>
-                            <input type="text" class="form-control" id="vendorDetails" name="vendorDetails">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="vendorName">Vendor Name</label>
+                                    <input type="text" class="form-control" id="vendorName" name="vendorName"
+                                        placeholder="Enter Vendor Name">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="vendorDetails">Vendor Details</label>
+                                    <textarea id="vendorDetails" name="vendorDetails" rows="2"
+                                        class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="vendorMobile">Vendor Mobile</label>
+                                    <input type="number" class="form-control" id="vendorMobile" name="vendorMobile"
+                                        placeholder="Enter Vendor Mobile No">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="vendorEmail">Vendor Email</label>
+                                    <input type="text" class="form-control" id="vendorEmail" name="vendorEmail"
+                                        placeholder="Enter Vendor Email">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="vendorContractFromDate">Vendor Contract From</label>
+                                    <input type="text" class="form-control" id="vendorContractFromDate"
+                                        name="vendorContractFromDate" placeholder="dd/mm/yyyy">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="vendorContractToDate">Vendor Contract Upto</label>
+                                    <input type="text" class="form-control" id="vendorContractToDate"
+                                        name="vendorContractToDate" placeholder="dd/mm/yyyy">
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="vendorContractFromDate">Vendor Contract From</label>
-                            <input type="text" class="form-control" id="vendorContractFromDate" name="vendorContractFromDate">
+                        <div class="divider">
+                            Vendor Bank Details
                         </div>
-                        <div class="form-group">
-                            <label for="vendorContractToDate">Vendor Contract Untill</label>
-                            <input type="text" class="form-control" id="vendorContractToDate" name="vendorContractToDate">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="bankName">Bank Name</label>
+                                    <input type="text" class="form-control" id="bankName" name="bankName"
+                                        placeholder="Enter Bank Name">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="branch">Branch</label>
+                                    <input type="text" class="form-control" id="branch" name="branch"
+                                        placeholder="Enter Branch Name">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="accountNo">Account No</label>
+                                    <input type="text" class="form-control" id="accountNo" name="accountNo"
+                                        placeholder="Enter Account No">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="ifscCode">IFSC Code</label>
+                                    <input type="text" class="form-control" id="ifscCode" name="ifscCode"
+                                        placeholder="Enter IFSC Code">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider">
+                            Vendor Registered Office
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="houseNo">House/Flat No.</label>
+                                    <input type="text" class="form-control" id="houseNo" name="houseNo"
+                                        placeholder="Enter House/Flat No">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="roadStreet">Road/Street/Lane</label>
+                                    <input type="text" class="form-control" id="roadStreet" name="roadStreet"
+                                        placeholder="Enter Road/Street/Lane">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="locality">Locality</label>
+                                    <input type="text" class="form-control" id="locality" name="locality"
+                                        placeholder="Enter Locality">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="district">District</label>
+                                    <input type="text" class="form-control" id="district" name="district"
+                                        placeholder="Enter District">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    <!-- <input type="text" class="form-control" id="state" name="state"
+                                        placeholder="Enter State"> -->
+                                    <select class="form-control" id="state" name="state">
+                                        <option value="">--SELECT--</option>
+                                        <option th:each="state: ${stateList}" th:value="${state.stateName}"
+                                            th:text="${state.stateName}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="pincode">Pincode</label>
+                                    <input type="number" class="form-control" id="pincode" name="pincode"
+                                        placeholder="Enter Pincode">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider">
+                            Vendor Billing Office
+                        </div>
+                        <div class="row">
+                            <div class="col-12" style="margin-bottom: 15px;">
+                                <input type="checkbox" name="sameOffice" id="sameOffice">
+                                &nbsp;
+                                <span class=".text-dark font-weight-bold">Same as Registered office</span>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="billHouseNo">House/Flat No.</label>
+                                    <input type="text" class="form-control" id="billHouseNo" name="billHouseNo"
+                                        placeholder="Enter House/Flat No">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="billRoadStreet">Road/Street/Lane</label>
+                                    <input type="text" class="form-control" id="billRoadStreet" name="billRoadStreet"
+                                        placeholder="Enter Road/Street/Lane">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="billLocality">Locality</label>
+                                    <input type="text" class="form-control" id="billLocality" name="billLocality"
+                                        placeholder="Enter Locality">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="billDistrict">District</label>
+                                    <input type="text" class="form-control" id="billDistrict" name="billDistrict"
+                                        placeholder="Enter District">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="billState">State</label>
+                                    <!-- <input type="text" class="form-control" id="billState" name="billState"
+                                        placeholder="Enter State"> -->
+                                    <select class="form-control" id="billState" name="billState">
+                                        <option value="">--SELECT--</option>
+                                        <option th:each="state: ${stateList}" th:value="${state.stateName}"
+                                            th:text="${state.stateName}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="billPincode">Pincode</label>
+                                    <input type="number" class="form-control" id="billPincode" name="billPincode"
+                                        placeholder="Enter Pincode">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider">
+                            Vendor Other Details
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="billHouseNo">Vendor Category</label>
+                                    <select name="vendorCategory" id="vendorCategory" class="form-control">
+                                        <option value="">--SELECT--</option>
+                                        <option value="TENDER ITEM">TENDER ITEM</option>
+                                        <option value="CASH PURCHASE">CASH PURCHASE</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="gstNo">GST No.</label>
+                                    <input type="text" class="form-control" id="gstNo" name="gstNo"
+                                        placeholder="Enter GST No.">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="panNo">PAN No.</label>
+                                    <input type="text" class="form-control" id="panNo" name="panNo"
+                                        placeholder="Enter PAN No.">
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -104,7 +327,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-        $(function() {
+        $(function () {
             // SIDEBAR LINK ACTIVE
             $('#side-link-vendor').addClass('list-group-item-secondary');
 
@@ -117,23 +340,41 @@
             $("#vendorContractFromDate").datepicker({
                 minDate: '+0d',
                 // maxDate: '+20d',
-                // changeMonth: true,
-                // changeYear: true,
+                changeMonth: true,
+                changeYear: true,
                 dateFormat: 'dd/mm/yy'
-                    // format: 'dd/mm/yyyy'
+                // format: 'dd/mm/yyyy'
             });
 
             $("#vendorContractToDate").datepicker({
                 minDate: '+0d',
                 // maxDate: '+20d',
-                // changeMonth: true,
-                // changeYear: true,
+                changeMonth: true,
+                changeYear: true,
                 dateFormat: 'dd/mm/yy'
-                    // format: 'dd/mm/yyyy'
+                // format: 'dd/mm/yyyy'
+            });
+
+            $('#sameOffice').change(function () {
+                if (this.checked) {
+                    $("#billHouseNo").val($("#houseNo").val());
+                    $("#billRoadStreet").val($("#roadStreet").val());
+                    $("#billLocality").val($("#locality").val());
+                    $("#billDistrict").val($("#district").val());
+                    $("#billState").val($("#state").val());
+                    $("#billPincode").val($("#pincode").val());
+                } else {
+                    $("#billHouseNo").val("");
+                    $("#billRoadStreet").val("");
+                    $("#billLocality").val("");
+                    $("#billDistrict").val("");
+                    $("#billState").val("");
+                    $("#billPincode").val("");
+                }
             });
 
             // NEW VENDOR
-            $(document).on("submit", "#form-vendor", function(e) {
+            $(document).on("submit", "#form-vendor", function (e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -142,12 +383,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/vendor/add",
                                 timeout: 600000,
-                                beforeSend: function() {
+                                beforeSend: function () {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -156,7 +397,7 @@
                                     });
                                 },
                                 data: $("#form-vendor").serialize(),
-                                success: function(response) {
+                                success: function (response) {
                                     $('#form-vendor').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
@@ -167,15 +408,15 @@
                                     getVendorList();
                                     $('#modalVendor').modal('hide');
                                 },
-                                error: function(e) {
+                                error: function (e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function(key,
+                                        $.each(e.responseJSON.errorMessages, function (key,
                                             value) {
                                             $("#form-vendor").contents().find(
                                                 '[name=' + key + ']').after(
-                                                '<span class="error-message">' +
-                                                value + '</span>');
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
                                             // $('#' + key).html(
                                             //     '<span class="error-message">' +
                                             //     value + '</span>');
@@ -189,18 +430,18 @@
                                         });
                                     }
                                 },
-                                complete: function() {
+                                complete: function () {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
             //DELETE VENDOR
-            $(document).on('click', '.delete-vendor', function(e) {
+            $(document).on('click', '.delete-vendor', function (e) {
                 e.preventDefault();
                 var ajax_return;
                 let vendorId = e.target.dataset.vendorId;
@@ -210,18 +451,18 @@
                     type: 'red',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.confirm({
-                                content: function() {
+                                content: function () {
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "DELETE",
                                         url: contextPath + "store/vendor/delete/" + vendorId
-                                    }).done(function(response) {
+                                    }).done(function (response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
                                         self.setContent(response.message);
-                                    }).fail(function(e) {
+                                    }).fail(function (e) {
                                         self.setTitle(e.responseJSON.httpStatus);
                                         self.setType("red");
                                         self.setContent("ERROR");
@@ -229,22 +470,22 @@
                                     return true;
                                 },
                                 buttons: {
-                                    ok: function() {
-                                        ajax_return.done(function(message) {
+                                    ok: function () {
+                                        ajax_return.done(function (message) {
                                             getVendorList();
                                         })
                                     }
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
         });
 
         // ON MODAL SHOW
-        $(document).on('show.bs.modal', '#modalVendor', function(e) {
+        $(document).on('show.bs.modal', '#modalVendor', function (e) {
             $('.error-message').remove();
             let vendorId = e.relatedTarget.dataset.vendorId;
             if (vendorId == 0) {
@@ -253,8 +494,29 @@
                 $("#form-vendor").contents().find('[name=id]').val(e.relatedTarget.dataset.vendorId);
                 $("#form-vendor").contents().find('[name=vendorName]').val(e.relatedTarget.dataset.vendorName);
                 $("#form-vendor").contents().find('[name=vendorDetails]').val(e.relatedTarget.dataset.vendorDetails);
-                $("#form-vendor").contents().find('[name=vendorContractFromDate]').val(e.relatedTarget.dataset.contractFrom);
-                $("#form-vendor").contents().find('[name=vendorContractToDate]').val(e.relatedTarget.dataset.contractTo);
+                $("#form-vendor").contents().find('[name=vendorMobile]').val(e.relatedTarget.dataset.vendorMobile);
+                $("#form-vendor").contents().find('[name=vendorEmail]').val(e.relatedTarget.dataset.vendorEmail);
+                $("#form-vendor").contents().find('[name=vendorContractFromDate]').val(moment(e.relatedTarget.dataset.vendorFromDate).format('MM/DD/YYYY'));
+                $("#form-vendor").contents().find('[name=vendorContractToDate]').val(moment(e.relatedTarget.dataset.vendorToDate).format('MM/DD/YYYY'));
+                $("#form-vendor").contents().find('[name=accountNo]').val(e.relatedTarget.dataset.accountNo);
+                $("#form-vendor").contents().find('[name=ifscCode]').val(e.relatedTarget.dataset.ifscCode);
+                $("#form-vendor").contents().find('[name=bankName]').val(e.relatedTarget.dataset.bankName);
+                $("#form-vendor").contents().find('[name=branch]').val(e.relatedTarget.dataset.branch);
+                $("#form-vendor").contents().find('[name=houseNo]').val(e.relatedTarget.dataset.houseNo);
+                $("#form-vendor").contents().find('[name=roadStreet]').val(e.relatedTarget.dataset.roadStreet);
+                $("#form-vendor").contents().find('[name=locality]').val(e.relatedTarget.dataset.locality);
+                $("#form-vendor").contents().find('[name=district]').val(e.relatedTarget.dataset.district);
+                $("#form-vendor").contents().find('[name=state]').val(e.relatedTarget.dataset.state);
+                $("#form-vendor").contents().find('[name=pincode]').val(e.relatedTarget.dataset.pincode);
+                $("#form-vendor").contents().find('[name=billHouseNo]').val(e.relatedTarget.dataset.vendorToDate);
+                $("#form-vendor").contents().find('[name=billRoadStreet]').val(e.relatedTarget.dataset.billRoadStreet);
+                $("#form-vendor").contents().find('[name=billLocality]').val(e.relatedTarget.dataset.billLocality);
+                $("#form-vendor").contents().find('[name=billDistrict]').val(e.relatedTarget.dataset.billDistrict);
+                $("#form-vendor").contents().find('[name=billState]').val(e.relatedTarget.dataset.billState);
+                $("#form-vendor").contents().find('[name=billPincode]').val(e.relatedTarget.dataset.billPincode);
+                $("#form-vendor").contents().find('[name=vendorCategory]').val(e.relatedTarget.dataset.vendorCategory);
+                $("#form-vendor").contents().find('[name=gstNo]').val(e.relatedTarget.dataset.gstNo);
+                $("#form-vendor").contents().find('[name=panNo]').val(e.relatedTarget.dataset.panNo);
             }
         });
     </script>
@@ -265,7 +527,7 @@
                 type: "GET",
                 url: contextPath + "store/vendor/all",
                 timeout: 600000,
-                beforeSend: function() {
+                beforeSend: function () {
                     $('body').block({
                         message: '<h3>Please wait...</h3>',
                         css: {
@@ -273,7 +535,7 @@
                         }
                     });
                 },
-                success: function(response) {
+                success: function (response) {
                     var content = `
                         <table id="table-vendor" class="table table-striped jambo_table text-black" style="width:100%">
                             <thead class="text-center">
@@ -304,7 +566,7 @@
                             "targets": [0, 1, 2, 3, 4, 5, 6, 7]
                         }]
                     });
-                    $.each(response.payload, function(key, vendor) {
+                    $.each(response.payload, function (key, vendor) {
                         tableItems.row.add([
                             `<b>${key + 1}</b>`,
                             `${vendor.vendorName}`,
@@ -313,14 +575,41 @@
                             `${vendor.vendorContractToDate}`,
                             `<a class="btn btn-primary p-1 view-vendor" href="${contextPath + "store/vendor/" + vendor.id}">VIEW</a>`,
                             `<a class="btn btn-danger p-1 delete-vendor" data-vendor-id="${vendor.id}" href="javascript:void(0)">DELETE</a>`,
-                            `<a class="btn btn-primary p-1" href="#modalVendor" data-toggle="modal" data-vendor-id="${vendor.id}" data-vendor-name="${vendor.vendorName}" data-vendor-details="${vendor.vendorDetails}" data-contract-from="${moment(vendor.vendorContractFromDate).format('DD/MM/YYYY')}" data-contract-to="${moment(vendor.vendorContractToDate).format('DD/MM/YYYY')}">EDIT</a>`
+                            `<a class="btn btn-primary p-1" href="#modalVendor" data-toggle="modal" 
+                            data-vendor-id="${vendor.id}"
+                            data-vendor-name="${vendor.vendorName}"
+                            data-vendor-details="${vendor.vendorDetails}"
+                            data-vendor-mobile="${vendor.vendorMobile}"
+                            data-vendor-email="${vendor.vendorEmail}"
+                            data-vendor-from-date="${vendor.vendorContractFromDate}"
+                            data-vendor-to-date="${vendor.vendorContractToDate}"
+                            data-account-no="${vendor.accountNo}"
+                            data-ifsc-code="${vendor.ifscCode}"
+                            data-bank-name="${vendor.bankName}"
+                            data-branch="${vendor.branch}"
+                            data-house-no="${vendor.houseNo}"
+                            data-road-street="${vendor.roadStreet}"
+                            data-locality="${vendor.locality}"
+                            data-district="${vendor.district}"
+                            data-state="${vendor.state}"
+                            data-pincode="${vendor.pincode}"
+                            data-bill-house-no="${vendor.billHouseNo}"
+                            data-bill-road-street="${vendor.billRoadStreet}"
+                            data-bill-locality="${vendor.billLocality}"
+                            data-bill-district="${vendor.billDistrict}"
+                            data-bill-state="${vendor.billState}"
+                            data-bill-pincode="${vendor.billPincode}"
+                            data-vendor-category="${vendor.vendorCategory}"
+                            data-gst-no="${vendor.gstNo}"
+                            data-pan-no="${vendor.panNo}"
+                            >EDIT</a>`
                         ]).draw(false);
                     });
                 },
-                error: function(e) {
+                error: function (e) {
                     console.log(e);
                 },
-                complete: function() {
+                complete: function () {
                     $('body').unblock();
                 }
             });

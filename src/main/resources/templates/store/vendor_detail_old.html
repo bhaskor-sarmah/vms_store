@@ -2,24 +2,12 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
-    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <td:block td:replace="fragments/logged_fragments :: logged-links"></td:block>
+    <td:block td:replace="fragments/logged_fragments :: logged-css"></td:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <title>APVMS | STORE</title>
     <style type="text/css">
-        .modal-lg {
-            max-width: 65vw;
-        }
-
-        .modal-xlg {
-            max-width: 80vw;
-        }
-
-        .modal-xxlg {
-            max-width: 95vw;
-        }
-
         .divider {
             border-bottom: 3px solid #0085a1;
             margin-top: 12px;
@@ -28,27 +16,31 @@
             font-weight: bold;
             text-transform: uppercase;
         }
+
+        .head-text {
+            font-weight: bold;
+        }
     </style>
 </head>
 
 <body>
-    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <td:block td:replace="fragments/logged_fragments :: logged-sidebar"></td:block>
     <main id="panel">
         <div id="panel-content">
-            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <td:block td:replace="fragments/logged_fragments :: logged-navbar"></td:block>
             <div class="container-fluid main-content">
                 <div class="row">
                     <div class="col-md-3">
-                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                        <td:block td:replace="fragments/logged_fragments :: logged-store-sidebar"></td:block>
                     </div>
                     <div class="col-md-9">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-vendor text-primary"><a th:href="@{/store}"><i
-                                            class="fas fa-tachometer-alt"></i> Dashboard / </a></li>
-                                <li class="breadcrumb-vendor"><a href="#">&nbsp;Vendors /</a></li>
+                                <li class="breadcrumb-item text-primary"><a td:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard /</a></li>
+                                <li class="breadcrumb-item"><a td:href="@{/store/vendor}">Vendors /</a></li>
                                 <li class="breadcrumb-item text-success">
-                                    ID - <span th:text="${vendor.id}"></span>
+                                    ID - <span td:text="${vendor.id}"></span>
                                 </li>
                             </ol>
                         </nav>
@@ -62,7 +54,7 @@
                                             </div>
                                             <div class="col-6 text-right">
                                                 <h4><span class="badge badge-success p-2">
-                                                        ID - <span th:text="${vendor.id}"></span></span>
+                                                        ID - <span td:text="${vendor.id}"></span></span>
                                                 </h4>
                                             </div>
                                         </div>
@@ -76,7 +68,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorName">
                                                         <span class="head-text">Vendor Name :</span>
-                                                        <span th:text="${vendor.vendorName}"></span>
+                                                        <span td:text="${vendor.vendorName}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -84,7 +76,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorDetails">
                                                         <span class="head-text">Vendor Details :</span>
-                                                        <span th:text="${vendor.vendorDetails}"></span>
+                                                        <span td:text="${vendor.vendorDetails}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -92,7 +84,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Vendor Mobile :</span>
-                                                        <span th:text="${vendor.vendorMobile}"></span>
+                                                        <span td:text="${vendor.vendorMobile}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -100,7 +92,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Vendor Email :</span>
-                                                        <span th:text="${vendor.vendorEmail}"></span>
+                                                        <span td:text="${vendor.vendorEmail}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -108,7 +100,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Vendor Contract From :</span>
-                                                        <span th:text="${vendor.vendorContractFromDate}"></span>
+                                                        <span td:text="${vendor.vendorContractFromDate}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -116,7 +108,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Vendor Contract Upto :</span>
-                                                        <span th:text="${vendor.vendorContractToDate}"></span>
+                                                        <span td:text="${vendor.vendorContractToDate}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -129,7 +121,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Bank Name :</span>
-                                                        <span th:text="${vendor.bankName}"></span>
+                                                        <span td:text="${vendor.bankName}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -137,7 +129,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Branch :</span>
-                                                        <span th:text="${vendor.branch}"></span>
+                                                        <span td:text="${vendor.branch}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -145,7 +137,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Branch :</span>
-                                                        <span th:text="${vendor.branch}"></span>
+                                                        <span td:text="${vendor.branch}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -153,7 +145,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Account No :</span>
-                                                        <span th:text="${vendor.accountNo}"></span>
+                                                        <span td:text="${vendor.accountNo}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -161,7 +153,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">IFSC Code :</span>
-                                                        <span th:text="${vendor.ifscCode}"></span>
+                                                        <span td:text="${vendor.ifscCode}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -174,7 +166,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">House/Flat No. :</span>
-                                                        <span th:text="${vendor.houseNo}"></span>
+                                                        <span td:text="${vendor.houseNo}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -182,7 +174,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Road/Street/Lane :</span>
-                                                        <span th:text="${vendor.roadStreet}"></span>
+                                                        <span td:text="${vendor.roadStreet}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -190,7 +182,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Locality :</span>
-                                                        <span th:text="${vendor.locality}"></span>
+                                                        <span td:text="${vendor.locality}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -198,7 +190,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">District :</span>
-                                                        <span th:text="${vendor.district}"></span>
+                                                        <span td:text="${vendor.district}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -206,7 +198,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">State :</span>
-                                                        <span th:text="${vendor.state}"></span>
+                                                        <span td:text="${vendor.state}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -214,7 +206,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Pincode :</span>
-                                                        <span th:text="${vendor.pincode}"></span>
+                                                        <span td:text="${vendor.pincode}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -227,7 +219,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">House/Flat No. :</span>
-                                                        <span th:text="${vendor.billHouseNo}"></span>
+                                                        <span td:text="${vendor.billHouseNo}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -235,7 +227,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Road/Street/Lane :</span>
-                                                        <span th:text="${vendor.billRoadStreet}"></span>
+                                                        <span td:text="${vendor.billRoadStreet}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -243,7 +235,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Locality :</span>
-                                                        <span th:text="${vendor.billLocality}"></span>
+                                                        <span td:text="${vendor.billLocality}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -251,7 +243,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">District :</span>
-                                                        <span th:text="${vendor.billDistrict}"></span>
+                                                        <span td:text="${vendor.billDistrict}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -259,7 +251,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">State :</span>
-                                                        <span th:text="${vendor.billState}"></span>
+                                                        <span td:text="${vendor.billState}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -267,20 +259,20 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Pincode :</span>
-                                                        <span th:text="${vendor.billPincode}"></span>
+                                                        <span td:text="${vendor.billPincode}"></span>
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="divider">
-                                            Vendor Other Details
+                                            Vendor Otder Details
                                         </div>
                                         <div class="row">
                                             <div class="col-4">
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">Vendor Category :</span>
-                                                        <span th:text="${vendor.vendorCategory}"></span>
+                                                        <span td:text="${vendor.vendorCategory}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -288,7 +280,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">GST No :</span>
-                                                        <span th:text="${vendor.gstNo}"></span>
+                                                        <span td:text="${vendor.gstNo}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -296,7 +288,7 @@
                                                 <div class="form-group">
                                                     <label for="vendorMobile">
                                                         <span class="head-text">PAN No. :</span>
-                                                        <span th:text="${vendor.panNo}"></span>
+                                                        <span td:text="${vendor.panNo}"></span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -318,7 +310,6 @@
                                                             <div class="col-4">
                                                                 <h5 class="card-title">List of Items</h5>
                                                             </div>
-                                                            <div class="col-4"></div>
                                                             <div class="col-4">
                                                                 <a class="btn btn-primary p-1 float-right" href="#"
                                                                     data-target="#modalItem" data-toggle="modal">Add
@@ -340,140 +331,255 @@
                     </div>
                 </div>
             </div>
-            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+            <td:block td:replace="fragments/logged_fragments :: logged-footer"></td:block>
         </div>
     </main>
     <!-- Modal Item-->
-    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <!-- <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Add new Items for
-                        Vendor ID - <span th:text="${vendor.id}"></span></h5>
+                        Vendor ID - <span td:text="${vendor.id}"></span></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" class="form-control" id="masterVendor.id" name="masterVendor.id"
-                        th:value="${vendor.id}">
-                    <table id="table-item" class="display table ">
-                        <thead class="text-center">
-                            <tr>
-                                <th>SL No.</th>
-                                <th>Item Name</th>
-                                <th>Item Brand</th>
-                                <th>MOQ</th>
-                                <th>Price Per Unit</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="item,iter: ${itemList}">
-                                <td th:text="${iter.count}"></td>
-                                <td th:text="${item.itemName}"></td>
-                                <td th:text="${item.itemBrand}"></td>
-                                <td th:text="${item.moq}"></td>
-                                <td><input type="number" class="form-control" placeholder="Enter Price Per unit" />
-                                </td>
-                                <td><a class="btn btn-success p-1" href="javascript:void(0)">SAVE PRICE</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <form id="form-item">
+                        <input type="hidden" class="form-control" id="masterVendor.id" name="masterVendor.id"
+                            td:value="${vendor.id}">
+                        <div><input type="hidden" class="form-control" name="id"></div>
+                        <table id="table-items" class="display table ">
+                            <tdead class="text-center">
+                                <tr>
+                                    <td>SL No.</td>
+                                    <td>Item Name</td>
+                                    <td>Item Brand</td>
+                                    <td>MOQ</td>
+                                    <td>Action</td>
+                                </tr>
+                            </tdead>
+                            <tbody>
+                                <tr th:each="item: ${itemList}">
+                                    <td></td>
+                                    <td th:text="${item.itemName}"></td>
+                                    <td th:text="${item.itemBrand}"></td>
+                                    <td th:text="${item.moq}"></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#form-item').submit();">Save</button>
                 </div>
             </div>
         </div>
-    </div>
-    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    </div> -->
+    <td:block td:replace="fragments/logged_fragments :: logged-js-scripts"></td:block>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script th:inline="javascript">
+    <script td:inline="javascript">
         /*<![CDATA[*/
         var vendorId = /*[[${vendor.id}]]*/ '0';
          /*]]>*/
     </script>
     <script>
         $(function () {
-            // SIDEBAR LINK ACTIVE
             $('#side-link-vendor').addClass('list-group-item-secondary');
-            //GET VENDORS
-            getItemList();
-            $(document).on('show.bs.modal', '#modalItem', function (e) {
-                $("#table-item").DataTable();
-            });
-            $(document).on('hidden.bs.modal', '#modalItem', function (e) {
-                getItemList();
-            });
+            // getItemList();
+            // $(document).on("submit", "#form-item", function (e) {
+            //     e.preventDefault();
+            //     // alert($("#form-item").serialize());
+            //     $('.error-message').remove();
+            //     $.confirm({
+            //         title: 'Confirm!',
+            //         content: 'Are you sure you submit tde form ?',
+            //         type: 'green',
+            //         typeAnimated: true,
+            //         buttons: {
+            //             confirm: function () {
+            //                 $.ajax({
+            //                     type: "POST",
+            //                     url: contextPatd + "store/vendor/addItem",
+            //                     timeout: 600000,
+            //                     beforeSend: function () {
+            //                         $('body').block({
+            //                             message: '<h3>Processing...</h3>',
+            //                             css: {
+            //                                 border: '3px solid darkgrey'
+            //                             }
+            //                         });
+            //                     },
+            //                     data: $("#form-item").serialize(),
+            //                     success: function (response) {
+            //                         $('#form-item').trigger('reset');
+            //                         $.alert({
+            //                             title: 'Success!',
+            //                             content: "Vendor Item Saved Successfully",
+            //                             type: 'green',
+            //                             typeAnimated: true
+            //                         });
+            //                         getItemList();
+            //                         $('#modalItem').modal('hide');
+            //                     },
+            //                     error: function (e) {
+            //                         if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+            //                             .responseJSON.errorMessages != null) {
+            //                             $.each(e.responseJSON.errorMessages, function (key,
+            //                                 value) {
+            //                                 $("#form-item").contents().find(
+            //                                     '[name=' + key + ']').after(
+            //                                         '<span class="error-message">' +
+            //                                         value + '</span>');
+            //                                 // $('#' + key).html(
+            //                                 //     '<span class="error-message">' +
+            //                                 //     value + '</span>');
+            //                             });
+            //                         } else {
+            //                             $.alert({
+            //                                 title: e.responseJSON.httpStatus,
+            //                                 content: e.responseJSON.message,
+            //                                 type: 'red',
+            //                                 typeAnimated: true
+            //                             });
+            //                         }
+            //                     },
+            //                     complete: function () {
+            //                         $('body').unblock();
+            //                     }
+            //                 });
+            //             },
+            //             cancel: function () { }
+            //         }
+            //     });
+            // });
+
+            //DELETE ITEM
+            // $(document).on('click', '.delete-item', function (e) {
+            //     e.preventDefault();
+            //     var ajax_return;
+            //     let itemId = e.target.dataset.itemId;
+            //     $.confirm({
+            //         title: 'Warning!',
+            //         content: "Are you sure you want to delete tdis Item?",
+            //         type: 'red',
+            //         typeAnimated: true,
+            //         buttons: {
+            //             confirm: function () {
+            //                 $.confirm({
+            //                     content: function () {
+            //                         var self = tdis;
+            //                         return ajax_return = $.ajax({
+            //                             type: "DELETE",
+            //                             url: contextPatd + "store/vendor/deleteItem/" + itemId
+            //                         }).done(function (response) {
+            //                             self.setTitle("Success!");
+            //                             self.setType("green");
+            //                             self.setContent(response.message);
+            //                         }).fail(function (e) {
+            //                             self.setTitle(e.responseJSON.httpStatus);
+            //                             self.setType("red");
+            //                             self.setContent("ERROR");
+            //                         })
+            //                         return true;
+            //                     },
+            //                     buttons: {
+            //                         ok: function () {
+            //                             ajax_return.done(function (message) {
+            //                                 getItemList();
+            //                             })
+            //                         }
+            //                     }
+            //                 });
+            //             },
+            //             cancel: function () { }
+            //         }
+            //     });
+            // });
+
         });
+
+        // ON MODAL SHOW
+        // $(document).on('show.bs.modal', '#modalItem', function (e) {
+        //     let itemId = e.relatedTarget.dataset.itemId;
+        //     if (itemId == 0) {
+        //         $("#form-item").contents().find('[name=id]').val("");
+        //     } else {
+        //         $("#form-item").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
+        //         $("#form-item").contents().find('[name=itemName]').val(e.relatedTarget.dataset.itemName);
+        //         $("#form-item").contents().find('[name=itemDetails]').val(e.relatedTarget.dataset.itemDetails);
+        //         $("#form-item").contents().find('[name=itemUnit]').val(e.relatedTarget.dataset.itemUnit);
+        //         $("#form-item").contents().find('[name=itemPrice]').val(e.relatedTarget.dataset.itemPrice);
+        //     }
+        // });
+
     </script>
     <script>
         // GET VENDOR LIST
-        function getItemList() {
-            // alert(vendorId);
-            $.ajax({
-                type: "GET",
-                url: contextPath + "store/vendor/allItems/" + vendorId,
-                timeout: 600000,
-                beforeSend: function () {
-                    $('body').block({
-                        message: '<h3>Please wait...</h3>',
-                        css: {
-                            border: '3px solid darkgrey'
-                        }
-                    });
-                },
-                success: function (response) {
-                    var content = `
-                        <table id="table-items" class="display table ">
-                            <thead class="text-center">
-                                <tr>
-                                    <th style="width: 15%">SL No.</th>
-                                    <th style="width: 15%">Item Name</th>
-                                    <th style="width: 15%">Item Brand</th>
-                                    <th style="width: 15%">MOQ</th>
-                                    <th style="width: 15%">Price</th>
-                                    <th style="width: 15%">Action</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                        </table>`;
-                    $('#div-item-list').html(content);
-                    var tableItems = $('#table-items').DataTable({
-                        "columnDefs": [{
-                            "className": "text-center",
-                            "targets": [0, 1, 2, 3, 4]
-                        }]
-                    });
-                    $.each(response.payload, function (key, item) {
-                        // console.log(item.id);
-                        tableItems.row.add([
-                            `<b>${key + 1}</b>`,
-                            `${item.itemName}`,
-                            `${item.itemBrand}`,
-                            `${item.moq}`,
-                            `${item.itemPrice}`,
-                            `<a class="btn btn-danger p-1 delete-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a>`,
-                            `<a class="btn btn-primary p-1" href="#modalItemEdit" data-toggle="modal" data-item-id="${item.id}" data-item-price="${item.itemPrice}">EDIT</a>`
-                        ]).draw(false);
-                    });
-                },
-                error: function (e) {
-                    console.log(e);
-                },
-                complete: function () {
-                    $('body').unblock();
-                }
-            });
-        }
+        // function getItemList() {
+        //     $.ajax({
+        //         type: "GET",
+        //         url: contextPatd + "store/vendor/allItems/" + vendorId,
+        //         timeout: 600000,
+        //         beforeSend: function () {
+        //             $('body').block({
+        //                 message: '<h3>Please wait...</h3>',
+        //                 css: {
+        //                     border: '3px solid darkgrey'
+        //                 }
+        //             });
+        //         },
+        //         success: function (response) {
+        //             var content = `
+        //                 <table id="table-items" class="display table ">
+        //                     <tdead class="text-center">
+        //                         <tr>
+        //                             <td>SL No.</td>
+        //                             <td>Item Name</td>
+        //                             <td>Item Details</td>
+        //                             <td>Unit</td>
+        //                             <td>Price</td>
+        //                             <td>Action</td>
+        //                             <td></td>
+        //                         </tr>
+        //                     </tdead>
+        //                 </table>`;
+        //             $('#div-item-list').html(content);
+        //             var tableItems = $('#table-items').DataTable({
+        //                 "columnDefs": [{
+        //                     "className": "text-center",
+        //                     "targets": [0, 1, 2, 3, 4]
+        //                 }]
+        //             });
+        //             $.each(response.payload, function (key, item) {
+        //                 tableItems.row.add([
+        //                     `<b>${key + 1}</b>`,
+        //                     `${item.itemName}`,
+        //                     `${item.itemDetails}`,
+        //                     `${item.itemUnit}`,
+        //                     `${item.itemPrice}`,
+        //                     `<a class="btn btn-danger p-1 delete-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a>`,
+        //                     `<a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal" data-item-id="${item.id}" data-item-name="${item.itemName}" data-item-details="${item.itemDetails}" data-item-unit="${item.itemUnit}" data-item-price="${item.itemPrice}">EDIT</a>`
+        //                 ]).draw(false);
+        //             });
+        //         },
+        //         error: function (e) {
+        //             console.log(e);
+        //         },
+        //         complete: function () {
+        //             $('body').unblock();
+        //         }
+        //     });
+        // }
 
     </script>
 </body>

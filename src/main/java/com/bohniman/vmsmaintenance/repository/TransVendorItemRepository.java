@@ -14,4 +14,6 @@ public interface TransVendorItemRepository extends JpaRepository<TransVendorItem
 
     List<TransVendorItem> findByMasterItemBrand_item_itemNameContaining(String searchText);
 
+    List<TransVendorItem> findAllByMasterVendor_id(Long vendorId);
+
 }

@@ -39,7 +39,7 @@ public class StoreControllerBhaskor {
     @GetMapping(value = "/vendor")
     public ModelAndView pageVendorSearch(ModelAndView mv) {
         mv = new ModelAndView("store/vendor_search");
-
+        mv.addObject("stateList", storeService.getAllStates());
         return mv;
     }
 
@@ -98,6 +98,7 @@ public class StoreControllerBhaskor {
         mv = new ModelAndView("store/vendor_detail");
         mv.addObject("unitList", new InventoryUnitService().getAll());
         mv.addObject("vendor", storeService.getVendorById(vendorId));
+        mv.addObject("itemList", storeService.getItemByVendorId(vendorId));
         return mv;
     }
 

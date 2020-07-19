@@ -3,18 +3,24 @@ package com.bohniman.vmsmaintenance.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.bohniman.vmsmaintenance.model.MasterItemBrand;
 import com.bohniman.vmsmaintenance.model.MasterRack;
 import com.bohniman.vmsmaintenance.model.MasterShelves;
+import com.bohniman.vmsmaintenance.model.MasterState;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
+import com.bohniman.vmsmaintenance.payload.MasterItemBrandPayload;
 import com.bohniman.vmsmaintenance.payload.MasterRackPayload;
 import com.bohniman.vmsmaintenance.payload.MasterShelvePayload;
+import com.bohniman.vmsmaintenance.payload.TransVendorItemPayload;
+import com.bohniman.vmsmaintenance.repository.MasterItemBrandRepository;
 import com.bohniman.vmsmaintenance.repository.MasterRackRepository;
 import com.bohniman.vmsmaintenance.repository.MasterShelvesRepository;
+import com.bohniman.vmsmaintenance.repository.MasterStateRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
-import com.bohniman.vmsmaintenance.repository.TransVehicleHealthRepository;
 import com.bohniman.vmsmaintenance.repository.TransVendorItemRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +38,17 @@ public class StoreServiceBhaskor {
     @Autowired
     MasterRackRepository masterRackRepository;
 
-    // @Autowired
-    // MasterOldItemRepository masterOldItemRepository;
+    @Autowired
+    MasterStateRepository masterStateRepository;
 
     @Autowired
     MasterShelvesRepository masterShelvesRepository;
-    TransVehicleHealthRepository transVehicleHealthRepository;
+
+    @Autowired
+    MasterItemBrandRepository masterItemBrandRepository;
+
+    // @Autowired
+    // TransVehicleHealthRepository transVehicleHealthRepository;
 
     // ========================================================================
     // ADD NEW VENDOR
@@ -112,10 +123,19 @@ public class StoreServiceBhaskor {
 
         List<TransVendorItem> vendorItemList = transVendorItemRepository
                 .findAllByMasterVendor_idOrderByMasterItemBrand_item_itemNameAsc(vendorId);
-
+        List<TransVendorItemPayload> transVendorItems = new ArrayList<>();
+        for (TransVendorItem item : vendorItemList) {
+            TransVendorItemPayload tp = new TransVendorItemPayload();
+            tp.setId(item.getId());
+            tp.setItemBrand(item.getMasterItemBrand().getItemBrand().getBrandName());
+            tp.setItemName(item.getMasterItemBrand().getItem().getItemName());
+            tp.setMoq(item.getMasterItemBrand().getMoq());
+            tp.setItemPrice(item.getPricePerUnit());
+            transVendorItems.add(tp);
+        }
         res.setResult(true);
-        res.setPayload(vendorItemList);
-        if (vendorItemList.isEmpty() || vendorItemList.size() == 0) {
+        res.setPayload(transVendorItems);
+        if (transVendorItems.isEmpty() || transVendorItems.size() == 0) {
             res.setMessage("No Vendor Item records found.");
         } else {
             res.setMessage("Vendor Item List fetched successfully.");
@@ -264,6 +284,34 @@ public class StoreServiceBhaskor {
             res.setMessage("Shelve Item List fetched successfully.");
         }
         return res;
+    }
+
+    public List<MasterState> getAllStates() {
+        return masterStateRepository.findAllByIsActiveOrderByStateNameAsc("1");
+    }
+
+    public List<MasterItemBrandPayload> getItemByVendorId(Long vendorId) {
+        List<MasterItemBrand> itemlist = masterItemBrandRepository.findAll();
+        List<TransVendorItem> vendorItemList = transVendorItemRepository.findAllByMasterVendor_id(vendorId);
+        List<MasterItemBrandPayload> itemlistFiltered = new ArrayList<>();
+        for (MasterItemBrand masterItemBrand : itemlist) {
+            boolean found = false;
+            for (TransVendorItem transVendorItem : vendorItemList) {
+                if (masterItemBrand.getId() == transVendorItem.getMasterItemBrand().getId()) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                MasterItemBrandPayload m = new MasterItemBrandPayload();
+                m.setId(masterItemBrand.getId());
+                m.setItemBrand(masterItemBrand.getItemBrand().getBrandName());
+                m.setItemName(masterItemBrand.getItem().getItemName());
+                m.setMoq(masterItemBrand.getMoq());
+                itemlistFiltered.add(m);
+            }
+        }
+        return itemlistFiltered;
     }
 
 }
