@@ -293,4 +293,13 @@ public class StoreControllerBhaskor {
             throw new MyResourceNotFoundException(res.getMessage());
         }
     }
+
+    // ========================================================================
+    // PURCHASE PAGE
+    // ========================================================================
+    @GetMapping(value = "/purchase")
+    public ModelAndView pagePurchaseEntry(ModelAndView mv) {
+        mv = new ModelAndView("store/purchase");
+        return mv;
+    }
 }

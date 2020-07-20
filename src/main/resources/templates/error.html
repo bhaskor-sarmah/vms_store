@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/unlogged_fragments :: unlogged-links"></th:block>
+    <th:block th:replace="fragments/unlogged_fragments :: unlogged-css"></th:block>
+    <title>APVMS | MAINTENANCE</title>
+</head>
+
+<body>
+    <th:block th:replace="fragments/unlogged_fragments :: unlogged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/unlogged_fragments :: unlogged-navbar"></th:block>
+            <div class="container-fluid  main-content" style="min-height: 70vh;">
+                <div class="row">
+                    <div class="col-2 d-none d-lg-block">
+
+                    </div>
+                    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="margin-top: 100px;">
+                        <h4>Oops ! Some Error has ocurred. <a th:href="@{/}" class="text-primary">Click here</a> to go
+                            back to the Login
+                            page.</h4>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/unlogged_fragments :: unlogged-footer"></th:block>
+        </div>
+    </main>
+    <th:block th:replace="fragments/unlogged_fragments :: unlogged-js-scripts"></th:block>
+</body>
+
+</html>

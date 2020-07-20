@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <title>APVMS | STORE</title>
+    <style type="text/css">
+        .modal-xlg {
+            max-width: 80vw;
+        }
+
+        .modal-xxlg {
+            max-width: 95vw;
+        }
+
+        .divider {
+            border-bottom: 3px solid #0085a1;
+            margin-top: 12px;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <div class="container-fluid main-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                    </div>
+                    <div class="col-md-9">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-vendor text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard / </a></li>
+                                <li class="breadcrumb-vendor"><a href="#">&nbsp;Purchase Entry</a></li>
+                            </ol>
+                        </nav>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <h4><i class="fas fa-user"></i> Vendors</h4>
+                                            </div>
+                                            <div class="col-3">
+                                                <button type="button" data-target="#modalVendor" data-toggle="modal"
+                                                    class="btn btn-primary float-right" data-vendor-id="0">New
+                                                    Vendor</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12" id="div-vendor-list">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+        </div>
+    </main>
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            // SIDEBAR LINK ACTIVE
+            $('#side-link-purchase').addClass('list-group-item-secondary');
+        });
+    </script>
+</body>
+
+</html>
