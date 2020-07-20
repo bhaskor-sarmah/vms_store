@@ -20,5 +20,9 @@ public class VehiclePayload {
     private double mileage;
     
     private Long latestJobCardId;
-    private String latestJobCardStatus;
+	private String latestJobCardStatus;
+	
+	private String scrappedReason;
+	private String scrappedRemarks;
+	private String scrappedStatus;
 }

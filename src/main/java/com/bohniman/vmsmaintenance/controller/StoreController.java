@@ -10,7 +10,10 @@ import javax.validation.Valid;
 
 import com.bohniman.vmsmaintenance.exception.BadRequestException;
 import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
+import com.bohniman.vmsmaintenance.model.MasterBrand;
 import com.bohniman.vmsmaintenance.model.MasterFuelType;
+import com.bohniman.vmsmaintenance.model.MasterItem;
+import com.bohniman.vmsmaintenance.model.MasterItemBrand;
 import com.bohniman.vmsmaintenance.model.MasterRack;
 import com.bohniman.vmsmaintenance.model.MasterShelves;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
@@ -21,6 +24,7 @@ import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
+import com.bohniman.vmsmaintenance.payload.ScrapVehiclePayload;
 import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
 import com.bohniman.vmsmaintenance.service.InventoryUnitService;
 import com.bohniman.vmsmaintenance.service.StoreService;
@@ -713,6 +717,215 @@ public class StoreController {
         mv.addObject("jobCards", jobCards);
 
         return mv;
+    }
+
+    // ========================================================================
+    // ITEM PAGE
+    // ========================================================================
+    @GetMapping(value = "/item")
+    public ModelAndView pageItem(ModelAndView mv) {
+        mv = new ModelAndView("store/item_home");
+        mv.addObject("categoryList", new InventoryCategoryService().getAll());
+        mv.addObject("unitList", new InventoryUnitService().getAll());
+        return mv;
+    }
+
+    // ========================================================================
+    // ADD NEW  ITEM
+    // ========================================================================
+    @PostMapping(value = { "/item/add" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addItem(
+            @Valid @ModelAttribute MasterItem masterItem, BindingResult bindingResult)
+            throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewItem(masterItem);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // LIST ALL ITEM
+    // ========================================================================
+    @GetMapping(value = { "/item/all" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllItem() {
+
+        JsonResponse res = storeService.getAllItem();
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE ITEM
+    // ========================================================================
+    @DeleteMapping(value = { "/item/delete/{itemId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteItem(@PathVariable("itemId") Long itemId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteItemById(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+    
+
+    // ========================================================================
+    // BRAND PAGE
+    // ========================================================================
+    @GetMapping(value = "/brand")
+    public ModelAndView pageBrand(ModelAndView mv) {
+        mv = new ModelAndView("store/brand_home");
+        return mv;
+    }
+
+    // ========================================================================
+    // ADD NEW  BRAND
+    // ========================================================================
+    @PostMapping(value = { "/brand/add" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addBrand(
+            @Valid @ModelAttribute MasterBrand masterBrand, BindingResult bindingResult)
+            throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewBrand(masterBrand);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // LIST ALL BRAND
+    // ========================================================================
+    @GetMapping(value = { "/brand/all" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllBrand() {
+
+        JsonResponse res = storeService.getAllBrand();
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE BRAND
+    // ========================================================================
+    @DeleteMapping(value = { "/brand/delete/{brandId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteBrand(@PathVariable("brandId") Long brandId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteBrandById(brandId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // ITEM DETAIL PAGE
+    // ========================================================================
+    @GetMapping(value = "/item/{itemId}")
+    public ModelAndView pageItemDetail(ModelAndView mv, @PathVariable("itemId") Long itemId) {
+        mv = new ModelAndView("store/item_detail");
+        MasterItem masterItem = storeService.getItemById(itemId);
+        mv.addObject("masterItem", masterItem);
+
+        List<MasterBrand> brandList = storeService.getAllBrandList();
+        mv.addObject("brandList", brandList);
+
+        return mv;
+    }
+
+    // ========================================================================
+    // ADD NEW ITEM BRAND VARIATION
+    // ========================================================================
+    @PostMapping(value = { "/item/item-brand-variation/add" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addItemBrandVariation(
+            @Valid @ModelAttribute MasterItemBrand masterItemBrand, BindingResult bindingResult)
+            throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewItemBrandVariation(masterItemBrand);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // LIST ALL ITEM BRAND VARIATION
+    // ========================================================================
+    @GetMapping(value = { "/item/item-brand-variation/{itemId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllItemBrandVariation(@PathVariable("itemId") Long itemId) {
+
+        JsonResponse res = storeService.getAllItemBrandVariation(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE ITEM BRAND VARIATION
+    // ========================================================================
+    @DeleteMapping(value = { "/item/item-brand-variation/delete/{itemId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteItemBrandVariation(@PathVariable("itemId") Long itemId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteItemBrandVariationById(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // SCRAP VEHICLE
+    // ========================================================================
+    @PutMapping(value = { "/vehicle/scrap" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> scrapVehicle(
+            @Valid @ModelAttribute ScrapVehiclePayload scrapVehiclePayload, BindingResult bindingResult)
+            throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.scrapVehicle(scrapVehiclePayload);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
     }
 
 }

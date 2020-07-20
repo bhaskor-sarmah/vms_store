@@ -69,4 +69,10 @@ public class MasterVehicle extends Auditable {
 	@JsonIgnore
 	@OneToMany(mappedBy = "masterVehicle", fetch = FetchType.LAZY)
 	private List<TransVehicleJobCard> jobCards = new ArrayList<>();
+
+	private String scrappedReason;
+
+	private String scrappedRemarks;
+
+	private String scrappedStatus;
 }

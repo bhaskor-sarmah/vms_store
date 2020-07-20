@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MasterItemBrandRepository extends JpaRepository<MasterItemBrand, Long> {
-
+    List<MasterItemBrand> findByItem_idAndIsDeleted(Long itemId, boolean b);
 }

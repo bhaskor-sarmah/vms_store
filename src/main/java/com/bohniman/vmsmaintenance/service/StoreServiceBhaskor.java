@@ -127,7 +127,7 @@ public class StoreServiceBhaskor {
         for (TransVendorItem item : vendorItemList) {
             TransVendorItemPayload tp = new TransVendorItemPayload();
             tp.setId(item.getId());
-            tp.setItemBrand(item.getMasterItemBrand().getItemBrand().getBrandName());
+            tp.setItemBrand(item.getMasterItemBrand().getBrand().getBrandName());
             tp.setItemName(item.getMasterItemBrand().getItem().getItemName());
             tp.setMoq(item.getMasterItemBrand().getMoq());
             tp.setItemPrice(item.getPricePerUnit());
@@ -305,7 +305,7 @@ public class StoreServiceBhaskor {
             if (!found) {
                 MasterItemBrandPayload m = new MasterItemBrandPayload();
                 m.setId(masterItemBrand.getId());
-                m.setItemBrand(masterItemBrand.getItemBrand().getBrandName());
+                m.setItemBrand(masterItemBrand.getBrand().getBrandName());
                 m.setItemName(masterItemBrand.getItem().getItemName());
                 m.setMoq(masterItemBrand.getMoq());
                 itemlistFiltered.add(m);
