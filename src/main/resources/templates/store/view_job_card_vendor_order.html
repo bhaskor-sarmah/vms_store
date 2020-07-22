@@ -6,6 +6,8 @@
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <title>APVMS | STORE</title>
 </head>
 
@@ -22,9 +24,11 @@
                     <div class="col-md-9">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item"><a th:href="@{/store/vehicle}">Vehicle</a></li>
-                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
+                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}"
+                                    th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
                                 <li class="breadcrumb-item">
                                     Job Card : #<span class="text-success" th:text="${transVehicleJobCard.id}"></span>
                                 </li>
@@ -42,13 +46,19 @@
                                                 <h4><i class="fas fa-file-alt"></i> Vendor Order</h4>
                                             </div>
                                             <div class="col-3">
-                                                <h4><span class="badge badge-success p-2" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span></h4>
+                                                <h4><span class="badge badge-success p-2"
+                                                        th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span>
+                                                </h4>
                                             </div>
                                             <div class="col-3">
-                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__}">VIEW JOB CARD</a>
+                                                <a class="btn btn-primary p-2 float-right"
+                                                    th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__}">VIEW
+                                                    JOB CARD</a>
                                             </div>
                                             <div class="col-3">
-                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW VEHICLE</a>
+                                                <a class="btn btn-primary p-2 float-right"
+                                                    th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW
+                                                    VEHICLE</a>
                                             </div>
                                         </div>
                                     </div>
@@ -58,7 +68,8 @@
                                                 <h5 class="card-title">Job Card Id</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title"> : <span th:text="${'#'+transVehicleJobCard.id}"></span></h5>
+                                                <h5 class="card-title"> : <span
+                                                        th:text="${'#'+transVehicleJobCard.id}"></span></h5>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -66,7 +77,8 @@
                                                 <h5 class="card-title">Status</h5>
                                             </div>
                                             <div class="col-8">
-                                                <h5 class="card-title"> : <span class="badge badge-success" th:text="${transVehicleJobCard.status}"></span></h5>
+                                                <h5 class="card-title"> : <span class="badge badge-success"
+                                                        th:text="${transVehicleJobCard.status}"></span></h5>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -93,7 +105,21 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
+                                                        <tr th:each="order,iter : ${vendorOrderItemPayload}">
+                                                            <td th:text="${iter.count}"></td>
+                                                            <td th:text="${order.orderId != null}?${order.orderId}:'---'"></td>
+                                                            <td th:text="${order.vendorName}"></td>
+                                                            <td th:text="${order.amount}"></td>
+                                                            <td>
+                                                                <a class="btn btn-success p-1 w-100" href="#modalItem" data-toggle="modal" 
+                                                                th:data-vendor-id="${order.vendorId}" th:data-jobcard-id="${order.jobCardId}" th:data-order-id="${order.orderId != null}?${order.orderId}:0">View Items
+                                                            </td>
+                                                            <td>
+                                                                <a class="btn btn-success p-1 w-100" th:href="@{/}">Generate Order
+                                                            </td>
+                                                            <td th:text="${order.status}"></td>
+                                                        </tr>
+                                                        <!-- <tr>
                                                             <th>1</th>
                                                             <th>#2313</th>
                                                             <th>Datamation Ltd</th>
@@ -128,7 +154,7 @@
                                                             <th><a class="btn btn-success p-1 w-100" th:href="@{/}">View Items</th>
                                                                 <th><a class="btn btn-success p-1 w-100" th:href="@{/}">Challan Entry</th>
                                                                     <th>ORDER PLACED</th>
-                                                        </tr>
+                                                        </tr> -->
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -143,18 +169,100 @@
             <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
         </div>
     </main>
+    <!-- Modal Item-->
+    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xlg modal-dialog-scrollable" role="document">
+            <div class="modal-content" style="padding-left: 20px;padding-right: 20px;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-car"></i> View Order Items</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="item-div">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script th:inline="javascript">
         var jobCardId = /*[[${transVehicleJobCard.id}]]*/ '';
     </script>
     <script>
-        $(function() {
+        $(function () {
             $('#side-link-vehicle').addClass('list-group-item-secondary');
+            $(document).on('show.bs.modal', '#modalItem', function (e) {
+                $("#item-div").html("");
+                let vendorId = e.relatedTarget.dataset.vendorId;
+                let jobcardId = e.relatedTarget.dataset.jobcardId;
+                let orderId = e.relatedTarget.dataset.orderId;
+                // alert(contextPath);
+                $.ajax({
+                    type: "GET",
+                    url: contextPath + "store/vehicle/job-card/getItemByOrder",
+                    timeout: 600000,
+                    data: 'vendorId=' + vendorId + '&jobcardId=' + jobcardId + '&orderId=' + orderId,
+                    beforeSend: function () {
+                        $('#item-div').block({
+                            message: '<h3>Please wait...</h3>',
+                            css: {
+                                border: '3px solid darkgrey'
+                            }
+                        });
+                    },
+                    success: function (response) {
+                        var content = `
+                        <table id="table-item" class="table table-striped jambo_table text-black text-center" style="width:100%">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>SL No.</th>
+                                    <th>Item Name</th>
+                                    <th>Item Unit</th>
+                                    <th>Price Per Unit</th>
+                                    <th>Quantity</th>
+                                    <th>Total Price</th>
+                                </tr>
+                            </thead>
+                        </table>`;
+                        $('#item-div').html(content);
+                        var tableItems = $('#table-item').DataTable({
+                            "columnDefs": [{
+                                "className": "text-center",
+                                "targets": [0, 1, 2, 3, 4]
+                            }]
+                        });
+                        $.each(response.payload, function (key, item) {
+                            // alert(item.name);
+                            tableItems.row.add([
+                                `<b>${key + 1}</b>`,
+                                `${item.name}`,
+                                `${item.unit}`,
+                                `${item.pricePerUnit}`,
+                                `${item.quantity}`,
+                                `${item.price}`
+                            ]).draw(false);
+                        });
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    complete: function () {
+                        $('#item-div').unblock();
+                    }
+                });
+            });
         });
     </script>
 </body>

@@ -14,22 +14,20 @@ import com.bohniman.vmsmaintenance.model.MasterBrand;
 import com.bohniman.vmsmaintenance.model.MasterFuelType;
 import com.bohniman.vmsmaintenance.model.MasterItem;
 import com.bohniman.vmsmaintenance.model.MasterItemBrand;
-import com.bohniman.vmsmaintenance.model.MasterRack;
-import com.bohniman.vmsmaintenance.model.MasterShelves;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
 import com.bohniman.vmsmaintenance.model.MasterVehicleCategory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleType;
-import com.bohniman.vmsmaintenance.model.MasterVendor;
-import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardForward;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItems;
+import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.payload.ScrapVehiclePayload;
 import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
 import com.bohniman.vmsmaintenance.service.InventoryUnitService;
 import com.bohniman.vmsmaintenance.service.StoreService;
+import com.bohniman.vmsmaintenance.service.StoreServiceBhaskor;
 import com.bohniman.vmsmaintenance.utilities.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +49,9 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 @RequestMapping("/store")
 public class StoreController {
+
+    @Autowired
+    StoreServiceBhaskor storeServiceBhaskor;
 
     @Autowired
     StoreService storeService;
@@ -556,7 +557,8 @@ public class StoreController {
     // ========================================================================
     @PostMapping(value = { "/vehicle/job-card/open" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> openJobCard(@RequestParam("jobCardId") Long jobCardId, @RequestParam("vehicleId") Long vehicleId) {
+    public ResponseEntity<JsonResponse> openJobCard(@RequestParam("jobCardId") Long jobCardId,
+            @RequestParam("vehicleId") Long vehicleId) {
 
         JsonResponse res = storeService.openJobCard(vehicleId, jobCardId);
         if (res.getResult()) {
@@ -585,10 +587,10 @@ public class StoreController {
     public ModelAndView viewJobCard(ModelAndView mv, @PathVariable("jobCardId") Long jobCardId) {
         mv = new ModelAndView("store/view_job_card");
 
-        TransVehicleJobCard transVehicleJobCard = storeService.getJobCardById(jobCardId);
+        TransVehicleJobCard transVehicleJobCard = storeServiceBhaskor.getJobCardById(jobCardId);
         mv.addObject("transVehicleJobCard", transVehicleJobCard);
 
-        if(Objects.equals(transVehicleJobCard.getStatus(), "CREATED")){
+        if (Objects.equals(transVehicleJobCard.getStatus(), "CREATED")) {
             mv.addObject("userList", storeService.getJobCardForwarableUserList());
         }
 
@@ -639,8 +641,9 @@ public class StoreController {
     // ========================================================================
     @PutMapping(value = { "/vehicle/job-card/forward" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> openJobCard(@Valid @ModelAttribute TransVehicleJobCardForward transVehicleJobCardForward,
-    BindingResult bindingResult) throws BindException {
+    public ResponseEntity<JsonResponse> openJobCard(
+            @Valid @ModelAttribute TransVehicleJobCardForward transVehicleJobCardForward, BindingResult bindingResult)
+            throws BindException {
 
         JsonResponse res = storeService.forwardJobCard(transVehicleJobCardForward);
         if (res.getResult()) {
@@ -667,18 +670,19 @@ public class StoreController {
     // }
 
     // ========================================================================
-    // # GET SEARCHED FORWARD 
+    // # GET SEARCHED FORWARD
     // ========================================================================
     // @GetMapping(value = { "/vehicle/job-card/search-forward-user" })
-    // public ResponseEntity<JsonResponse> searchForwardUser(@RequestParam(value = "searchText") String searchText) {
+    // public ResponseEntity<JsonResponse> searchForwardUser(@RequestParam(value =
+    // "searchText") String searchText) {
 
-    //     JsonResponse res = storeService.searchForwardUser(searchText);
+    // JsonResponse res = storeService.searchForwardUser(searchText);
 
-    //     if (Objects.equals(res.getResult(), true)) {
-    //         return ResponseEntity.ok().body(res);
-    //     } else {
-    //         throw new BadRequestException("Operation Failed");
-    //     }
+    // if (Objects.equals(res.getResult(), true)) {
+    // return ResponseEntity.ok().body(res);
+    // } else {
+    // throw new BadRequestException("Operation Failed");
+    // }
     // }
 
     // TO BE DELETED
@@ -741,13 +745,12 @@ public class StoreController {
     }
 
     // ========================================================================
-    // ADD NEW  ITEM
+    // ADD NEW ITEM
     // ========================================================================
     @PostMapping(value = { "/item/add" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> addItem(
-            @Valid @ModelAttribute MasterItem masterItem, BindingResult bindingResult)
-            throws BindException {
+    public ResponseEntity<JsonResponse> addItem(@Valid @ModelAttribute MasterItem masterItem,
+            BindingResult bindingResult) throws BindException {
         if (!bindingResult.hasErrors()) {
             JsonResponse res = storeService.saveNewItem(masterItem);
             if (res.getResult()) {
@@ -790,7 +793,6 @@ public class StoreController {
             throw new BadRequestException(res.getMessage());
         }
     }
-    
 
     // ========================================================================
     // BRAND PAGE
@@ -802,13 +804,12 @@ public class StoreController {
     }
 
     // ========================================================================
-    // ADD NEW  BRAND
+    // ADD NEW BRAND
     // ========================================================================
     @PostMapping(value = { "/brand/add" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> addBrand(
-            @Valid @ModelAttribute MasterBrand masterBrand, BindingResult bindingResult)
-            throws BindException {
+    public ResponseEntity<JsonResponse> addBrand(@Valid @ModelAttribute MasterBrand masterBrand,
+            BindingResult bindingResult) throws BindException {
         if (!bindingResult.hasErrors()) {
             JsonResponse res = storeService.saveNewBrand(masterBrand);
             if (res.getResult()) {
@@ -872,9 +873,8 @@ public class StoreController {
     // ========================================================================
     @PostMapping(value = { "/item/item-brand-variation/add" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> addItemBrandVariation(
-            @Valid @ModelAttribute MasterItemBrand masterItemBrand, BindingResult bindingResult)
-            throws BindException {
+    public ResponseEntity<JsonResponse> addItemBrandVariation(@Valid @ModelAttribute MasterItemBrand masterItemBrand,
+            BindingResult bindingResult) throws BindException {
         if (!bindingResult.hasErrors()) {
             JsonResponse res = storeService.saveNewItemBrandVariation(masterItemBrand);
             if (res.getResult()) {
@@ -923,9 +923,8 @@ public class StoreController {
     // ========================================================================
     @PutMapping(value = { "/vehicle/scrap" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> scrapVehicle(
-            @Valid @ModelAttribute ScrapVehiclePayload scrapVehiclePayload, BindingResult bindingResult)
-            throws BindException {
+    public ResponseEntity<JsonResponse> scrapVehicle(@Valid @ModelAttribute ScrapVehiclePayload scrapVehiclePayload,
+            BindingResult bindingResult) throws BindException {
         if (!bindingResult.hasErrors()) {
             JsonResponse res = storeService.scrapVehicle(scrapVehiclePayload);
             if (res.getResult()) {
@@ -948,9 +947,11 @@ public class StoreController {
             throws BindException {
 
         // FOR QUANTITY LESS THAN MOQ
-        TransVendorItem transVendorItem = storeService.getVendorItemById(transVehicleJobCardItem.getTransVendorItem().getId());
-        if (Double.parseDouble(transVendorItem.getMasterItemBrand().getMoq()) > transVehicleJobCardItem.getQuantity()){
-                bindingResult.rejectValue("quantity", "error.quantity", " * Please enter minimum quantity : "+transVendorItem.getMasterItemBrand().getMoq());
+        TransVendorItem transVendorItem = storeService
+                .getVendorItemById(transVehicleJobCardItem.getTransVendorItem().getId());
+        if (Double.parseDouble(transVendorItem.getMasterItemBrand().getMoq()) > transVehicleJobCardItem.getQuantity()) {
+            bindingResult.rejectValue("quantity", "error.quantity",
+                    " * Please enter minimum quantity : " + transVendorItem.getMasterItemBrand().getMoq());
         }
 
         if (!bindingResult.hasErrors()) {
@@ -997,15 +998,18 @@ public class StoreController {
     }
 
     // ========================================================================
-    // JOB CARD VENDOR ORDER
+    // JOB CARD VENDOR ORDER **** MOVED TO BHASKOR CONTROLLER ****
     // ========================================================================
-    @GetMapping(value = "/vehicle/job-card/{jobCardId}/vendor-order")
-    public ModelAndView jobCardVendorOrder(ModelAndView mv, @PathVariable("jobCardId") Long jobCardId) {
-        mv = new ModelAndView("store/view_job_card_vendor_order");
-
-        TransVehicleJobCard transVehicleJobCard = storeService.getJobCardById(jobCardId);
-        mv.addObject("transVehicleJobCard", transVehicleJobCard);
-        return mv;
-    }
+    // @GetMapping(value = "/vehicle/job-card/{jobCardId}/vendor-order")
+    // public ModelAndView jobCardVendorOrder(ModelAndView mv,
+    // @PathVariable("jobCardId") Long jobCardId) {
+    // mv = new ModelAndView("store/view_job_card_vendor_order");
+    // mv.addObject("vendorOrderItemPayload",
+    // storeService.getVendorOrderItemPayload(jobCardId));
+    // TransVehicleJobCard transVehicleJobCard =
+    // storeService.getJobCardById(jobCardId);
+    // mv.addObject("transVehicleJobCard", transVehicleJobCard);
+    // return mv;
+    // }
 
 }

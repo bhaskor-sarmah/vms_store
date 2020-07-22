@@ -362,7 +362,8 @@ public class StoreService {
             if (masterVehicle.getJobCards().size() > 0) {
                 for (TransVehicleJobCard transVehicleJobCard : masterVehicle.getJobCards()) {
                     if (Objects.equals(transVehicleJobCard.getStatus(), "CREATED")
-                            || Objects.equals(transVehicleJobCard.getStatus(), "FORWARDED") || Objects.equals(transVehicleJobCard.getStatus(), "APPROVED")) {
+                            || Objects.equals(transVehicleJobCard.getStatus(), "FORWARDED")
+                            || Objects.equals(transVehicleJobCard.getStatus(), "APPROVED")) {
                         vehiclePayload.setLatestJobCardId(transVehicleJobCard.getId());
                         vehiclePayload.setLatestJobCardStatus(transVehicleJobCard.getStatus());
                     }
@@ -565,7 +566,8 @@ public class StoreService {
     public JsonResponse openJobCard(Long vehicleId, Long jobCardId) {
         JsonResponse res = new JsonResponse();
 
-        TransVehicleJobCard transVehicleJobCard = transVehicleJobCardRepository.findByIdAndMasterVehicle_id(jobCardId,vehicleId);
+        TransVehicleJobCard transVehicleJobCard = transVehicleJobCardRepository.findByIdAndMasterVehicle_id(jobCardId,
+                vehicleId);
 
         transVehicleJobCard.setStatus("CREATED");
         transVehicleJobCard = transVehicleJobCardRepository.save(transVehicleJobCard);
@@ -575,15 +577,17 @@ public class StoreService {
         return res;
     }
 
-    public TransVehicleJobCard getJobCardById(Long jobCardId) {
-        return transVehicleJobCardRepository.findById(jobCardId).get();
-    }
+    // MOVED TO BHASKOR SERVICE
+    // public TransVehicleJobCard getJobCardById(Long jobCardId) {
+    // return transVehicleJobCardRepository.findById(jobCardId).get();
+    // }
 
     public JsonResponse forwardJobCard(TransVehicleJobCardForward transVehicleJobCardForward) {
         JsonResponse res = new JsonResponse();
         transVehicleJobCardForwardRepository.save(transVehicleJobCardForward);
-        
-        TransVehicleJobCard transVehicleJobCard = transVehicleJobCardRepository.findById(transVehicleJobCardForward.getTransVehicleJobCard().getId()).get();
+
+        TransVehicleJobCard transVehicleJobCard = transVehicleJobCardRepository
+                .findById(transVehicleJobCardForward.getTransVehicleJobCard().getId()).get();
         transVehicleJobCard.setStatus("FORWARDED");
         transVehicleJobCardRepository.save(transVehicleJobCard);
         res.setResult(true);
@@ -592,27 +596,29 @@ public class StoreService {
     }
 
     // public JsonResponse searchForwardUser(String searchText) {
-    //     JsonResponse res = new JsonResponse();
-    //     PageableObjectPayload orgData = new PageableObjectPayload();
-    //     List<UserDataPayload> userDataPayloadList = new ArrayList<>();
-    //     UserDataPayload userData = null;
+    // JsonResponse res = new JsonResponse();
+    // PageableObjectPayload orgData = new PageableObjectPayload();
+    // List<UserDataPayload> userDataPayloadList = new ArrayList<>();
+    // UserDataPayload userData = null;
 
-    //     List<User> userList = userRepository.findByUsernameContainingAndRoles_role(searchText, "HEADMECHANIC");
+    // List<User> userList =
+    // userRepository.findByUsernameContainingAndRoles_role(searchText,
+    // "HEADMECHANIC");
 
-    //     for (User user : userList) {
-    //         userData = new UserDataPayload();
-    //         userData.setUsername(user.getUsername());
-    //         userData.setName(user.getName());
-    //         userData.setRole(user.getRoles().get(0).getRole());
+    // for (User user : userList) {
+    // userData = new UserDataPayload();
+    // userData.setUsername(user.getUsername());
+    // userData.setName(user.getName());
+    // userData.setRole(user.getRoles().get(0).getRole());
 
-    //         userDataPayloadList.add(userData);
-    //     }
+    // userDataPayloadList.add(userData);
+    // }
 
-    //     orgData.setObjectList1(userDataPayloadList);
-    //     res.setPayload(orgData);
-    //     res.setResult(true);
+    // orgData.setObjectList1(userDataPayloadList);
+    // res.setPayload(orgData);
+    // res.setResult(true);
 
-    //     return res;
+    // return res;
     // }
 
     public List<TransVehicleJobCard> getJobCardsByDateRange(Date dateFrom, Date dateTo) {
@@ -622,7 +628,7 @@ public class StoreService {
     // ========================================================================
     // # ITEM SECTION
     // ========================================================================
-	public JsonResponse saveNewItem(MasterItem masterItem) {
+    public JsonResponse saveNewItem(MasterItem masterItem) {
         JsonResponse res = new JsonResponse();
         masterItemRepository.save(masterItem);
         res.setResult(true);
@@ -693,18 +699,18 @@ public class StoreService {
         return res;
     }
 
-	public MasterItem getItemById(Long itemId) {
-		return masterItemRepository.findById(itemId).get();
-	}
-
-	public List<MasterBrand> getAllBrandList() {
-		return masterBrandRepository.findByIsDeletedOrderByBrandNameAsc(false);
+    public MasterItem getItemById(Long itemId) {
+        return masterItemRepository.findById(itemId).get();
     }
-    
+
+    public List<MasterBrand> getAllBrandList() {
+        return masterBrandRepository.findByIsDeletedOrderByBrandNameAsc(false);
+    }
+
     // ========================================================================
     // # ITEM BRAND SECTION
     // ========================================================================
-	public JsonResponse saveNewItemBrandVariation(MasterItemBrand masterItemBrand) {
+    public JsonResponse saveNewItemBrandVariation(MasterItemBrand masterItemBrand) {
         JsonResponse res = new JsonResponse();
         masterItemBrandRepository.save(masterItemBrand);
         res.setResult(true);
@@ -729,7 +735,7 @@ public class StoreService {
     public JsonResponse getAllItemBrandVariation(Long itemId) {
         JsonResponse res = new JsonResponse();
 
-        List<MasterItemBrand> itemList = masterItemBrandRepository.findByItem_idAndIsDeleted(itemId,false);
+        List<MasterItemBrand> itemList = masterItemBrandRepository.findByItem_idAndIsDeleted(itemId, false);
 
         res.setResult(true);
         res.setPayload(itemList);
@@ -738,8 +744,8 @@ public class StoreService {
         return res;
     }
 
-	public JsonResponse scrapVehicle(@Valid ScrapVehiclePayload scrapVehiclePayload) {
-		JsonResponse res = new JsonResponse();
+    public JsonResponse scrapVehicle(@Valid ScrapVehiclePayload scrapVehiclePayload) {
+        JsonResponse res = new JsonResponse();
         try {
             MasterVehicle masterVehicle = masterVehicleRepository.getOne(scrapVehiclePayload.getVehicleId());
             masterVehicle.setScrappedReason(scrapVehiclePayload.getScrappedReason());
@@ -752,9 +758,9 @@ public class StoreService {
             res.setMessage("Vehicle could not be scrapped.");
         }
         return res;
-	}
+    }
 
-	public TransVehicleJobCard initiateJobCard(Long vehicleId) {
+    public TransVehicleJobCard initiateJobCard(Long vehicleId) {
         MasterVehicle masterVehicle = masterVehicleRepository.findById(vehicleId).get();
         TransVehicleJobCard transVehicleJobCard = null;
         Boolean newJobCardRequired = true;
@@ -768,7 +774,7 @@ public class StoreService {
             }
         }
 
-        if(newJobCardRequired){
+        if (newJobCardRequired) {
             transVehicleJobCard = new TransVehicleJobCard();
             transVehicleJobCard.setMasterVehicle(masterVehicle);
             transVehicleJobCard.setStatus("INITIATED");
@@ -776,30 +782,31 @@ public class StoreService {
         }
 
         return transVehicleJobCard;
-	}
+    }
 
-	public List<TransVendorItem> getAllVendorItemsForJobCard() {
-		return transVendorItemRepository.findAll();
-	}
+    public List<TransVendorItem> getAllVendorItemsForJobCard() {
+        return transVendorItemRepository.findAll();
+    }
 
-	public JsonResponse addNewJobCardItem(@Valid TransVehicleJobCardItems transVehicleJobCardItem) {
-		JsonResponse res = new JsonResponse();
+    public JsonResponse addNewJobCardItem(@Valid TransVehicleJobCardItems transVehicleJobCardItem) {
+        JsonResponse res = new JsonResponse();
         transVehicleJobCardItemRepository.save(transVehicleJobCardItem);
         res.setResult(true);
         res.setMessage("Item Added Successfully");
         return res;
-	}
+    }
 
-	public JsonResponse getJobCardItemList(Long jobCardId) {
-		JsonResponse res = new JsonResponse();
+    public JsonResponse getJobCardItemList(Long jobCardId) {
+        JsonResponse res = new JsonResponse();
         List<JobCardItemPayload> responseList = new ArrayList<>();
         JobCardItemPayload jobCardItemPayload = null;
 
-        List<TransVehicleJobCardItems> mainList = transVehicleJobCardItemRepository.findByTransVehicleJobCard_idAndIsDeletedFalse(jobCardId);
+        List<TransVehicleJobCardItems> mainList = transVehicleJobCardItemRepository
+                .findByTransVehicleJobCard_idAndIsDeletedFalse(jobCardId);
 
         for (TransVehicleJobCardItems item : mainList) {
             jobCardItemPayload = new JobCardItemPayload();
-           
+
             jobCardItemPayload.setId(item.getId());
             jobCardItemPayload.setItemName(item.getTransVendorItem().getMasterItemBrand().getItem().getItemName());
             jobCardItemPayload.setItemUnit(item.getTransVendorItem().getMasterItemBrand().getItem().getItemUnit());
@@ -817,10 +824,10 @@ public class StoreService {
         res.setMessage("Job Card Item List fetched successfully.");
 
         return res;
-	}
+    }
 
-	public JsonResponse deleteJobCardItem(Long itemId) {
-		JsonResponse res = new JsonResponse();
+    public JsonResponse deleteJobCardItem(Long itemId) {
+        JsonResponse res = new JsonResponse();
         try {
             TransVehicleJobCardItems item = transVehicleJobCardItemRepository.getOne(itemId);
             item.setIsDeleted(true);
@@ -831,13 +838,13 @@ public class StoreService {
             res.setMessage("Item could not be removed.");
         }
         return res;
-	}
+    }
 
-	public TransVendorItem getVendorItemById(Long id) {
-		return transVendorItemRepository.getOne(id);
-	}
+    public TransVendorItem getVendorItemById(Long id) {
+        return transVendorItemRepository.getOne(id);
+    }
 
-	public Object getJobCardForwarableUserList() {
-		return  userRepository.findByRoles_role("HEADMECHANIC");
-	}
+    public Object getJobCardForwarableUserList() {
+        return userRepository.findByRoles_role("HEADMECHANIC");
+    }
 }

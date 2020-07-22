@@ -7,6 +7,7 @@ import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
 import com.bohniman.vmsmaintenance.model.MasterRack;
 import com.bohniman.vmsmaintenance.model.MasterShelves;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
+import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.service.InventoryUnitService;
@@ -332,5 +333,32 @@ public class StoreControllerBhaskor {
     public ModelAndView pagePurchaseEntry(ModelAndView mv) {
         mv = new ModelAndView("store/purchase");
         return mv;
+    }
+
+    // ========================================================================
+    // JOB CARD VENDOR ORDER **** MOVED FROM RITUSMOI CONTROLLER ****
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/{jobCardId}/vendor-order")
+    public ModelAndView jobCardVendorOrder(ModelAndView mv, @PathVariable("jobCardId") Long jobCardId) {
+        mv = new ModelAndView("store/view_job_card_vendor_order");
+        mv.addObject("vendorOrderItemPayload", storeService.getVendorOrderItemPayload(jobCardId));
+        TransVehicleJobCard transVehicleJobCard = storeService.getJobCardById(jobCardId);
+        mv.addObject("transVehicleJobCard", transVehicleJobCard);
+        return mv;
+    }
+
+    // ========================================================================
+    // ALL ITEM OF A VENDOR AGAINST AN ORDER AND JOB CARD
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/getItemByOrder")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getItemByOrder(@RequestParam("orderId") Long orderId,
+            @RequestParam("jobcardId") Long jobcardId, @RequestParam("vendorId") Long vendorId) {
+        JsonResponse res = storeService.getAllItemByOrder(orderId, vendorId, jobcardId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
     }
 }
