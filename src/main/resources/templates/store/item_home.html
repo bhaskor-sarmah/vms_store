@@ -24,7 +24,7 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
                                             class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                                <li class="breadcrumb-item"><a href="#">Vehicle Inventory</a></li>
+                                <li class="breadcrumb-item"><a href="#">Item</a></li>
                             </ol>
                         </nav>
                         <div class="row">
@@ -33,7 +33,7 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-9">
-                                                <h4><i class="fas fa-box-open"></i> Vehicle Inventory</h4>
+                                                <h4><i class="fas fa-cubes"></i> Items</h4>
                                             </div>
                                             <div class="col-3">
                                                 <button type="button" data-target="#modalItem" data-toggle="modal" class="btn btn-primary float-right" data-item-id="0">New Item</button>
@@ -61,7 +61,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Inventory Add/Edit Inventory</h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-cubes"></i> Item Add/Edit Item</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -71,11 +71,15 @@
                         <div><input type="hidden" class="form-control" name="id"></div>
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Item Name</label>
-                            <input type="text" class="form-control" name="name">
+                            <input type="text" class="form-control" name="itemName">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Item Details</label>
+                            <textarea type="text" class="form-control" name="itemDetails"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Category</label>
-                            <select class="form-control" name="category">
+                            <select class="form-control" name="itemCategory">
                                 <option value="">---Please Select---</option>
                                 <th:block th:if="${not #lists.isEmpty(categoryList)}">
                                     <option th:each="x:${categoryList}" th:text="${x.name}" th:value="${x.name}">Consumable</option>
@@ -83,12 +87,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">Quantity Bought</label>
-                            <input type="number" class="form-control" name="quantityBought" min="0">
-                        </div>
-                        <div class="form-group">
                             <label for="exampleFormControlSelect1">Unit</label>
-                            <select class="form-control" name="unit">
+                            <select class="form-control" name="itemUnit">
                                 <option value="">---Please Select---</option>
                                 <th:block th:if="${not #lists.isEmpty(unitList)}">
                                     <option th:each="x:${unitList}" th:text="${x.name}" th:value="${x.name}">Consumable</option>
@@ -113,7 +113,7 @@
     <script>
         $(function() {
             // SIDEBAR LINK ACTIVE
-            $('#side-link-inventory').addClass('list-group-item-secondary');
+            $('#side-link-item').addClass('list-group-item-secondary');
 
             //GET ITEMS
             getItemList();
@@ -131,7 +131,7 @@
                         confirm: function() {
                             $.ajax({
                                 type: "POST",
-                                url: contextPath + "store/inventory/add",
+                                url: contextPath + "store/item/add",
                                 timeout: 600000,
                                 beforeSend: function() {
                                     $('body').block({
@@ -202,7 +202,7 @@
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "DELETE",
-                                        url: contextPath + "store/inventory/delete/" + itemId
+                                        url: contextPath + "store/item/delete/" + itemId
                                     }).done(function(response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
@@ -234,12 +234,16 @@
                 let itemId = e.relatedTarget.dataset.itemId;
                 if (itemId == 0) {
                     $("#form-item").contents().find('[name=id]').val("");
+                    $("#form-item").contents().find('[name=itemName]').val("");
+                    $("#form-item").contents().find('[name=itemDetails]').val("");
+                    $("#form-item").contents().find('[name=itemCategory]').val("");
+                    $("#form-item").contents().find('[name=itemUnit]').val("");
                 } else {
                     $("#form-item").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
-                    $("#form-item").contents().find('[name=name]').val(e.relatedTarget.dataset.name);
-                    $("#form-item").contents().find('[name=category]').val(e.relatedTarget.dataset.category);
-                    $("#form-item").contents().find('[name=quantityBought]').val(e.relatedTarget.dataset.quantityBought);
-                    $("#form-item").contents().find('[name=unit]').val(e.relatedTarget.dataset.unit);
+                    $("#form-item").contents().find('[name=itemName]').val(e.relatedTarget.dataset.itemName);
+                    $("#form-item").contents().find('[name=itemDetails]').val(e.relatedTarget.dataset.itemDetails);
+                    $("#form-item").contents().find('[name=itemCategory]').val(e.relatedTarget.dataset.itemCategory);
+                    $("#form-item").contents().find('[name=itemUnit]').val(e.relatedTarget.dataset.itemUnit);
                 }
             });
         });
@@ -249,7 +253,7 @@
         function getItemList() {
             $.ajax({
                 type: "GET",
-                url: contextPath + "store/inventory/all",
+                url: contextPath + "store/item/all",
                 timeout: 600000,
                 beforeSend: function() {
                     $('body').block({
@@ -267,9 +271,10 @@
                                     <th>SL No.</th>
                                     <th>Item Name</th>
                                     <th>Category</th>
-                                    <th>Quantity In Store</th>
-                                    <th >Action</th>
-                                    <th ></th>
+                                    <th>Unit</th>
+                                    <th >View Details</th>
+                                    <th >Edit</th>
+                                    <th >Delete</th>
                                 </tr>
                             </thead>
                         </table>`;
@@ -284,11 +289,12 @@
                     $.each(response.payload, function(key, item) {
                         tableItems.row.add([
                             `<b>${key + 1}</b>`,
-                            `${item.name}`,
-                            `${item.category}`,
-                            `${item.quantityBought} ${item.unit}`,
-                            `<a class="btn btn-primary p-1 delete-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a>`,
-                            `<a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal" data-item-id="${item.id}" data-name="${item.name}" data-category="${item.category}" data-unit="${item.unit}" data-quantity-in-store="${item.quantityBought}">EDIT</a>`
+                            `${item.itemName}`,
+                            `${item.itemCategory}`,
+                            `${item.itemUnit}`,
+                            `<a class="btn btn-primary p-1" href="${contextPath}store/item/${item.id}">VIEW DETAILS</a>`,
+                            `<a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal" data-item-id="${item.id}" data-item-name="${item.itemName}" data-item-details="${item.itemDetails}" data-item-category="${item.itemCategory}" data-item-unit="${item.itemUnit}" >EDIT</a>`,
+                            `<a class="btn btn-primary p-1 delete-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a>`
                         ]).draw(false);
                     });
                 },

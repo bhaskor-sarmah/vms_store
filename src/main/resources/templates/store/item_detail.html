@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <title>APVMS | STORE</title>
+</head>
+
+<body>
+    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <div class="container-fluid main-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                    </div>
+                    <div class="col-md-9">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-old-car-parts text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard / </a></li>
+                                <li class="breadcrumb-old-car-parts"><a th:href="@{/store/item}"> Items</a> / </li>
+                                <li class="breadcrumb-item text-success">
+                                    <span th:text="${masterItem.ItemName}"></span>
+                                </li>
+                            </ol>
+                        </nav>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h4><i class="fas fa-cubes"></i> <span th:text="${masterItem.ItemName+' Details'}"></span></h4>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <h4><span class="badge badge-success p-2">
+                                                        ID - <span th:text="${masterItem.id}"></span></span>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Item Name</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title">:
+                                                    <th:block th:text="${masterItem.ItemName}"></th:block>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Item Details</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title">:
+                                                    <th:block th:text="${masterItem.itemDetails}">
+                                                    </th:block>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Category</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title">:
+                                                    <th:block th:text="${masterItem.itemCategory}">
+                                                    </th:block>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Unit</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title">:
+                                                    <th:block th:text="${masterItem.itemUnit}">
+                                                    </th:block>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Item Variation</a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content" id="myTabContent">
+                                                    <div class="tab-pane fade show active p-3" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <h5 class="card-title">List of Variations</h5>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <h5 class="card-title"> </h5>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <a class="btn btn-primary p-1 float-right" href="#" data-target="#modalVariation" data-toggle="modal">Add Variation</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12" id="div-variation-list">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+        </div>
+    </main>
+    <!-- Modal Variation-->
+    <div class="modal fade" id="modalVariation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-cubes"></i> Add/Edit Variation - <span th:text="${masterItem.itemName}"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-variation">
+                        <span><input type="hidden" class="form-control" name="item.id" th:value="${masterItem.id}"></span>
+                        <span><input type="hidden" class="form-control" name="id"></span>
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Brand</label>
+                            <select class="form-control" name="brand.id" required>
+                                <option value="">---Please Select---</option>
+                                <th:block th:if="${not #lists.isEmpty(brandList)}">
+                                    <option th:each="x:${brandList}" th:text="${x.brandName}" th:value="${x.id}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Minimum Order Quantity</label>
+                            <input type="text" class="form-control" name="moq" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#form-variation').submit();">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var itemId = /*[[${masterItem.id}]]*/ '0';
+        /*]]>*/
+    </script>
+    <script>
+        $(function() {
+            $('#side-link-item').addClass('list-group-item-secondary');
+
+            getVariationList();
+
+            $(document).on("submit", "#form-variation", function(e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you submit the form ?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/item/item-brand-variation/add",
+                                timeout: 600000,
+                                beforeSend: function() {
+                                    $('body').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: $("#form-variation").serialize(),
+                                success: function(response) {
+                                    $('#form-variation').trigger('reset');
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: "Variation Saved Successfully",
+                                        type: 'green',
+                                        typeAnimated: true
+                                    });
+                                    getVariationList();
+                                    $('#modalVariation').modal('hide');
+                                },
+                                error: function(e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        $.each(e.responseJSON.errorMessages, function(key,
+                                            value) {
+                                            $("#form-variation").contents().find(
+                                                '[name="' + key + '"]').after(
+                                                '<span class="error-message">' +
+                                                value + '</span>');
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function() {
+                                    $('body').unblock();
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
+
+            //DELETE ITEM
+            $(document).on('click', '.delete-variation', function(e) {
+                e.preventDefault();
+                var ajax_return;
+                let variationId = e.target.dataset.variationId;
+                $.confirm({
+                    title: 'Warning!',
+                    content: "Are you sure you want to delete this variation?",
+                    type: 'red',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.confirm({
+                                content: function() {
+                                    var self = this;
+                                    return ajax_return = $.ajax({
+                                        type: "DELETE",
+                                        url: contextPath + "store/item/item-brand-variation/delete/" + variationId
+                                    }).done(function(response) {
+                                        self.setTitle("Success!");
+                                        self.setType("green");
+                                        self.setContent(response.message);
+                                    }).fail(function(e) {
+                                        self.setTitle(e.responseJSON.httpStatus);
+                                        self.setType("red");
+                                        self.setContent("ERROR");
+                                    })
+                                    return true;
+                                },
+                                buttons: {
+                                    ok: function() {
+                                        ajax_return.done(function(message) {
+                                            getVariationList();
+                                        })
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
+        });
+
+        // ON MODAL SHOW
+        $(document).on('show.bs.modal', '#modalVariation', function(e) {
+            let itemBrandId = e.relatedTarget.dataset.itemBrandId;
+            if (itemBrandId == 0) {
+                $("#form-variation").contents().find('[name=id]').val("");
+                $("#form-variation").contents().find('[name="brand.id"]').val("");
+                $("#form-variation").contents().find('[name=moq]').val("0");
+            } else {
+                $("#form-variation").contents().find('[name=id]').val(e.relatedTarget.dataset.variationId);
+                $("#form-variation").contents().find('[name="brand.id"]').val(e.relatedTarget.dataset.brandId);
+                $("#form-variation").contents().find('[name=moq]').val(e.relatedTarget.dataset.moq);
+            }
+        });
+    </script>
+    <script>
+        // GET SHELVES LIST
+        function getVariationList() {
+            $.ajax({
+                type: "GET",
+                url: contextPath + "store/item/item-brand-variation/" + itemId,
+                timeout: 600000,
+                beforeSend: function() {
+                    $('body').block({
+                        message: '<h3>Please wait...</h3>',
+                        css: {
+                            border: '3px solid darkgrey'
+                        }
+                    });
+                },
+                success: function(response) {
+                    var content = `
+                        <table id="table-variation" class="display table ">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>SL No.</th>
+                                    <th>Brand</th>
+                                    <th>Minimun Order Quantity</th>
+                                    <th>Action</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                        </table>`;
+                    $('#div-variation-list').html(content);
+                    var tableVariation = $('#table-variation').DataTable({
+                        "columnDefs": [{
+                            "className": "text-center",
+                            "targets": [0, 1, 2, 3]
+                        }]
+                    });
+                    $.each(response.payload, function(key, variation) {
+                        tableVariation.row.add([
+                            `<b>${key + 1}</b>`,
+                            `${variation.brand.brandName}`,
+                            `${variation.moq}`,
+                            `<a class="btn btn-danger p-1 delete-variation" data-variation-id="${variation.id}" href="javascript:void(0)">DELETE</a>`,
+                            `<a class="btn btn-primary p-1" href="#modalVariation" data-toggle="modal" data-variation-id="${variation.id}" data-brand-id="${variation.brand.id}" data-moq="${variation.moq}">EDIT</a>`
+                        ]).draw(false);
+                    });
+                },
+                error: function(e) {
+                    console.log(e);
+                },
+                complete: function() {
+                    $('body').unblock();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

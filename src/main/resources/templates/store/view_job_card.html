@@ -48,72 +48,72 @@
                                             </div>
                                             <div class="col-3">
                                                 <a class="btn btn-primary p-2 float-right" th:if="${transVehicleJobCard.status == 'CREATED'}" href="#modalForward" data-toggle="modal">FORWARD JOB CARD</a>
-                                                <a class="btn btn-warning p-2 float-right" th:if="${transVehicleJobCard.status == 'FORWARDED'}" href="#" data-toggle="modal">GENERATE VENDOR ORDER</a>
+                                                <a class="btn btn-warning p-2 float-right" th:if="${transVehicleJobCard.status == 'APPROVED'}" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/vendor-order}">GENERATE VENDOR ORDER</a>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-3">
-                                                <h5 class="card-title">Job Card Id</h5>
+                                            <div class="col-6">
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <h5 class="card-title">Job Card Id</h5>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <h5 class="card-title"> : <span th:text="${'#'+transVehicleJobCard.id}"></span></h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <h5 class="card-title">Status</h5>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <h5 class="card-title"> : <span class="badge badge-success" th:text="${transVehicleJobCard.status}"></span></h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <h5 class="card-title">Opened On</h5>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <h5 class="card-title"> : <span th:text="${#dates.format(transVehicleJobCard.createdAt, 'dd-MMM-yyyy hh:mm a')}"></span></h5>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-8">
-                                                <h5 class="card-title"> : <span th:text="${'#'+transVehicleJobCard.id}"></span></h5>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <h5 class="card-title">Status</h5>
-                                            </div>
-                                            <div class="col-8">
-                                                <h5 class="card-title"> : <span class="badge badge-success" th:text="${transVehicleJobCard.status}"></span></h5>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <h5 class="card-title">Opened On</h5>
-                                            </div>
-                                            <div class="col-8">
-                                                <h5 class="card-title"> : <span th:text="${#dates.format(transVehicleJobCard.createdAt, 'dd-MMM-yyyy HH:mm a')}"></span></h5>
+                                            <div class="col-6" th:if="${transVehicleJobCard.status == 'FORWARDED' || transVehicleJobCard.status == 'APPROVED' || transVehicleJobCard.status == 'CLOSED'}">
+                                                <th:block th:if="${not #lists.isEmpty(transVehicleJobCard.forwards)}">
+                                                    <table class="table table-sm table-striped table-bordered">
+                                                        <thead class="text-center">
+                                                            <tr>
+                                                                <th colspan="3">FORWARD DETAILS</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>FORWARDED TO</th>
+                                                                <th>DATE</th>
+                                                                <th>CURRENT</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="text-center">
+                                                            <tr th:each="x,iter : ${transVehicleJobCard.forwards}">
+                                                                <td th:text="${x.forwardedTo.name}"></td>
+                                                                <td th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy hh:mm a')}"></td>
+                                                                <td th:if="${x.isCurrent}">YES</td>
+                                                                <td th:if="${not x.isCurrent}">NO</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </th:block>
                                             </div>
                                         </div>
                                         <hr>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <table class="table table-bordered table-sm">
-                                                    <thead class="thead-light">
-                                                        <tr>
-                                                            <th scope="col" colspan="3">ADDED ITEM LIST</th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="col">#</th>
-                                                            <th scope="col">Item Name</th>
-                                                            <th scope="col">Quantity</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <th scope="row">1</th>
-                                                            <td>Wheel</td>
-                                                            <td>3 piece</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">2</th>
-                                                            <td>Window Pane</td>
-                                                            <td>1 pair</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">3</th>
-                                                            <td>Engine Oil</td>
-                                                            <td>1 litre</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">4</th>
-                                                            <td>Tyre</td>
-                                                            <td>2 piece</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                        <div class="row mt-2">
+                                            <div class="col-12" id="div-job-card-items">
+
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-12 text-right" id="div-total">
+
                                             </div>
                                         </div>
 
@@ -139,10 +139,14 @@
                 </div>
                 <div class="modal-body">
                     <form id="form-forward-job-card">
-                        <div><input type="hidden" name="jobCardId" th:value="${transVehicleJobCard.id}"></div>
+                        <div><input type="hidden" name="transVehicleJobCard.id" th:value="${transVehicleJobCard.id}"></div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Select Whom To forward</label>
-                            <select class="form-control js-data-example-ajax" name="username">
+                            <select class="form-control" name="forwardedTo.id" required>
+                                <option value="">---Please Select---</option>
+                                <th:block th:if="${not #lists.isEmpty(userList)}">
+                                    <option th:each="x,iter : ${userList}" th:value="${x.id}" th:text="${x.name+' ('+x.roles[0].role+') '}"></option>
+                                </th:block>
                             </select>
                         </div>
 
@@ -168,30 +172,7 @@
         $(function() {
             $('#side-link-vehicle').addClass('list-group-item-secondary');
 
-            $('.js-data-example-ajax').select2({
-                ajax: {
-                    url: contextPath + "store/vehicle/job-card/search-forward-user",
-                    dataType: 'json',
-                    data: function(params) {
-                        return {
-                            searchText: params.term
-                        };
-                    },
-                    processResults: function(response, params) {
-                        var data = $.map(response.payload.objectList1, function(org) {
-                            org.id = org.username;
-                            org.text = org.name;
-                            return org;
-                        });
-                        return {
-                            results: data,
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: 'Search item',
-                minimumInputLength: 3
-            });
+
 
             // FORWARD JOB CARD
             $(document).on("submit", "#form-forward-job-card", function(e) {
@@ -199,7 +180,7 @@
                 $('.error-message').remove();
                 $.confirm({
                     title: 'Confirm!',
-                    content: 'Are you sure you want to open the job card?',
+                    content: 'Are you sure you want to forward the job card?',
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
@@ -235,11 +216,8 @@
                                         .responseJSON.errorMessages != null) {
                                         $.each(e.responseJSON.errorMessages, function(key,
                                             value) {
-                                            $("#form-job-card").contents().find(
+                                            $("#form-forward-job-card").contents().find(
                                                 '[name=' + key + ']').after(
-                                                '<span class="error-message">' +
-                                                value + '</span>');
-                                            $('#' + key).html(
                                                 '<span class="error-message">' +
                                                 value + '</span>');
                                         });
@@ -262,56 +240,67 @@
                 });
             });
 
-            $('#div-item-list').html(`
-                        <table id="table-items" class="display table ">
-                            <thead class="text-center">
+            // GET ITEM LIST
+            function getJobCardItemList() {
+                $.ajax({
+                    type: "GET",
+                    url: contextPath + "store/vehicle/job-card/get-all-items/" + jobCardId,
+                    timeout: 600000,
+                    beforeSend: function() {
+                        $('body').block({
+                            message: '<h3>Please wait...</h3>',
+                            css: {
+                                border: '3px solid darkgrey'
+                            }
+                        });
+                    },
+                    success: function(response) {
+                        var content = `
+                        <table id="table-job-card-items" class="table table-bordered" style="width:100%">
+                            <thead class="text-center text-uppercase">
                                 <tr>
                                     <th>SL No.</th>
-                                    <th>Item Name</th>
-                                    <th>Category</th>
-                                    <th>Quantity In Store</th>
-                                    <th >Action</th>
-                                    <th ></th>
+                                    <th>Item</th>
+                                    <th>Brand</th>
+                                    <th>Vendor</th>
+                                    <th>Quantity</th>
+                                    <th>Price/Unit (in Rs)</th>
+                                    <th>Total (in Rs)</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-center">
+                            <tbody></tbody>
+                        </table>`;
+                        $('#div-job-card-items').html(content);
+
+
+                        let total = 0;
+                        $.each(response.payload, function(key, item) {
+                            $('#table-job-card-items').append(`
                                 <tr>
-                                    <td>1</td>
-                                    <td>Screw Driver</td>
-                                    <td>Inventory</td>
-                                    <td>25 piece</td>
-                                    <td>
-                                        <a class="btn btn-primary p-1 deleteItem" href="javascript:void(0)">DELETE</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal">EDIT</a>
-                                    </td>
+                                    <th>${key + 1}</th>
+                                    <th>${item.itemName}</th>
+                                    <th>${item.brandName}</th>
+                                    <th>${item.vendorName}</th>
+                                    <th class="text-center">${item.quantity}</th>
+                                    <th class="text-right">${item.pricePerUnit.toFixed(2)}</th>
+                                    <th class="text-right">${(item.pricePerUnit * item.quantity).toFixed(2)}</th>
                                 </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Stick</td>
-                                    <td>Inventory</td>
-                                    <td>100 piece</td>
-                                    <td>
-                                        <a class="btn btn-primary p-1 deleteItem" href="javascript:void(0)">DELETE</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal">EDIT</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>SL No.</th>
-                                    <th>Item Name</th>
-                                    <th>Category</th>
-                                    <th>Quantity In Store</th>
-                                    <th >Action</th>
-                                    <th ></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-            `);
+                        `);
+                            total += (item.pricePerUnit * item.quantity);
+                        });
+
+                        $('#div-total').html(`<b>TOTAL AMOUNT : Rs. ${total.toFixed(2)}</b>`);
+                    },
+                    error: function(e) {
+                        console.log(e);
+                    },
+                    complete: function() {
+                        $('body').unblock();
+                    }
+                });
+            }
+
+            getJobCardItemList();
         });
     </script>
 </body>

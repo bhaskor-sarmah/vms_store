@@ -24,7 +24,7 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
                                             class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                                <li class="breadcrumb-item"><a href="#">Vehicle Inventory</a></li>
+                                <li class="breadcrumb-item"><a href="#">Brands</a></li>
                             </ol>
                         </nav>
                         <div class="row">
@@ -33,16 +33,16 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-9">
-                                                <h4><i class="fas fa-box-open"></i> Vehicle Inventory</h4>
+                                                <h4><i class="far fa-registered"></i> Brands</h4>
                                             </div>
                                             <div class="col-3">
-                                                <button type="button" data-target="#modalItem" data-toggle="modal" class="btn btn-primary float-right" data-item-id="0">New Item</button>
+                                                <button type="button" data-target="#modalBrand" data-toggle="modal" class="btn btn-primary float-right" data-brand-id="0">New Brand</button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-12" id="div-item-list">
+                                            <div class="col-12" id="div-brand-list">
 
                                             </div>
                                         </div>
@@ -56,50 +56,36 @@
             <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
         </div>
     </main>
-    <!-- Modal Item-->
-    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Modal Brand-->
+    <div class="modal fade" id="modalBrand" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Inventory Add/Edit Inventory</h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="far fa-registered"></i> Add/Edit Brand</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-item">
+                    <form id="form-brand">
                         <div><input type="hidden" class="form-control" name="id"></div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">Item Name</label>
-                            <input type="text" class="form-control" name="name">
+                            <label for="exampleFormControlInput1">Brand Name</label>
+                            <input type="text" class="form-control" name="brandName">
                         </div>
+
                         <div class="form-group">
-                            <label for="exampleFormControlSelect1">Category</label>
-                            <select class="form-control" name="category">
-                                <option value="">---Please Select---</option>
-                                <th:block th:if="${not #lists.isEmpty(categoryList)}">
-                                    <option th:each="x:${categoryList}" th:text="${x.name}" th:value="${x.name}">Consumable</option>
-                                </th:block>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Quantity Bought</label>
-                            <input type="number" class="form-control" name="quantityBought" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Unit</label>
-                            <select class="form-control" name="unit">
-                                <option value="">---Please Select---</option>
-                                <th:block th:if="${not #lists.isEmpty(unitList)}">
-                                    <option th:each="x:${unitList}" th:text="${x.name}" th:value="${x.name}">Consumable</option>
-                                </th:block>
+                            <label for="exampleFormControlSelect1">Status</label>
+                            <select class="form-control" name="status">
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="INACTIVE">INACTIVE</option>
                             </select>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="$('#form-item').submit();">Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#form-brand').submit();">Save changes</button>
                 </div>
             </div>
         </div>
@@ -113,13 +99,13 @@
     <script>
         $(function() {
             // SIDEBAR LINK ACTIVE
-            $('#side-link-inventory').addClass('list-group-item-secondary');
+            $('#side-link-brand').addClass('list-group-item-secondary');
 
             //GET ITEMS
-            getItemList();
+            getBrandList();
 
             // NEW ITEM
-            $(document).on("submit", "#form-item", function(e) {
+            $(document).on("submit", "#form-brand", function(e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -131,7 +117,7 @@
                         confirm: function() {
                             $.ajax({
                                 type: "POST",
-                                url: contextPath + "store/inventory/add",
+                                url: contextPath + "store/brand/add",
                                 timeout: 600000,
                                 beforeSend: function() {
                                     $('body').block({
@@ -141,24 +127,24 @@
                                         }
                                     });
                                 },
-                                data: $("#form-item").serialize(),
+                                data: $("#form-brand").serialize(),
                                 success: function(response) {
-                                    $('#form-item').trigger('reset');
+                                    $('#form-brand').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
-                                        content: "Item Saved Successfully",
+                                        content: "Brand Saved Successfully",
                                         type: 'green',
                                         typeAnimated: true
                                     });
-                                    getItemList();
-                                    $('#modalItem').modal('hide');
+                                    getBrandList();
+                                    $('#modalBrand').modal('hide');
                                 },
                                 error: function(e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
                                         $.each(e.responseJSON.errorMessages, function(key,
                                             value) {
-                                            $("#form-item").contents().find(
+                                            $("#form-brand").contents().find(
                                                 '[name=' + key + ']').after(
                                                 '<span class="error-message">' +
                                                 value + '</span>');
@@ -186,13 +172,13 @@
             });
 
             //DELETE ITEM
-            $(document).on('click', '.delete-item', function(e) {
+            $(document).on('click', '.delete-brand', function(e) {
                 e.preventDefault();
                 var ajax_return;
-                let itemId = e.target.dataset.itemId;
+                let brandId = e.target.dataset.brandId;
                 $.confirm({
                     title: 'Warning!',
-                    content: "Are you sure you want to delete the item?",
+                    content: "Are you sure you want to delete the brand?",
                     type: 'red',
                     typeAnimated: true,
                     buttons: {
@@ -202,7 +188,7 @@
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "DELETE",
-                                        url: contextPath + "store/inventory/delete/" + itemId
+                                        url: contextPath + "store/brand/delete/" + brandId
                                     }).done(function(response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
@@ -217,7 +203,7 @@
                                 buttons: {
                                     ok: function() {
                                         ajax_return.done(function(message) {
-                                            getItemList();
+                                            getBrandList();
                                         })
                                     }
                                 }
@@ -230,26 +216,26 @@
 
 
             //ON MODAL SHOW
-            $(document).on('show.bs.modal', '#modalItem', function(e) {
-                let itemId = e.relatedTarget.dataset.itemId;
-                if (itemId == 0) {
-                    $("#form-item").contents().find('[name=id]').val("");
+            $(document).on('show.bs.modal', '#modalBrand', function(e) {
+                let brandId = e.relatedTarget.dataset.brandId;
+                if (brandId == 0) {
+                    $("#form-brand").contents().find('[name=id]').val("");
+                    $("#form-brand").contents().find('[name=brandName]').val("");
+                    $("#form-brand").contents().find('[name=status]').val("ACTIVE");
                 } else {
-                    $("#form-item").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
-                    $("#form-item").contents().find('[name=name]').val(e.relatedTarget.dataset.name);
-                    $("#form-item").contents().find('[name=category]').val(e.relatedTarget.dataset.category);
-                    $("#form-item").contents().find('[name=quantityBought]').val(e.relatedTarget.dataset.quantityBought);
-                    $("#form-item").contents().find('[name=unit]').val(e.relatedTarget.dataset.unit);
+                    $("#form-brand").contents().find('[name=id]').val(e.relatedTarget.dataset.brandId);
+                    $("#form-brand").contents().find('[name=brandName]').val(e.relatedTarget.dataset.brandName);
+                    $("#form-brand").contents().find('[name=status]').val(e.relatedTarget.dataset.status);
                 }
             });
         });
     </script>
     <script>
         // GET ITEM LIST
-        function getItemList() {
+        function getBrandList() {
             $.ajax({
                 type: "GET",
-                url: contextPath + "store/inventory/all",
+                url: contextPath + "store/brand/all",
                 timeout: 600000,
                 beforeSend: function() {
                     $('body').block({
@@ -261,34 +247,32 @@
                 },
                 success: function(response) {
                     var content = `
-                        <table id="table-items" class="table table-striped jambo_table text-black" style="width:100%">
+                        <table id="table-brands" class="table table-striped jambo_table text-black" style="width:100%">
                             <thead class="text-center">
                                 <tr>
                                     <th>SL No.</th>
-                                    <th>Item Name</th>
-                                    <th>Category</th>
-                                    <th>Quantity In Store</th>
+                                    <th>Brand Name</th>
+                                    <th>Status</th>
                                     <th >Action</th>
                                     <th ></th>
                                 </tr>
                             </thead>
                         </table>`;
-                    $('#div-item-list').html(content);
-                    var tableItems = $('#table-items').DataTable({
+                    $('#div-brand-list').html(content);
+                    var tableBrands = $('#table-brands').DataTable({
                         "columnDefs": [{
                             "className": "text-center",
                             "targets": [0, 1, 2, 3]
                         }]
                     });
 
-                    $.each(response.payload, function(key, item) {
-                        tableItems.row.add([
+                    $.each(response.payload, function(key, brand) {
+                        tableBrands.row.add([
                             `<b>${key + 1}</b>`,
-                            `${item.name}`,
-                            `${item.category}`,
-                            `${item.quantityBought} ${item.unit}`,
-                            `<a class="btn btn-primary p-1 delete-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a>`,
-                            `<a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal" data-item-id="${item.id}" data-name="${item.name}" data-category="${item.category}" data-unit="${item.unit}" data-quantity-in-store="${item.quantityBought}">EDIT</a>`
+                            `${brand.brandName}`,
+                            `${brand.status}`,
+                            `<a class="btn btn-primary p-1" href="#modalBrand" data-toggle="modal" data-brand-id="${brand.id}" data-brand-name="${brand.brandName}" data-status="${brand.status}">EDIT</a>`,
+                            `<a class="btn btn-danger p-1 delete-brand" data-brand-id="${brand.id}" href="javascript:void(0)">DELETE</a>`
                         ]).draw(false);
                     });
                 },

@@ -69,7 +69,7 @@
     </main>
     <!-- Modal Vehicle-->
     <div class="modal fade" id="modalVehicle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-car"></i> Add/Edit Vehicle</h5>
@@ -79,11 +79,6 @@
                 </div>
                 <div class="modal-body">
                     <form id="form-vehicle">
-                        <div><input type="hidden" name="id"></div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Registration No Of Vehicle</label>
-                            <input type="text" class="form-control" name="vehicleRegistrationNo">
-                        </div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Vehicle Type</label>
                             <select class="form-control" name="vehicleType.vehicleTypeId" required>
@@ -91,6 +86,25 @@
                                     <option th:each="x:${vehicleTypeList}" th:text="${x.title}" th:value="${x.vehicleTypeId}"></option>
                                 </th:block>
                           </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Registration No Of Vehicle (<span class="text-success">eg: AS-01-XX-1234</span>)</label>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="regnPart1" maxlength="2" minlength="2" required onkeyup="this.value = this.value.toUpperCase(); if (/\d/g.test(this.value)) this.value = this.value.replace(/\d/g,'')">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">-</span>
+                                </div>
+                                <input type="text" class="form-control" id="regnPart2" maxlength="2" minlength="2" required onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">-</span>
+                                </div>
+                                <input type="text" class="form-control" id="regnPart3" maxlength="2" onkeyup="this.value = this.value.toUpperCase(); if (/\d/g.test(this.value)) this.value = this.value.replace(/\d/g,'')">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">-</span>
+                                </div>
+                                <input type="text" class="form-control" id="regnPart4" maxlength="4" minlength="4" required onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
+                            </div>
+                            <span><span name="vehicleRegistrationNo"></span></span>
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Category</label>
@@ -147,6 +161,15 @@
             $(document).on("submit", "#form-vehicle", function(e) {
                 e.preventDefault();
                 $('.error-message').remove();
+                let regnNo = "";
+                if ($('#regnPart3').val().trim() === "") {
+                    regnNo = $('#regnPart1').val() + "-" + $('#regnPart2').val() + "-" + $('#regnPart4').val();
+                } else {
+                    regnNo = $('#regnPart1').val() + "-" + $('#regnPart2').val() + "-" + $('#regnPart3').val() + "-" + $('#regnPart4').val();
+                }
+                let form = $(this)[0]; // You need to use standard javascript object here
+                let formData = new FormData(form);
+                formData.set("vehicleRegistrationNo", regnNo);
                 $.confirm({
                     title: 'Confirm!',
                     content: 'Are you sure you submit the form ?',
@@ -166,7 +189,9 @@
                                         }
                                     });
                                 },
-                                data: $("#form-vehicle").serialize(),
+                                data: formData,
+                                contentType: false,
+                                processData: false,
                                 success: function(response) {
                                     $('#form-vehicle').trigger('reset');
                                     $.alert({
@@ -210,66 +235,16 @@
                 });
             });
 
-            //DELETE VEHICLE
-            $(document).on('click', '.delete-vehicle', function(e) {
-                e.preventDefault();
-                var ajax_return;
-                let vehicleId = e.target.dataset.vehicleId;
-                $.confirm({
-                    title: 'Warning!',
-                    content: "Are you sure you want to delete the vehicle?",
-                    type: 'red',
-                    typeAnimated: true,
-                    buttons: {
-                        confirm: function() {
-                            $.confirm({
-                                content: function() {
-                                    var self = this;
-                                    return ajax_return = $.ajax({
-                                        type: "DELETE",
-                                        url: contextPath + "store/vehicle/delete/" + vehicleId
-                                    }).done(function(response) {
-                                        self.setTitle("Success!");
-                                        self.setType("green");
-                                        self.setContent(response.message);
-                                    }).fail(function(e) {
-                                        self.setTitle(e.responseJSON.httpStatus);
-                                        self.setType("red");
-                                        self.setContent("ERROR");
-                                    })
-                                    return true;
-                                },
-                                buttons: {
-                                    ok: function() {
-                                        ajax_return.done(function(message) {
-                                            getVehicleList();
-                                        })
-                                    }
-                                }
-                            });
-                        },
-                        cancel: function() {}
-                    }
-                });
-            });
-
-
             //ON MODAL SHOW
             $(document).on('show.bs.modal', '#modalVehicle', function(e) {
                 $('.error-message').remove();
-                let vehicleId = e.relatedTarget.dataset.vehicleId;
-                $("#form-vehicle").contents().find('[name=mileage]').val("0");
-                if (vehicleId == 0) {
-                    $("#form-vehicle").contents().find('[name=id]').val("");
-                } else {
-                    $("#form-vehicle").contents().find('[name=id]').val(e.relatedTarget.dataset.vehicleId);
-                    $("#form-vehicle").contents().find('[name=vehicleModel]').val(e.relatedTarget.dataset.vehicleModel);
-                    $("#form-vehicle").contents().find('[name=vehicleRegistrationNo]').val(e.relatedTarget.dataset.vehicleRegistrationNo);
-                    $("#form-vehicle").contents().find('[name="vehicleType.vehicleTypeId"]').val(e.relatedTarget.dataset.vehicleTypeId);
-                    $("#form-vehicle").contents().find('[name="vehicleCategory.vehicleCategoryId"]').val(e.relatedTarget.dataset.vehicleCategoryId);
-                    $("#form-vehicle").contents().find('[name="fuelType.fuelTypeId"]').val(e.relatedTarget.dataset.fuelTypeId);
-                    $("#form-vehicle").contents().find('[name=mileage]').val(e.relatedTarget.dataset.mileage);
-                }
+                $("#form-vehicle").contents().find('[name=id]').val("");
+                $("#form-vehicle").contents().find('[name=vehicleModel]').val("");
+                $("#form-vehicle").contents().find('[name=vehicleRegistrationNo]').val("");
+                $("#form-vehicle").contents().find('[name="vehicleType.vehicleTypeId"]').val(1);
+                $("#form-vehicle").contents().find('[name="vehicleCategory.vehicleCategoryId"]').val("");
+                $("#form-vehicle").contents().find('[name="fuelType.fuelTypeId"]').val("");
+                $("#form-vehicle").contents().find('[name=mileage]').val("");
             });
         });
     </script>
@@ -305,11 +280,9 @@
                                     <th>Category</th>
                                     <th>Model No</th>
                                     <th>Fuel</th>
-                                    <th colspan="4">Action</th>
+                                    <th colspan="2">Action</th>
                                 </tr>
                                 <tr class="d-none">
-                                    <th></th>
-                                    <th></th>
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -335,6 +308,11 @@
                             jobCardButton = `<a class="btn btn-success p-1" href="${contextPath}store/vehicle/job-card/${vehicle.latestJobCardId}">FORWARD JOB CARD</a>`;
                         } else if (vehicle.latestJobCardStatus == "FORWARDED") {
                             jobCardButton = `<a class="btn btn-danger p-1" href="${contextPath}store/vehicle/job-card/${vehicle.latestJobCardId}">VIEW JOB CARD</a>`;
+                        } else if (vehicle.latestJobCardStatus == "APPROVED") {
+                            jobCardButton = `<a class="btn btn-danger p-1" href="${contextPath}store/vehicle/job-card/${vehicle.latestJobCardId}">VIEW JOB CARD</a>`;
+                        }
+                        if (vehicle.scrappedStatus == "SCRAPPED") {
+                            jobCardButton = `<strong class="text-center text-danger">VEHICLE SCRAPPED</strong>`;
                         }
                         tableVehicle.row.add([
                             `<b>${key + 1}</b>`,
@@ -344,10 +322,7 @@
                             `${vehicle.vehicleModel}`,
                             `${vehicle.fuelType.title}`,
                             `${jobCardButton}`,
-                            `<a class="btn btn-primary p-1" href="${contextPath}store/vehicle/${vehicle.id}">VIEW</a>`,
-                            `<a class="btn btn-primary p-1" href="#modalVehicle" data-toggle="modal" data-vehicle-id="${vehicle.id}" data-vehicle-registration-no="${vehicle.vehicleRegistrationNo}" data-vehicle-type-id="${vehicle.vehicleType.vehicleTypeId}"
-                            data-vehicle-model="${vehicle.vehicleModel}" data-vehicle-category-id="${vehicle.vehicleCategory.vehicleCategoryId}" data-fuel-type-id="${vehicle.fuelType.fuelTypeId}" data-mileage="${vehicle.mileage}"  >EDIT</a>`,
-                            `<a class="btn btn-primary p-1 delete-vehicle" data-vehicle-id="${vehicle.id}" href="javascript:void(0)">DELETE</a>`
+                            `<a class="btn btn-primary p-1" href="${contextPath}store/vehicle/${vehicle.id}">VIEW</a>`
                         ]).draw(false);
                     });
                 },

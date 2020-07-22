@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,5 +36,17 @@ public class TransVehicleJobCard extends Auditable{
 
     @OneToMany(mappedBy = "transVehicleJobCard")
     private List<TransVehicleJobCardItems> items = new ArrayList<>();
+
+    @OneToMany(mappedBy = "transVehicleJobCard")
+    private List<TransVehicleJobCardForward> forwards = new ArrayList<>();
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date openedDate = new Date();
+
+    @Temporal(TemporalType.TIMESTAMP)
+	private Date cancelledDate = new Date();
+    
+    @Temporal(TemporalType.TIMESTAMP)
+	private Date closedDate = new Date();
 
 }

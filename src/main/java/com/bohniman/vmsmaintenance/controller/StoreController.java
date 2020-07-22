@@ -10,7 +10,10 @@ import javax.validation.Valid;
 
 import com.bohniman.vmsmaintenance.exception.BadRequestException;
 import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
+import com.bohniman.vmsmaintenance.model.MasterBrand;
 import com.bohniman.vmsmaintenance.model.MasterFuelType;
+import com.bohniman.vmsmaintenance.model.MasterItem;
+import com.bohniman.vmsmaintenance.model.MasterItemBrand;
 import com.bohniman.vmsmaintenance.model.MasterRack;
 import com.bohniman.vmsmaintenance.model.MasterShelves;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
@@ -20,7 +23,10 @@ import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
+import com.bohniman.vmsmaintenance.model.TransVehicleJobCardForward;
+import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItems;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
+import com.bohniman.vmsmaintenance.payload.ScrapVehiclePayload;
 import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
 import com.bohniman.vmsmaintenance.service.InventoryUnitService;
 import com.bohniman.vmsmaintenance.service.StoreService;
@@ -502,9 +508,13 @@ public class StoreController {
     @GetMapping(value = "/vehicle/{vehicleId}/open-job-card")
     public ModelAndView openJobCard(ModelAndView mv, @PathVariable("vehicleId") Long vehicleId) {
         mv = new ModelAndView("store/open_job_card");
-        MasterVehicle masterVehicle = storeService.getVehicleById(vehicleId);
 
-        mv.addObject("masterVehicle", masterVehicle);
+        TransVehicleJobCard transVehicleJobCard = storeService.initiateJobCard(vehicleId);
+        mv.addObject("transVehicleJobCard", transVehicleJobCard);
+
+        List<TransVendorItem> transVendorItemList = storeService.getAllVendorItemsForJobCard();
+        mv.addObject("transVendorItemList", transVendorItemList);
+
         return mv;
     }
 
@@ -546,10 +556,9 @@ public class StoreController {
     // ========================================================================
     @PostMapping(value = { "/vehicle/job-card/open" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> openJobCard(@Valid @ModelAttribute TransVehicleJobCard transVehicleJobCard,
-            BindingResult bindingResult) throws BindException {
+    public ResponseEntity<JsonResponse> openJobCard(@RequestParam("jobCardId") Long jobCardId, @RequestParam("vehicleId") Long vehicleId) {
 
-        JsonResponse res = storeService.openJobCard(transVehicleJobCard);
+        JsonResponse res = storeService.openJobCard(vehicleId, jobCardId);
         if (res.getResult()) {
             return ResponseEntity.ok(res);
         } else {
@@ -578,6 +587,11 @@ public class StoreController {
 
         TransVehicleJobCard transVehicleJobCard = storeService.getJobCardById(jobCardId);
         mv.addObject("transVehicleJobCard", transVehicleJobCard);
+
+        if(Objects.equals(transVehicleJobCard.getStatus(), "CREATED")){
+            mv.addObject("userList", storeService.getJobCardForwarableUserList());
+        }
+
         return mv;
     }
 
@@ -625,10 +639,10 @@ public class StoreController {
     // ========================================================================
     @PutMapping(value = { "/vehicle/job-card/forward" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> openJobCard(@RequestParam("jobCardId") Long jobCardId,
-            @RequestParam("username") String username) throws BindException {
+    public ResponseEntity<JsonResponse> openJobCard(@Valid @ModelAttribute TransVehicleJobCardForward transVehicleJobCardForward,
+    BindingResult bindingResult) throws BindException {
 
-        JsonResponse res = storeService.forwardJobCard(jobCardId, username);
+        JsonResponse res = storeService.forwardJobCard(transVehicleJobCardForward);
         if (res.getResult()) {
             return ResponseEntity.ok(res);
         } else {
@@ -653,19 +667,19 @@ public class StoreController {
     // }
 
     // ========================================================================
-    // # GET SEARCHED FORWARD USER
+    // # GET SEARCHED FORWARD 
     // ========================================================================
-    @GetMapping(value = { "/vehicle/job-card/search-forward-user" })
-    public ResponseEntity<JsonResponse> searchForwardUser(@RequestParam(value = "searchText") String searchText) {
+    // @GetMapping(value = { "/vehicle/job-card/search-forward-user" })
+    // public ResponseEntity<JsonResponse> searchForwardUser(@RequestParam(value = "searchText") String searchText) {
 
-        JsonResponse res = storeService.searchForwardUser(searchText);
+    //     JsonResponse res = storeService.searchForwardUser(searchText);
 
-        if (Objects.equals(res.getResult(), true)) {
-            return ResponseEntity.ok().body(res);
-        } else {
-            throw new BadRequestException("Operation Failed");
-        }
-    }
+    //     if (Objects.equals(res.getResult(), true)) {
+    //         return ResponseEntity.ok().body(res);
+    //     } else {
+    //         throw new BadRequestException("Operation Failed");
+    //     }
+    // }
 
     // TO BE DELETED
     // ========================================================================
@@ -712,6 +726,285 @@ public class StoreController {
         List<TransVehicleJobCard> jobCards = storeService.getJobCardsByDateRange(dateFrom, dateTo);
         mv.addObject("jobCards", jobCards);
 
+        return mv;
+    }
+
+    // ========================================================================
+    // ITEM PAGE
+    // ========================================================================
+    @GetMapping(value = "/item")
+    public ModelAndView pageItem(ModelAndView mv) {
+        mv = new ModelAndView("store/item_home");
+        mv.addObject("categoryList", new InventoryCategoryService().getAll());
+        mv.addObject("unitList", new InventoryUnitService().getAll());
+        return mv;
+    }
+
+    // ========================================================================
+    // ADD NEW  ITEM
+    // ========================================================================
+    @PostMapping(value = { "/item/add" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addItem(
+            @Valid @ModelAttribute MasterItem masterItem, BindingResult bindingResult)
+            throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewItem(masterItem);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // LIST ALL ITEM
+    // ========================================================================
+    @GetMapping(value = { "/item/all" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllItem() {
+
+        JsonResponse res = storeService.getAllItem();
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE ITEM
+    // ========================================================================
+    @DeleteMapping(value = { "/item/delete/{itemId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteItem(@PathVariable("itemId") Long itemId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteItemById(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+    
+
+    // ========================================================================
+    // BRAND PAGE
+    // ========================================================================
+    @GetMapping(value = "/brand")
+    public ModelAndView pageBrand(ModelAndView mv) {
+        mv = new ModelAndView("store/brand_home");
+        return mv;
+    }
+
+    // ========================================================================
+    // ADD NEW  BRAND
+    // ========================================================================
+    @PostMapping(value = { "/brand/add" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addBrand(
+            @Valid @ModelAttribute MasterBrand masterBrand, BindingResult bindingResult)
+            throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewBrand(masterBrand);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // LIST ALL BRAND
+    // ========================================================================
+    @GetMapping(value = { "/brand/all" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllBrand() {
+
+        JsonResponse res = storeService.getAllBrand();
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE BRAND
+    // ========================================================================
+    @DeleteMapping(value = { "/brand/delete/{brandId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteBrand(@PathVariable("brandId") Long brandId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteBrandById(brandId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // ITEM DETAIL PAGE
+    // ========================================================================
+    @GetMapping(value = "/item/{itemId}")
+    public ModelAndView pageItemDetail(ModelAndView mv, @PathVariable("itemId") Long itemId) {
+        mv = new ModelAndView("store/item_detail");
+        MasterItem masterItem = storeService.getItemById(itemId);
+        mv.addObject("masterItem", masterItem);
+
+        List<MasterBrand> brandList = storeService.getAllBrandList();
+        mv.addObject("brandList", brandList);
+
+        return mv;
+    }
+
+    // ========================================================================
+    // ADD NEW ITEM BRAND VARIATION
+    // ========================================================================
+    @PostMapping(value = { "/item/item-brand-variation/add" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addItemBrandVariation(
+            @Valid @ModelAttribute MasterItemBrand masterItemBrand, BindingResult bindingResult)
+            throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewItemBrandVariation(masterItemBrand);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // LIST ALL ITEM BRAND VARIATION
+    // ========================================================================
+    @GetMapping(value = { "/item/item-brand-variation/{itemId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllItemBrandVariation(@PathVariable("itemId") Long itemId) {
+
+        JsonResponse res = storeService.getAllItemBrandVariation(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE ITEM BRAND VARIATION
+    // ========================================================================
+    @DeleteMapping(value = { "/item/item-brand-variation/delete/{itemId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteItemBrandVariation(@PathVariable("itemId") Long itemId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteItemBrandVariationById(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // SCRAP VEHICLE
+    // ========================================================================
+    @PutMapping(value = { "/vehicle/scrap" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> scrapVehicle(
+            @Valid @ModelAttribute ScrapVehiclePayload scrapVehiclePayload, BindingResult bindingResult)
+            throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.scrapVehicle(scrapVehiclePayload);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // ADD NEW JOB CARD ITEM
+    // ========================================================================
+    @PostMapping(value = { "/vehicle/job-card/add-item" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addNewJobCardItem(
+            @Valid @ModelAttribute TransVehicleJobCardItems transVehicleJobCardItem, BindingResult bindingResult)
+            throws BindException {
+
+        // FOR QUANTITY LESS THAN MOQ
+        TransVendorItem transVendorItem = storeService.getVendorItemById(transVehicleJobCardItem.getTransVendorItem().getId());
+        if (Double.parseDouble(transVendorItem.getMasterItemBrand().getMoq()) > transVehicleJobCardItem.getQuantity()){
+                bindingResult.rejectValue("quantity", "error.quantity", " * Please enter minimum quantity : "+transVendorItem.getMasterItemBrand().getMoq());
+        }
+
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.addNewJobCardItem(transVehicleJobCardItem);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // GET ALL JOB CARD ITEMS
+    // ========================================================================
+    @GetMapping(value = { "/vehicle/job-card/get-all-items/{jobCardId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getJobCardItemList(@PathVariable("jobCardId") Long jobCardId) {
+
+        JsonResponse res = storeService.getJobCardItemList(jobCardId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE JOB CARD ITEM
+    // ========================================================================
+    @DeleteMapping(value = { "/vehicle/job-card-item/delete/{itemId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteJobCardItem(@PathVariable("itemId") Long itemId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteJobCardItem(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // JOB CARD VENDOR ORDER
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/{jobCardId}/vendor-order")
+    public ModelAndView jobCardVendorOrder(ModelAndView mv, @PathVariable("jobCardId") Long jobCardId) {
+        mv = new ModelAndView("store/view_job_card_vendor_order");
+
+        TransVehicleJobCard transVehicleJobCard = storeService.getJobCardById(jobCardId);
+        mv.addObject("transVehicleJobCard", transVehicleJobCard);
         return mv;
     }
 

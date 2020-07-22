@@ -31,4 +31,6 @@ public class TransBill {
     @OneToMany(mappedBy = "transBill", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.REFRESH }, fetch = FetchType.LAZY)
     List<TransChallan> challanList = new ArrayList<>();
+
+    private String status;//RECEIVED, APPROVED, PAID
 }

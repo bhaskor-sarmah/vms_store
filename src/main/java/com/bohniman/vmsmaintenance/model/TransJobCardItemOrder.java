@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,27 +22,24 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class TransVehicleJobCardItems extends Auditable {
-
+public class TransJobCardItemOrder extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double quantity;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_vendor_item")
-    private TransVendorItem transVendorItem;
+    @JoinColumn(name = "fk_vendor")
+    private MasterVendor vendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_job_card")
     private TransVehicleJobCard transVehicleJobCard;
 
-    @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
-    private Boolean isDeleted = false;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date orderDate = new Date();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_job_card_order", nullable = true)
-    TransJobCardItemOrder order;
+    private Double totalAmount;
+
+    private String orderStatus; //CREATED,PLACED,RECEIVED,CLOSED
 
 }
