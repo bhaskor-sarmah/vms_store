@@ -25,7 +25,7 @@ public class TransVendorItem {
     private Long id;
 
     @NotBlank(message = "* Price per unit is required")
-    private Long pricePerUnit;
+    private Double pricePerUnit;
 
     @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
     private Boolean isApprovedItem = false; // L1 Default Item

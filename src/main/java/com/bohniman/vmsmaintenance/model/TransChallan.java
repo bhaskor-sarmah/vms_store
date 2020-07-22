@@ -32,4 +32,8 @@ public class TransChallan {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_trans_bill")
     private TransBill transBill;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_job_card_order", nullable = true)
+    TransJobCardItemOrder order;
 }

@@ -1,19 +1,24 @@
 package com.bohniman.vmsmaintenance.payload;
 
-import org.springframework.stereotype.Component;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Component
 @Data
 @NoArgsConstructor
-public class TransVendorItemPayload {
-
+public class JobCardItemPayload {
     private Long id;
 
     private String itemName;
-    private String itemBrand;
+
+    private String brandName;
+
+    private String vendorName;
+
+    private String itemUnit;
+
+    private Double pricePerUnit;
+
     private String moq;
-    private Double itemPrice;
+
+    private Double quantity;
 }

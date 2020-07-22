@@ -5,7 +5,7 @@
     <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <title>APVMS | STORE</title>
 </head>
 
@@ -24,13 +24,13 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item"><a th:href="@{/store/vehicle}">Vehicle</a></li>
-                                <li class="breadcrumb-item text-success" th:if="${masterVehicle != null}" th:text="${masterVehicle.vehicleRegistrationNo}"></li>
+                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
                                 <li class="breadcrumb-item">
                                     OPEN JOB CARD
                                 </li>
                             </ol>
                         </nav>
-                        <div class="row" th:if="${masterVehicle != null}">
+                        <div class="row" th:if="${transVehicleJobCard.masterVehicle != null}">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -39,11 +39,11 @@
                                                 <h4><i class="fas fa-credit-card"></i> Open Job Card</h4>
                                             </div>
                                             <div class="col-3">
-                                                <h4><span class="badge badge-success p-2">Regn. No : <span th:text="${masterVehicle.vehicleRegistrationNo}"></span></span>
+                                                <h4><span class="badge badge-success p-2">Regn. No : <span th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span></span>
                                                 </h4>
                                             </div>
                                             <div class="col-3">
-                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/__${masterVehicle.id}__}">VIEW VEHICLE</a>
+                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW VEHICLE</a>
                                             </div>
                                             <div class="col-3">
                                                 <a class="btn btn-primary p-2 float-right" href="javascript:void(0)" id="btn-open-job-card">OPEN JOB CARD</a>
@@ -52,37 +52,23 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-12">
-                                                <table class="table table-bordered table-sm" id="table-items">
-                                                    <thead class="thead-light">
-                                                        <tr>
-                                                            <th scope="col">Item Name</th>
-                                                            <th scope="col">Quantity</th>
-                                                            <th scope="col">Action</th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="col">
-                                                                <select class="form-control js-data-example-ajax w-100" id="selectItem">
-                                                                </select>
-                                                            </th>
-                                                            <th scope="col">
-                                                                <div class="input-group ">
-                                                                    <input type="number" class="form-control" placeholder="Quantity" id="quantity" onkeyup="checkQuantity(this);" value="0" min="1">
-                                                                    <div class="input-group-append">
-                                                                        <span class="input-group-text" id="basic-addon2">piece</span>
-                                                                    </div>
-                                                                </div>
-                                                            </th>
-                                                            <th scope="col"><a class="btn btn-primary p-1" href="#" id="btnAddItem">ADD ITEM</a></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="tbody-item">
-
-                                                    </tbody>
-                                                </table>
+                                            <div class="col-8">
+                                                <h5>List of Items Added</h5>
+                                            </div>
+                                            <div class="col-4">
+                                                <a class="btn btn-primary p-2 float-right" href="#modalItem" data-toggle="modal">+ ADD ITEMS</a>
                                             </div>
                                         </div>
+                                        <div class="row mt-2">
+                                            <div class="col-12" id="div-job-card-items">
 
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-12 text-right" id="div-total">
+
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -95,34 +81,109 @@
     </main>
     <!-- Modal Item-->
     <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-xlg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Assign Items from Inventory</h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-cubes"></i> Assign Items to Job Card</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Select Item (<span class="text-success">26 Available</span>)</label>
-                            <select class="form-control">
-                                <option value="">---Please Select---</option>
-                                <option value="Lathi">Lathi</option>
-                                <option value="Siren">Siren</option>
-                                <option value="Diesel">Diesel</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Quantity</label>
-                            <input type="number" class="form-control" id="exampleFormControlInput1">
-                        </div>
-                    </form>
+                    <th:block th:if="${#lists.isEmpty(transVendorItemList)}">
+                        <h5 class="text-center">No Item Available</h5>
+                    </th:block>
+                    <th:block th:if="${not #lists.isEmpty(transVendorItemList)}">
+                        <table class="table table-hover table-bordered table-sm table-striped" id="tableItem">
+                            <thead class="text-uppercase">
+                                <tr>
+                                    <th>Sl No.</th>
+                                    <th>Item</th>
+                                    <th>Brand</th>
+                                    <th>Vendor</th>
+                                    <th>Minimum Order</th>
+                                    <th>Price per unit</th>
+                                    <th>Add</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x,iter:${transVendorItemList}">
+                                    <td th:text="${iter.count}"></td>
+                                    <td th:text="${x.masterItemBrand.item.itemName}"></td>
+                                    <td th:text="${x.masterItemBrand.brand.brandName}"></td>
+                                    <td th:text="${x.masterVendor.vendorName}"></td>
+                                    <td th:text="${x.masterItemBrand.moq +' '+x.masterItemBrand.item.itemUnit}"></td>
+                                    <td th:text="${'Rs '+x.pricePerUnit +' / '+x.masterItemBrand.item.itemUnit}"></td>
+                                    <td><a class="btn btn-primary p-1 w-100" href="#modalAddItem" data-toggle="modal" th:attr="data-vendor-item-id=${x.id},data-item-unit=${x.masterItemBrand.item.itemUnit},data-item-name=${x.masterItemBrand.item.itemName},data-moq=${x.masterItemBrand.moq},data-price-per-unit=${x.pricePerUnit}">ADD</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </th:block>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Assign</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Item-->
+    <div class="modal fade" id="modalAddItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"> <span id="modalAddItemHeader"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-add-item">
+                        <div><input type="hidden" name="transVendorItem.id"></div>
+                        <div><input type="hidden" name="transVehicleJobCard.id" th:value="${transVehicleJobCard.id}"></div>
+                        <div class="row mt-2">
+                            <div class="col-7">
+                                <h5>Item Name</h5>
+                            </div>
+                            <div class="col-5">
+                                <span id="addItemName"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-7">
+                                <h5>Minimum Order Quantity</h5>
+                            </div>
+                            <div class="col-5">
+                                <span id="addMoq"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-7">
+                                <h5>Price per unit</h5>
+                            </div>
+                            <div class="col-5">
+                                <span id="addPricePerUnit"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-7">
+                                <h5>Enter Total Items</h5>
+                            </div>
+                            <div class="col-5 text-nowrap">
+                                : <input type="text" name="quantity" required>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-12 text-center" id="item-error">
+
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-secondary">Assign item</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -131,55 +192,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
     <script th:inline="javascript">
-        var vehicleId = /*[[${masterVehicle.id}]]*/ '';
+        var vehicleId = /*[[${transVehicleJobCard.masterVehicle.id}]]*/ '';
+        var jobCardId = /*[[${transVehicleJobCard.id}]]*/ '';
 
         $(function() {
             $('#side-link-vehicle').addClass('list-group-item-secondary');
 
-            $('.js-data-example-ajax').select2({
-                ajax: {
-                    url: contextPath + "store/get-search-vendor-item",
-                    dataType: 'json',
-                    data: function(params) {
-                        return {
-                            searchText: params.term
-                        };
-                    },
-                    processResults: function(response, params) {
-                        var data = $.map(response.payload.objectList1, function(org) {
-                            org.id = org.id;
-                            org.text = org.itemName;
-                            return org;
-                        });
-                        return {
-                            results: data,
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: 'Search item',
-                minimumInputLength: 3
-            });
+            $('#tableItem').DataTable();
+
+            getJobCardItemList();
 
             // ADD ITEM
-            $(document).on("click", "#btnAddItem", function(e) {
-                let rowCount = $('#table-items tbody tr').length;
-                const quantity = $('#quantity').val();
-                let selectedItem = $('#selectItem').select2('data')
-                $('#table-items tbody').append(
-                    `<tr id="item-${rowCount + 1}">
-                        <td>${selectedItem[0].text}
-                            <span><input type="hidden" value="${selectedItem[0].id}" class="input-item-id"></span>
-                        </td>
-                        <td>${quantity} piece
-                            <span><input type="hidden" value="${quantity}" class="input-item-quantity"></span>
-                        </td>
-                        <td><a class="btn btn-danger p-1 remove-item" href="javascript:void(0);" data-row-id="${rowCount + 1}">REMOVE</a></td>
-                    </tr>`
-                );
+            $(document).on("show.bs.modal", "#modalAddItem", function(e) {
+                $('#modalAddItemHeader').html(e.relatedTarget.dataset.itemName);
+                $('#addItemName').html(": " + e.relatedTarget.dataset.itemName);
+                $('#addMoq').html(": " + e.relatedTarget.dataset.moq + " " + e.relatedTarget.dataset.itemUnit);
+                $('#addPricePerUnit').html(": Rs. " + e.relatedTarget.dataset.pricePerUnit);
+                $('#form-add-item').contents().find('[name="transVendorItem.id"]').val(e.relatedTarget.dataset.vendorItemId)
             });
 
             // REMOVE ITEM
@@ -188,6 +220,71 @@
                 $(`#table-items tbody #item-${rowId}`).remove();
             });
 
+            // ADD ITEM
+            $(document).on("submit", "#form-add-item", function(e) {
+                e.preventDefault();
+                $('#item-error').html("");
+                let form = $(this)[0]; // You need to use standard javascript object here
+                let formData = new FormData(form);
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you add the item?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/vehicle/job-card/add-item",
+                                timeout: 600000,
+                                beforeSend: function() {
+                                    $('body').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                success: function(response) {
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: "Item Added Successfully",
+                                        type: 'green',
+                                        typeAnimated: true
+                                    });
+                                    getJobCardItemList();
+                                    $('#modalAddItem').modal('hide');
+                                },
+                                error: function(e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        $.each(e.responseJSON.errorMessages, function(key,
+                                            value) {
+                                            $("#item-error").append(
+                                                '<span class="error-message">' +
+                                                value + '</span>');
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function() {
+                                    $('body').unblock();
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
 
             // OPEN JOB CARD
             $(document).on("click", "#btn-open-job-card", function(e) {
@@ -213,7 +310,8 @@
                                     });
                                 },
                                 data: {
-                                    "masterVehicle.id": vehicleId
+                                    "vehicleId": vehicleId,
+                                    "jobCardId": jobCardId
                                 },
                                 success: function(response) {
                                     $.confirm({
@@ -259,8 +357,112 @@
                     }
                 });
             });
+        });
+
+        // GET ITEM LIST
+        function getJobCardItemList() {
+            $.ajax({
+                type: "GET",
+                url: contextPath + "store/vehicle/job-card/get-all-items/" + jobCardId,
+                timeout: 600000,
+                beforeSend: function() {
+                    $('body').block({
+                        message: '<h3>Please wait...</h3>',
+                        css: {
+                            border: '3px solid darkgrey'
+                        }
+                    });
+                },
+                success: function(response) {
+                    var content = `
+                        <table id="table-job-card-items" class="table table-bordered" style="width:100%">
+                            <thead class="text-center text-uppercase">
+                                <tr>
+                                    <th>SL No.</th>
+                                    <th>Item</th>
+                                    <th>Brand</th>
+                                    <th>Vendor</th>
+                                    <th>Quantity</th>
+                                    <th>Price/Unit (in Rs)</th>
+                                    <th>Total (in Rs)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>`;
+                    $('#div-job-card-items').html(content);
 
 
+                    let total = 0;
+                    $.each(response.payload, function(key, item) {
+                        $('#table-job-card-items').append(`
+                                <tr>
+                                    <th>${key + 1}</th>
+                                    <th>${item.itemName}</th>
+                                    <th>${item.brandName}</th>
+                                    <th>${item.vendorName}</th>
+                                    <th class="text-center">${item.quantity}</th>
+                                    <th class="text-right">${item.pricePerUnit.toFixed(2)}</th>
+                                    <th class="text-right">${(item.pricePerUnit * item.quantity).toFixed(2)}</th>
+                                    <th><a class="btn btn-danger p-0 w-100 remove-item" href="javascript:void(0);" data-job-card-item-id="${item.id}">REMOVE</a></th>
+                                </tr>
+                        `);
+                        total += (item.pricePerUnit * item.quantity);
+                    });
+
+                    $('#div-total').html(`<b>TOTAL AMOUNT : Rs. ${total.toFixed(2)}</b>`);
+                },
+                error: function(e) {
+                    console.log(e);
+                },
+                complete: function() {
+                    $('body').unblock();
+                }
+            });
+        }
+
+        //REMOVE ITEM
+        $(document).on('click', '.remove-item', function(e) {
+            e.preventDefault();
+            var ajax_return;
+            let jobCardItemId = e.target.dataset.jobCardItemId;
+            $.confirm({
+                title: 'Warning!',
+                content: "Are you sure you want to remove the item?",
+                type: 'red',
+                typeAnimated: true,
+                buttons: {
+                    confirm: function() {
+                        $.confirm({
+                            content: function() {
+                                var self = this;
+                                return ajax_return = $.ajax({
+                                    type: "DELETE",
+                                    url: contextPath + "store/vehicle/job-card-item/delete/" + jobCardItemId
+                                }).done(function(response) {
+                                    self.setTitle("Success!");
+                                    self.setType("green");
+                                    self.setContent(response.message);
+                                    getJobCardItemList();
+                                }).fail(function(e) {
+                                    self.setTitle(e.responseJSON.httpStatus);
+                                    self.setType("red");
+                                    self.setContent("ERROR");
+                                })
+                                return true;
+                            },
+                            buttons: {
+                                ok: function() {
+                                    ajax_return.done(function(message) {
+                                        getBrandList();
+                                    })
+                                }
+                            }
+                        });
+                    },
+                    cancel: function() {}
+                }
+            });
         });
 
         function checkQuantity(el) {

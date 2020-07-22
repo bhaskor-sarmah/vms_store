@@ -23,6 +23,8 @@ import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
+import com.bohniman.vmsmaintenance.model.TransVehicleJobCardForward;
+import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItems;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.payload.ScrapVehiclePayload;
 import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
@@ -506,9 +508,13 @@ public class StoreController {
     @GetMapping(value = "/vehicle/{vehicleId}/open-job-card")
     public ModelAndView openJobCard(ModelAndView mv, @PathVariable("vehicleId") Long vehicleId) {
         mv = new ModelAndView("store/open_job_card");
-        MasterVehicle masterVehicle = storeService.getVehicleById(vehicleId);
 
-        mv.addObject("masterVehicle", masterVehicle);
+        TransVehicleJobCard transVehicleJobCard = storeService.initiateJobCard(vehicleId);
+        mv.addObject("transVehicleJobCard", transVehicleJobCard);
+
+        List<TransVendorItem> transVendorItemList = storeService.getAllVendorItemsForJobCard();
+        mv.addObject("transVendorItemList", transVendorItemList);
+
         return mv;
     }
 
@@ -550,10 +556,9 @@ public class StoreController {
     // ========================================================================
     @PostMapping(value = { "/vehicle/job-card/open" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> openJobCard(@Valid @ModelAttribute TransVehicleJobCard transVehicleJobCard,
-            BindingResult bindingResult) throws BindException {
+    public ResponseEntity<JsonResponse> openJobCard(@RequestParam("jobCardId") Long jobCardId, @RequestParam("vehicleId") Long vehicleId) {
 
-        JsonResponse res = storeService.openJobCard(transVehicleJobCard);
+        JsonResponse res = storeService.openJobCard(vehicleId, jobCardId);
         if (res.getResult()) {
             return ResponseEntity.ok(res);
         } else {
@@ -582,6 +587,11 @@ public class StoreController {
 
         TransVehicleJobCard transVehicleJobCard = storeService.getJobCardById(jobCardId);
         mv.addObject("transVehicleJobCard", transVehicleJobCard);
+
+        if(Objects.equals(transVehicleJobCard.getStatus(), "CREATED")){
+            mv.addObject("userList", storeService.getJobCardForwarableUserList());
+        }
+
         return mv;
     }
 
@@ -629,10 +639,10 @@ public class StoreController {
     // ========================================================================
     @PutMapping(value = { "/vehicle/job-card/forward" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> openJobCard(@RequestParam("jobCardId") Long jobCardId,
-            @RequestParam("username") String username) throws BindException {
+    public ResponseEntity<JsonResponse> openJobCard(@Valid @ModelAttribute TransVehicleJobCardForward transVehicleJobCardForward,
+    BindingResult bindingResult) throws BindException {
 
-        JsonResponse res = storeService.forwardJobCard(jobCardId, username);
+        JsonResponse res = storeService.forwardJobCard(transVehicleJobCardForward);
         if (res.getResult()) {
             return ResponseEntity.ok(res);
         } else {
@@ -657,19 +667,19 @@ public class StoreController {
     // }
 
     // ========================================================================
-    // # GET SEARCHED FORWARD USER
+    // # GET SEARCHED FORWARD 
     // ========================================================================
-    @GetMapping(value = { "/vehicle/job-card/search-forward-user" })
-    public ResponseEntity<JsonResponse> searchForwardUser(@RequestParam(value = "searchText") String searchText) {
+    // @GetMapping(value = { "/vehicle/job-card/search-forward-user" })
+    // public ResponseEntity<JsonResponse> searchForwardUser(@RequestParam(value = "searchText") String searchText) {
 
-        JsonResponse res = storeService.searchForwardUser(searchText);
+    //     JsonResponse res = storeService.searchForwardUser(searchText);
 
-        if (Objects.equals(res.getResult(), true)) {
-            return ResponseEntity.ok().body(res);
-        } else {
-            throw new BadRequestException("Operation Failed");
-        }
-    }
+    //     if (Objects.equals(res.getResult(), true)) {
+    //         return ResponseEntity.ok().body(res);
+    //     } else {
+    //         throw new BadRequestException("Operation Failed");
+    //     }
+    // }
 
     // TO BE DELETED
     // ========================================================================
@@ -926,6 +936,76 @@ public class StoreController {
         } else {
             throw new BindException(bindingResult);
         }
+    }
+
+    // ========================================================================
+    // ADD NEW JOB CARD ITEM
+    // ========================================================================
+    @PostMapping(value = { "/vehicle/job-card/add-item" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addNewJobCardItem(
+            @Valid @ModelAttribute TransVehicleJobCardItems transVehicleJobCardItem, BindingResult bindingResult)
+            throws BindException {
+
+        // FOR QUANTITY LESS THAN MOQ
+        TransVendorItem transVendorItem = storeService.getVendorItemById(transVehicleJobCardItem.getTransVendorItem().getId());
+        if (Double.parseDouble(transVendorItem.getMasterItemBrand().getMoq()) > transVehicleJobCardItem.getQuantity()){
+                bindingResult.rejectValue("quantity", "error.quantity", " * Please enter minimum quantity : "+transVendorItem.getMasterItemBrand().getMoq());
+        }
+
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.addNewJobCardItem(transVehicleJobCardItem);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // GET ALL JOB CARD ITEMS
+    // ========================================================================
+    @GetMapping(value = { "/vehicle/job-card/get-all-items/{jobCardId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getJobCardItemList(@PathVariable("jobCardId") Long jobCardId) {
+
+        JsonResponse res = storeService.getJobCardItemList(jobCardId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE JOB CARD ITEM
+    // ========================================================================
+    @DeleteMapping(value = { "/vehicle/job-card-item/delete/{itemId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteJobCardItem(@PathVariable("itemId") Long itemId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteJobCardItem(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // JOB CARD VENDOR ORDER
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/{jobCardId}/vendor-order")
+    public ModelAndView jobCardVendorOrder(ModelAndView mv, @PathVariable("jobCardId") Long jobCardId) {
+        mv = new ModelAndView("store/view_job_card_vendor_order");
+
+        TransVehicleJobCard transVehicleJobCard = storeService.getJobCardById(jobCardId);
+        mv.addObject("transVehicleJobCard", transVehicleJobCard);
+        return mv;
     }
 
 }

@@ -90,7 +90,7 @@
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Registration No Of Vehicle (<span class="text-success">eg: AS-01-XX-1234</span>)</label>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" id="regnPart1" maxlength="2" minlength="2" required onkeyup="this.value = this.value.toUpperCase();">
+                                <input type="text" class="form-control" id="regnPart1" maxlength="2" minlength="2" required onkeyup="this.value = this.value.toUpperCase(); if (/\d/g.test(this.value)) this.value = this.value.replace(/\d/g,'')">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">-</span>
                                 </div>
@@ -98,7 +98,7 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">-</span>
                                 </div>
-                                <input type="text" class="form-control" id="regnPart3" maxlength="2" onkeyup="this.value = this.value.toUpperCase();">
+                                <input type="text" class="form-control" id="regnPart3" maxlength="2" onkeyup="this.value = this.value.toUpperCase(); if (/\d/g.test(this.value)) this.value = this.value.replace(/\d/g,'')">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">-</span>
                                 </div>
@@ -307,6 +307,8 @@
                         if (vehicle.latestJobCardStatus == "CREATED") {
                             jobCardButton = `<a class="btn btn-success p-1" href="${contextPath}store/vehicle/job-card/${vehicle.latestJobCardId}">FORWARD JOB CARD</a>`;
                         } else if (vehicle.latestJobCardStatus == "FORWARDED") {
+                            jobCardButton = `<a class="btn btn-danger p-1" href="${contextPath}store/vehicle/job-card/${vehicle.latestJobCardId}">VIEW JOB CARD</a>`;
+                        } else if (vehicle.latestJobCardStatus == "APPROVED") {
                             jobCardButton = `<a class="btn btn-danger p-1" href="${contextPath}store/vehicle/job-card/${vehicle.latestJobCardId}">VIEW JOB CARD</a>`;
                         }
                         if (vehicle.scrappedStatus == "SCRAPPED") {

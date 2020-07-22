@@ -20,27 +20,21 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class TransVehicleJobCardItems extends Auditable {
+public class TransVehicleJobCardForward extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double quantity;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_vendor_item")
-    private TransVendorItem transVendorItem;
+    @JoinColumn(name = "fk_user")
+    private User forwardedTo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_job_card")
     private TransVehicleJobCard transVehicleJobCard;
 
-    @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
-    private Boolean isDeleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_job_card_order", nullable = true)
-    TransJobCardItemOrder order;
+    @Column(nullable = false, columnDefinition = "tinyint(1) default 1")
+    private Boolean isCurrent = true;
 
 }

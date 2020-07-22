@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <title>APVMS | STORE</title>
+</head>
+
+<body>
+    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <div class="container-fluid main-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                    </div>
+                    <div class="col-md-9">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item"><a th:href="@{/store/vehicle}">Vehicle</a></li>
+                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
+                                <li class="breadcrumb-item">
+                                    Job Card : #<span class="text-success" th:text="${transVehicleJobCard.id}"></span>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    Vendor Order
+                                </li>
+                            </ol>
+                        </nav>
+                        <div class="row" th:if="${transVehicleJobCard != null}">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h4><i class="fas fa-file-alt"></i> Vendor Order</h4>
+                                            </div>
+                                            <div class="col-3">
+                                                <h4><span class="badge badge-success p-2" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span></h4>
+                                            </div>
+                                            <div class="col-3">
+                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__}">VIEW JOB CARD</a>
+                                            </div>
+                                            <div class="col-3">
+                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW VEHICLE</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Job Card Id</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title"> : <span th:text="${'#'+transVehicleJobCard.id}"></span></h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Status</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title"> : <span class="badge badge-success" th:text="${transVehicleJobCard.status}"></span></h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h5 class="card-title">Opened On</h5>
+                                            </div>
+                                            <div class="col-8">
+                                                <h5 class="card-title"> : <span th:text="${#dates.format(transVehicleJobCard.createdAt, 'dd-MMM-yyyy hh:mm a')}"></span></h5>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row mt-2">
+                                            <div class="col-12" id="div-job-card-items">
+                                                <table class="table table-bordered">
+                                                    <thead class="text-center text-uppercase">
+                                                        <tr>
+                                                            <th>Sl. No.</th>
+                                                            <th>Order Id</th>
+                                                            <th>Vendor Name</th>
+                                                            <th>Amount(In Rs)</th>
+                                                            <th>View Items</th>
+                                                            <th>Generate</th>
+                                                            <th>Order Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>1</th>
+                                                            <th>#2313</th>
+                                                            <th>Datamation Ltd</th>
+                                                            <th class="text-right">20000.00</th>
+                                                            <th><a class="btn btn-success p-1 w-100" th:href="@{/}">View Items</th>
+                                                            <th><a class="btn btn-success p-1 w-100" th:href="@{/}">Generate Order</th>
+                                                                <th>FRESH</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>2</th>
+                                                            <th>#4566</th>
+                                                            <th>Sartyres</th>
+                                                            <th class="text-right">1500.00</th>
+                                                            <th><a class="btn btn-success p-1 w-100" th:href="@{/}">View Items</th>
+                                                            <th>-</th>
+                                                                <th>AWAITING APPROVAL</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>2</th>
+                                                            <th>#4566</th>
+                                                            <th>Sartyres</th>
+                                                            <th class="text-right">1500.00</th>
+                                                            <th><a class="btn btn-success p-1 w-100" th:href="@{/}">View Items</th>
+                                                                <th><a class="btn btn-success p-1 w-100" th:href="@{/}">Download Pdf</th>
+                                                                    <th>APPROVED</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>2</th>
+                                                            <th>#4566</th>
+                                                            <th>Sartyres</th>
+                                                            <th class="text-right">1500.00</th>
+                                                            <th><a class="btn btn-success p-1 w-100" th:href="@{/}">View Items</th>
+                                                                <th><a class="btn btn-success p-1 w-100" th:href="@{/}">Challan Entry</th>
+                                                                    <th>ORDER PLACED</th>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+        </div>
+    </main>
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+    <script th:inline="javascript">
+        var jobCardId = /*[[${transVehicleJobCard.id}]]*/ '';
+    </script>
+    <script>
+        $(function() {
+            $('#side-link-vehicle').addClass('list-group-item-secondary');
+        });
+    </script>
+</body>
+
+</html>

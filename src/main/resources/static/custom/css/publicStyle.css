@@ -76,3 +76,11 @@ ul.timeline>li:before {
     height: 20px;
     z-index: 400;
 }
+
+.modal-xlg {
+    max-width: 80vw;
+}
+
+.modal-xxlg {
+    max-width: 95vw;
+}
