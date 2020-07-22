@@ -14,6 +14,7 @@ public class TransVendorItemPayload {
 
     private String itemName;
     private String itemBrand;
+    private String unit;
     private String moq;
-    private Long itemPrice;
+    private Double itemPrice;
 }

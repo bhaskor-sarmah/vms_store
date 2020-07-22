@@ -129,6 +129,7 @@ public class StoreServiceBhaskor {
             tp.setId(item.getId());
             tp.setItemBrand(item.getMasterItemBrand().getItemBrand().getBrandName());
             tp.setItemName(item.getMasterItemBrand().getItem().getItemName());
+            tp.setUnit(item.getMasterItemBrand().getItem().getItemUnit());
             tp.setMoq(item.getMasterItemBrand().getMoq());
             tp.setItemPrice(item.getPricePerUnit());
             transVendorItems.add(tp);
@@ -307,11 +308,37 @@ public class StoreServiceBhaskor {
                 m.setId(masterItemBrand.getId());
                 m.setItemBrand(masterItemBrand.getItemBrand().getBrandName());
                 m.setItemName(masterItemBrand.getItem().getItemName());
+                m.setUnit(masterItemBrand.getItem().getItemUnit());
                 m.setMoq(masterItemBrand.getMoq());
                 itemlistFiltered.add(m);
             }
         }
         return itemlistFiltered;
+    }
+
+    public JsonResponse saveVendorItemPrice(Long itemId, Long vendorId, Double price) {
+        TransVendorItem tv = new TransVendorItem();
+        tv.setCurrentStatus("ACTIVE");
+        tv.setIsApprovedItem(false);
+        tv.setMasterItemBrand(masterItemBrandRepository.findById(itemId).get());
+        tv.setPricePerUnit(price);
+        tv.setMasterVendor(masterVendorRepository.findById(vendorId).get());
+
+        JsonResponse res = new JsonResponse();
+        transVendorItemRepository.save(tv);
+        res.setResult(true);
+        res.setMessage("Vendor Item Price saved successfully");
+        return res;
+    }
+
+    public JsonResponse updateVendorItem(Long itemId, Double itemPrice) {
+        JsonResponse res = new JsonResponse();
+        TransVendorItem tv = transVendorItemRepository.findById(itemId).get();
+        tv.setPricePerUnit(itemPrice);
+        transVendorItemRepository.save(tv);
+        res.setResult(true);
+        res.setMessage("Vendor Item Price updated successfully");
+        return res;
     }
 
 }

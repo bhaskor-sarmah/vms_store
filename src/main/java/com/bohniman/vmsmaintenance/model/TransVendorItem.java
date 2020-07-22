@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,8 +25,8 @@ public class TransVendorItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "* Price per unit is required")
-    private Long pricePerUnit;
+    @NotNull(message = "* Price per unit is required")
+    private Double pricePerUnit;
 
     @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
     private Boolean isApprovedItem = false; // L1 Default Item

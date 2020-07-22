@@ -16,5 +16,7 @@ public class MasterItemBrandPayload {
 
     private String itemBrand;
 
+    private String unit;
+
     private String moq;
 }

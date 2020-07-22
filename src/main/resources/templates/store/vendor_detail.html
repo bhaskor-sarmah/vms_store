@@ -28,6 +28,10 @@
             font-weight: bold;
             text-transform: uppercase;
         }
+
+        .errorBorder {
+            border: 1px solid red;
+        }
     </style>
 </head>
 
@@ -364,20 +368,25 @@
                                 <th>SL No.</th>
                                 <th>Item Name</th>
                                 <th>Item Brand</th>
+                                <th>Unit</th>
                                 <th>MOQ</th>
                                 <th>Price Per Unit</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="item,iter: ${itemList}">
+                            <tr th:each="item,iter: ${itemList}" class="text-center" th:id="'row_' + ${item.id}">
                                 <td th:text="${iter.count}"></td>
                                 <td th:text="${item.itemName}"></td>
                                 <td th:text="${item.itemBrand}"></td>
+                                <td th:text="${item.unit}"></td>
                                 <td th:text="${item.moq}"></td>
-                                <td><input type="number" class="form-control" placeholder="Enter Price Per unit" />
+                                <td><input type="number" th:id="'price_' + ${item.id}" class="form-control inputPrice"
+                                        placeholder="Enter Price Per unit" />
                                 </td>
-                                <td><a class="btn btn-success p-1" href="javascript:void(0)">SAVE PRICE</a></td>
+                                <td><a class="btn btn-success p-1 savePrice" href="javascript:void(0)"
+                                        th:id="'btn_' + ${item.id}">SAVE PRICE</a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -386,6 +395,64 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal edit item -->
+    <div class="modal fade" id="modalEditItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Edit Item for
+                        Vendor ID - <span th:text="${vendor.id}"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="form-vendor-item">
+                    <div class="modal-body">
+                        <div><input type="hidden" name="id"></div>
+                        <div class="row">
+                            <div class="col-12 col-md-4">
+                                <div class="form-group">
+                                    <label for="itemName">Item Name</label>
+                                    <input type="text" class="form-control" name="itemName" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="form-group">
+                                    <label for="itemBrand">Item Brand</label>
+                                    <input type="text" class="form-control" name="itemBrand" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="form-group">
+                                    <label for="itemUnit">Item Unit</label>
+                                    <input type="text" class="form-control" name="itemUnit" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="form-group">
+                                    <label for="moq">MOQ</label>
+                                    <input type="text" class="form-control" name="moq" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="form-group">
+                                    <label for="itemPrice">Price Per Unit</label>
+                                    <input type="text" class="form-control" name="itemPrice" id="itemPrice">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save
+                            changes</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -405,13 +472,222 @@
         $(function () {
             // SIDEBAR LINK ACTIVE
             $('#side-link-vendor').addClass('list-group-item-secondary');
+
             //GET VENDORS
             getItemList();
+
             $(document).on('show.bs.modal', '#modalItem', function (e) {
                 $("#table-item").DataTable();
             });
+
             $(document).on('hidden.bs.modal', '#modalItem', function (e) {
                 getItemList();
+            });
+
+            $(document).on('show.bs.modal', '#modalEditItem', function (e) {
+                $('.error-message').remove();
+                let itemId = e.relatedTarget.dataset.itemId;
+                if (itemId == 0) {
+                    $("#form-vendor-item").contents().find('[name=id]').val("");
+                } else {
+                    $("#form-vendor-item").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
+                    $("#form-vendor-item").contents().find('[name=itemName]').val(e.relatedTarget.dataset.itemName);
+                    $("#form-vendor-item").contents().find('[name=itemBrand]').val(e.relatedTarget.dataset.itemBrand);
+                    $("#form-vendor-item").contents().find('[name=itemUnit]').val(e.relatedTarget.dataset.itemUnit);
+                    $("#form-vendor-item").contents().find('[name=moq]').val(e.relatedTarget.dataset.itemMoq);
+                    $("#form-vendor-item").contents().find('[name=itemPrice]').val(e.relatedTarget.dataset.itemPrice);
+                }
+            });
+
+            // UPDATE VENDOR ITEM PRICE
+            $(document).on("submit", "#form-vendor-item", function (e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                $("#itemPrice").removeClass("errorBorder");
+                if ($("#itemPrice").val() === "" || isNaN($("#itemPrice").val())) {
+                    var alert = $.alert({
+                        title: 'Error!',
+                        content: 'Please Enter a Valid Price',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                    $("#itemPrice").addClass('errorBorder');
+                    return;
+                } else if ($("#itemPrice").val() <= 0) {
+                    var alert = $.alert({
+                        title: 'Error!',
+                        content: 'Please Enter a Valid Price',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                    $("#itemPrice").addClass('errorBorder');
+                    return;
+                } else {
+                    $.confirm({
+                        title: 'Confirm!',
+                        content: 'Are you sure you submit the form ?',
+                        type: 'green',
+                        typeAnimated: true,
+                        buttons: {
+                            confirm: function () {
+                                $.ajax({
+                                    type: "POST",
+                                    url: contextPath + "store/vendor/updateItemPrice",
+                                    timeout: 600000,
+                                    beforeSend: function () {
+                                        $('body').block({
+                                            message: '<h3>Processing...</h3>',
+                                            css: {
+                                                border: '3px solid darkgrey'
+                                            }
+                                        });
+                                    },
+                                    data: $("#form-vendor-item").serialize(),
+                                    success: function (response) {
+                                        $('#form-vendor-item').trigger('reset');
+                                        $.alert({
+                                            title: 'Success!',
+                                            content: "Vendor Item updated Successfully",
+                                            type: 'green',
+                                            typeAnimated: true
+                                        });
+                                        getItemList();
+                                        $('#modalEditItem').modal('hide');
+                                    },
+                                    error: function (e) {
+                                        if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                            .responseJSON.errorMessages != null) {
+                                            // $.each(e.responseJSON.errorMessages, function (key,
+                                            //     value) {
+                                            //     $("#form-vendor-item").contents().find(
+                                            //         '[name=' + key + ']').after(
+                                            //             '<span class="error-message">' +
+                                            //             value + '</span>');
+                                            // });
+                                        } else {
+                                            $.alert({
+                                                title: e.responseJSON.httpStatus,
+                                                content: e.responseJSON.message,
+                                                type: 'red',
+                                                typeAnimated: true
+                                            });
+                                        }
+                                    },
+                                    complete: function () {
+                                        $('body').unblock();
+                                    }
+                                });
+                            },
+                            cancel: function () { }
+                        }
+                    });
+                }
+            });
+
+
+            //DELETE ITEM
+            $(document).on('click', '.delete-item', function (e) {
+                e.preventDefault();
+                var ajax_return;
+                let itemId = e.target.dataset.itemId;
+                $.confirm({
+                    title: 'Warning!',
+                    content: "Are you sure you want to delete this item ?",
+                    type: 'red',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function () {
+                            $.confirm({
+                                content: function () {
+                                    var self = this;
+                                    return ajax_return = $.ajax({
+                                        type: "DELETE",
+                                        url: contextPath + "store/vendor/deleteItem/" + itemId
+                                    }).done(function (response) {
+                                        self.setTitle("Success!");
+                                        self.setType("green");
+                                        self.setContent(response.message);
+                                    }).fail(function (e) {
+                                        self.setTitle(e.responseJSON.httpStatus);
+                                        self.setType("red");
+                                        self.setContent("ERROR");
+                                    })
+                                    return true;
+                                },
+                                buttons: {
+                                    ok: function () {
+                                        ajax_return.done(function (message) {
+                                            getItemList();
+                                        })
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function () { }
+                    }
+                });
+            });
+
+            $(".savePrice").on('click', function () {
+                $(".inputPrice").removeClass("errorBorder");
+                var id = $(this).attr('id');
+                id = id.replace("btn_", "");
+                if ($("#price_" + id).val() === "" || isNaN($("#price_" + id).val())) {
+                    $.alert({
+                        title: 'Error!',
+                        content: 'Please Enter a Valid Price',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                    $("#price_" + id).addClass('errorBorder');
+                    return;
+                } else if ($("#price_" + id).val() <= 0) {
+                    $.alert({
+                        title: 'Error!',
+                        content: 'Amount cannot be less than or equal to zero !',
+                        type: 'red',
+                        typeAnimated: true
+                    });
+                    $("#price_" + id).addClass('errorBorder');
+                    return;
+                } else {
+                    var price = $("#price_" + id).val();
+                    // alert("Vendor - " + vendorId + " Item - " + id + " Price - " + price);
+                    $.ajax({
+                        type: "POST",
+                        url: contextPath + "store/vendor/itemPrice",
+                        data: 'itemId=' + id + '&vendorId=' + vendorId + '&price=' + price,
+                        timeout: 600000,
+                        beforeSend: function () {
+                            $('body').block({
+                                message: '<h3>Processing...</h3>',
+                                css: {
+                                    border: '3px solid darkgrey'
+                                }
+                            });
+                        },
+                        success: function (response) {
+                            $('#row_' + id).remove();
+                            $.alert({
+                                title: 'Success!',
+                                content: "Vendor Price saved Successfully !",
+                                type: 'green',
+                                typeAnimated: true
+                            });
+                        },
+                        error: function (e) {
+                            $.alert({
+                                title: 'Error',
+                                content: "Failed saving vendor price !",
+                                type: 'red',
+                                typeAnimated: true
+                            });
+                        },
+                        complete: function () {
+                            $('body').unblock();
+                        }
+                    });
+                }
             });
         });
     </script>
@@ -439,8 +715,9 @@
                                     <th style="width: 15%">SL No.</th>
                                     <th style="width: 15%">Item Name</th>
                                     <th style="width: 15%">Item Brand</th>
-                                    <th style="width: 15%">MOQ</th>
+                                    <th style="width: 15%">Unit</th>
                                     <th style="width: 15%">Price</th>
+                                    <th style="width: 15%">MOQ</th>
                                     <th style="width: 15%">Action</th>
                                     <th></th>
                                 </tr>
@@ -450,7 +727,7 @@
                     var tableItems = $('#table-items').DataTable({
                         "columnDefs": [{
                             "className": "text-center",
-                            "targets": [0, 1, 2, 3, 4]
+                            "targets": [0, 1, 2, 3, 4, 5]
                         }]
                     });
                     $.each(response.payload, function (key, item) {
@@ -459,10 +736,18 @@
                             `<b>${key + 1}</b>`,
                             `${item.itemName}`,
                             `${item.itemBrand}`,
+                            `${item.unit}`,
                             `${item.moq}`,
                             `${item.itemPrice}`,
                             `<a class="btn btn-danger p-1 delete-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a>`,
-                            `<a class="btn btn-primary p-1" href="#modalItemEdit" data-toggle="modal" data-item-id="${item.id}" data-item-price="${item.itemPrice}">EDIT</a>`
+                            `<a class="btn btn-primary p-1" href="#modalEditItem" data-toggle="modal" 
+                            data-item-id="${item.id}" 
+                            data-item-name="${item.itemName}"
+                            data-item-brand="${item.itemBrand}"
+                            data-item-unit="${item.unit}"
+                            data-item-moq="${item.moq}"
+                            data-item-price="${item.itemPrice}"
+                            >EDIT</a>`
                         ]).draw(false);
                     });
                 },

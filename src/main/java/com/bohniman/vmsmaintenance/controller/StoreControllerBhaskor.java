@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -138,13 +139,43 @@ public class StoreControllerBhaskor {
     }
 
     // ========================================================================
-    // DELETE VENDOR ITEM
+    // DELETE VENDOR ITEM PRICE
     // ========================================================================
     @DeleteMapping(value = { "/vendor/deleteItem/{itemId}" })
     @ResponseBody
     public ResponseEntity<JsonResponse> deleteVendorItem(@PathVariable("itemId") Long itemId) {
         JsonResponse res = new JsonResponse();
         res = storeService.deleteVendorItemById(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // ADD VENDOR ITEM PRICE
+    // ========================================================================
+    @PostMapping(value = { "/vendor/itemPrice" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addItemPrice(@RequestParam("itemId") Long itemId,
+            @RequestParam("vendorId") Long vendorId, @RequestParam("price") Double price) {
+        JsonResponse res = new JsonResponse();
+        res = storeService.saveVendorItemPrice(itemId, vendorId, price);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // UPDATE VENDOR ITEM PRICE
+    // ========================================================================
+    @PostMapping(value = { "/vendor/updateItemPrice" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> updateItemPrice(@RequestParam("id") Long itemId,
+            @RequestParam("itemPrice") Double itemPrice) throws BindException {
+        JsonResponse res = storeService.updateVendorItem(itemId, itemPrice);
         if (res.getResult()) {
             return ResponseEntity.ok(res);
         } else {
