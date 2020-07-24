@@ -1,5 +1,7 @@
 package com.bohniman.vmsmaintenance.controller;
 
+import java.io.ByteArrayInputStream;
+
 import javax.validation.Valid;
 
 import com.bohniman.vmsmaintenance.exception.BadRequestException;
@@ -14,6 +16,9 @@ import com.bohniman.vmsmaintenance.service.InventoryUnitService;
 import com.bohniman.vmsmaintenance.service.StoreServiceBhaskor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -359,6 +364,68 @@ public class StoreControllerBhaskor {
             return ResponseEntity.ok(res);
         } else {
             throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // GENERATE ORDER OF ALL THE FRESH ITEMS OF A VENDOR AGAINST A JOB CARD
+    // ========================================================================
+    @PostMapping(value = "/vehicle/job-card/generateOrder")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> generateOrder(@RequestParam("jobCardId") Long jobCardId,
+            @RequestParam("vendorId") Long vendorId) {
+        JsonResponse res = storeService.generateOrder(vendorId, jobCardId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // UPDATE ORDER STATUS AS PDF DOWNLOADED
+    // ========================================================================
+    @PostMapping(value = "/vehicle/job-card/downloadOrder")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> downloadOrder(@RequestParam("orderId") Long orderId) {
+        JsonResponse res = storeService.downloadOrder(orderId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DOWNLOAD ORDER PDF
+    // ========================================================================
+    @GetMapping(value = { "/vehicle/job-card/downloadOrderPdf/{orderId}" }, produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<InputStreamResource> downloadOrderPdf(@PathVariable("orderId") Long orderId) {
+        // boolean res = true;
+        // if (session.getAttribute("mobile") == null) {
+        // res = false;
+        // }
+        // String mobile = session.getAttribute("mobile").toString();
+        // Journey journey = citizenService.getJourneyByCitizen(mobile);
+        // journey.setFromPoliceStation(masterService.getPoliceStationById(journey.getFromPoliceStation()));
+        // journey.setToPoliceStation(masterService.getPoliceStationById(journey.getToPoliceStation()));
+        // if (journey == null || !id.equals(String.valueOf(journey.getId()))) {
+        // res = false;
+        // }
+        ByteArrayInputStream bis = null;
+        HttpHeaders headers = new HttpHeaders();
+        try {
+            bis = storeService.generateOrderPdf(orderId);
+            headers.add("Content-Disposition", "inline;filename=order.pdf");
+            headers.setContentDispositionFormData("Content-Disposition", "order.pdf");
+            return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF)
+                    .body(new InputStreamResource(bis));
+        } catch (Exception e) {
+            bis = storeService.generateOrderPdf(0L);
+            headers.add("Content-Disposition", "inline; filename=error.pdf");
+            headers.setContentDispositionFormData("Content-Disposition", "order.pdf");
+            return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF)
+                    .body(new InputStreamResource(bis));
         }
     }
 }

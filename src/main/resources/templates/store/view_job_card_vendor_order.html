@@ -100,24 +100,60 @@
                                                             <th>Vendor Name</th>
                                                             <th>Amount(In Rs)</th>
                                                             <th>View Items</th>
-                                                            <th>Generate</th>
+                                                            <th>Action</th>
                                                             <th>Order Status</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr th:each="order,iter : ${vendorOrderItemPayload}">
                                                             <td th:text="${iter.count}"></td>
-                                                            <td th:text="${order.orderId != null}?${order.orderId}:'---'"></td>
+                                                            <td th:id="'orderId_' + ${iter.count}" th:text="${order.orderId != null}?${order.orderId}:'---'"></td>
                                                             <td th:text="${order.vendorName}"></td>
                                                             <td th:text="${order.amount}"></td>
                                                             <td>
-                                                                <a class="btn btn-success p-1 w-100" href="#modalItem" data-toggle="modal" 
+                                                                <a th:id="'anchor_' + ${iter.count}" class="btn btn-primary p-1 w-100" href="#modalItem" data-toggle="modal" 
                                                                 th:data-vendor-id="${order.vendorId}" th:data-jobcard-id="${order.jobCardId}" th:data-order-id="${order.orderId != null}?${order.orderId}:0">View Items
                                                             </td>
                                                             <td>
-                                                                <a class="btn btn-success p-1 w-100" th:href="@{/}">Generate Order
+                                                                <span th:switch="${order.status}">
+                                                                    <span th:case="'FRESH'" th:id="'div_' + ${iter.count}">
+                                                                        <form class="generateOrderForm" th:id="'form_' + ${iter.count}">
+                                                                            <input type="hidden" name="jobCardId" th:value="${order.jobCardId}">
+                                                                            <input type="hidden" name="vendorId" th:value="${order.vendorId}">
+                                                                            <button type="submit" name="submit" class="btn btn-warning p-1 w-100">
+                                                                                Generate Order
+                                                                            </button>
+                                                                        </form>
+                                                                    </span>
+                                                                    <span th:case="'APPROVED'" th:id="'divDownloadPdf_' + ${iter.count}">
+                                                                        <form class="downloadPdfForm" th:id="'formDownloadPdf_' + ${iter.count}">
+                                                                            <input type="hidden" name="orderId" th:value="${order.orderId}" th:id="'order_' + ${iter.count}">
+                                                                            <!-- <input type="hidden" name="jobCardId" th:value="${order.jobCardId}"> -->
+                                                                            <!-- <input type="hidden" name="vendorId" th:value="${order.vendorId}"> -->
+                                                                            <button type="submit" name="submit" class="btn btn-warning p-1 w-100">
+                                                                                Download Order
+                                                                            </button>
+                                                                        </form>
+                                                                    </span>
+                                                                    <span  th:case="'PLACED'" th:id="'divDownloadPdf_' + ${iter.count}">
+                                                                        <a class="btn btn-success p-1 w-100" th:href="@{/store/vehicle/job-card/challanEntry}">Challan Entry</a>
+                                                                        <br/>
+                                                                        <br/>
+                                                                        <form class="downloadPdfForm" th:id="'formDownloadPdf_' + ${iter.count}">
+                                                                            <input type="hidden" name="orderId" th:value="${order.orderId}" th:id="'order_' + ${iter.count}">
+                                                                            <!-- <input type="hidden" name="jobCardId" th:value="${order.jobCardId}"> -->
+                                                                            <!-- <input type="hidden" name="vendorId" th:value="${order.vendorId}"> -->
+                                                                            <button type="submit" name="submit" class="btn btn-warning p-1 w-100">
+                                                                                Download Order
+                                                                            </button>
+                                                                        </form>
+                                                                    </span>
+                                                                    
+                                                                    <a th:case="'RECEIVED'" class="btn btn-success p-1 w-100" th:href="@{/}">Generate Order</a>
+                                                                    <a th:case="'CLOSED'" class="btn btn-success p-1 w-100" th:href="@{/}">Generate Order</a>
+                                                                </span>
                                                             </td>
-                                                            <td th:text="${order.status}"></td>
+                                                            <td th:text="${order.status}" th:id="'status_' + ${iter.count}"></td>
                                                         </tr>
                                                         <!-- <tr>
                                                             <th>1</th>
@@ -208,6 +244,7 @@
                 let vendorId = e.relatedTarget.dataset.vendorId;
                 let jobcardId = e.relatedTarget.dataset.jobcardId;
                 let orderId = e.relatedTarget.dataset.orderId;
+                // alert(orderId);
                 // alert(contextPath);
                 $.ajax({
                     type: "GET",
@@ -263,6 +300,144 @@
                     }
                 });
             });
+
+            $(document).on("submit", ".generateOrderForm", function (e) {
+                e.preventDefault();
+                var formId = $(this).attr("id");
+                var id = formId.replace("form_", "");
+                // console.log("ID - " + id);
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you submit the form ?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/vehicle/job-card/generateOrder",
+                                timeout: 600000,
+                                beforeSend: function () {
+                                    $('body').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: $("#" + formId).serialize(),
+                                success: function (response) {
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: "Order Generated and Sent for Approval Successfully !",
+                                        type: 'green',
+                                        typeAnimated: true
+                                    });
+                                    // Hide Button and Change Status
+                                    $("#" + formId).remove();
+                                    $("#div_" + id).html("Approval Pending");
+                                    $("#status_" + id).html("PENDING");
+                                    $("#anchor_" + id).attr('data-order-id', response.payload);
+                                    $("#orderId_" + id).html(response.payload);
+                                },
+                                error: function (e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        // $.each(e.responseJSON.errorMessages, function (key,
+                                        //     value) {
+                                        //     $("#form-vendor-item").contents().find(
+                                        //         '[name=' + key + ']').after(
+                                        //             '<span class="error-message">' +
+                                        //             value + '</span>');
+                                        // });
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: "Some Error has Ocurred ! Please try again !",
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function () {
+                                    $('body').unblock();
+                                }
+                            });
+                        },
+                        cancel: function () { }
+                    }
+                });
+            });
+
+
+            $(document).on("submit", ".downloadPdfForm", function (e) {
+                e.preventDefault();
+                var formId = $(this).attr("id");
+                var id = formId.replace("formDownloadPdf_", "");
+                var orderId = $("#order_" + id).val();
+                $.ajax({
+                    type: "POST",
+                    url: contextPath + "store/vehicle/job-card/downloadOrder",
+                    timeout: 600000,
+                    beforeSend: function () {
+                        $('body').block({
+                            message: '<h3>Processing...</h3>',
+                            css: {
+                                border: '3px solid darkgrey'
+                            }
+                        });
+                    },
+                    data: "orderId=" + orderId,
+                    success: function (response) {
+                        // $.alert({
+                        //     title: 'Success!',
+                        //     content: "Order Generated and Sent for Approval Successfully !",
+                        //     type: 'green',
+                        //     typeAnimated: true
+                        // });
+                        // Hide Button and Change Status
+                        // $("#" + formId).remove();
+                        // $("#div_" + id).html("Approval Pending");
+                        $("#status_" + id).html("PLACED");
+                        window.location.href = contextPath + "store/vehicle/job-card/downloadOrderPdf/" + orderId;
+                    },
+                    error: function (e) {
+                        if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                            .responseJSON.errorMessages != null) {
+                            // $.each(e.responseJSON.errorMessages, function (key,
+                            //     value) {
+                            //     $("#form-vendor-item").contents().find(
+                            //         '[name=' + key + ']').after(
+                            //             '<span class="error-message">' +
+                            //             value + '</span>');
+                            // });
+                            $.alert({
+                                title: e.responseJSON.httpStatus,
+                                content: "Some Error has Ocurred ! Please try again !",
+                                type: 'red',
+                                typeAnimated: true
+                            });
+                        } else {
+                            $.alert({
+                                title: e.responseJSON.httpStatus,
+                                content: e.responseJSON.message,
+                                type: 'red',
+                                typeAnimated: true
+                            });
+                        }
+                    },
+                    complete: function () {
+                        $('body').unblock();
+                    }
+                });
+            });
+
         });
     </script>
 </body>

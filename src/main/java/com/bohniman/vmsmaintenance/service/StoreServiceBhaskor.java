@@ -1,5 +1,6 @@
 package com.bohniman.vmsmaintenance.service;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,7 @@ import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardItemRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardRepository;
 import com.bohniman.vmsmaintenance.repository.TransVendorItemRepository;
 import com.bohniman.vmsmaintenance.utilities.AppSettings;
+import com.bohniman.vmsmaintenance.utilities.OrderPdf;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,6 +65,9 @@ public class StoreServiceBhaskor {
 
     @Autowired
     TransJobCardItemOrderRepository transJobCardItemOrderRepository;
+
+    @Autowired
+    OrderPdf orderPdf;
 
     // ========================================================================
     // ADD NEW VENDOR
@@ -396,6 +401,7 @@ public class StoreServiceBhaskor {
             vp.setAmount(order.getTotalAmount());
             vp.setJobCardId(jobCardId);
             vp.setStatus(order.getOrderStatus());
+            vp.setOrderId(order.getId());
             vendorOrderItemList.add(vp);
         }
         return vendorOrderItemList;
@@ -403,7 +409,6 @@ public class StoreServiceBhaskor {
 
     public JsonResponse getAllItemByOrder(Long orderId, Long vendorId, Long jobcardId) {
         JsonResponse res = new JsonResponse();
-
         if (orderId == 0) { // THESE ARE FRESH ITEM ORDER HAS NOT BEEN GENERATED
             List<TransVehicleJobCardItems> itemList = transVehicleJobCardItemRepository
                     .findAllByOrderIsNullAndTransVehicleJobCard_idAndTransVendorItem_masterVendor_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(
@@ -411,7 +416,6 @@ public class StoreServiceBhaskor {
             List<ViewOrderItemPayload> orderItemList = new ArrayList<>();
             for (TransVehicleJobCardItems item : itemList) {
                 Double pricePerUnit = item.getTransVendorItem().getPricePerUnit();
-
                 ViewOrderItemPayload vp = new ViewOrderItemPayload();
                 vp.setName(item.getTransVendorItem().getMasterItemBrand().getItem().getItemName());
                 vp.setPrice(pricePerUnit * item.getQuantity());
@@ -422,11 +426,66 @@ public class StoreServiceBhaskor {
             }
             res.setPayload(orderItemList);
         } else { // THESE ITEMS ORDER HAS BEEN GENERATED
-
+            List<TransVehicleJobCardItems> itemList = transVehicleJobCardItemRepository
+                    .findAllByOrder_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(orderId);
+            List<ViewOrderItemPayload> orderItemList = new ArrayList<>();
+            for (TransVehicleJobCardItems item : itemList) {
+                Double pricePerUnit = item.getTransVendorItem().getPricePerUnit();
+                ViewOrderItemPayload vp = new ViewOrderItemPayload();
+                vp.setName(item.getTransVendorItem().getMasterItemBrand().getItem().getItemName());
+                vp.setPrice(pricePerUnit * item.getQuantity());
+                vp.setPricePerUnit(pricePerUnit);
+                vp.setUnit(item.getTransVendorItem().getMasterItemBrand().getItem().getItemUnit());
+                vp.setQuantity(item.getQuantity());
+                orderItemList.add(vp);
+            }
+            res.setPayload(orderItemList);
         }
-
         res.setResult(true);
         res.setMessage("Order Items fetched successfully");
         return res;
+    }
+
+    public JsonResponse generateOrder(Long vendorId, Long jobCardId) {
+        JsonResponse res = new JsonResponse();
+        List<TransVehicleJobCardItems> itemList = transVehicleJobCardItemRepository
+                .findAllByOrderIsNullAndTransVehicleJobCard_idAndTransVendorItem_masterVendor_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(
+                        jobCardId, vendorId);
+        Double totalItemPrice = 0D;
+        for (TransVehicleJobCardItems item : itemList) {
+            totalItemPrice += item.getTransVendorItem().getPricePerUnit() * item.getQuantity();
+        }
+        TransJobCardItemOrder jobCardOrder = new TransJobCardItemOrder();
+        jobCardOrder.setOrderStatus(AppSettings.ORDER_STATUS_PENDING);
+        jobCardOrder.setTotalAmount(totalItemPrice);
+        jobCardOrder.setVendor(masterVendorRepository.findById(vendorId).get());
+        jobCardOrder.setTransVehicleJobCard(transVehicleJobCardRepository.findById(jobCardId).get());
+        jobCardOrder = transJobCardItemOrderRepository.save(jobCardOrder);
+        for (TransVehicleJobCardItems item : itemList) {
+            item.setOrder(jobCardOrder);
+            transVehicleJobCardItemRepository.save(item);
+        }
+        res.setPayload(jobCardOrder.getId());
+        res.setResult(true);
+        res.setMessage("Order Generated and Sent for Approval Successfully !");
+        return res;
+    }
+
+    public JsonResponse downloadOrder(Long orderId) {
+        JsonResponse res = new JsonResponse();
+        TransJobCardItemOrder order = transJobCardItemOrderRepository.findById(orderId).get();
+        order.setOrderStatus(AppSettings.ORDER_STATUS_PLACED);
+        transJobCardItemOrderRepository.save(order);
+        // res.setPayload(jobCardOrder.getId());
+        res.setResult(true);
+        res.setMessage("Order Generated and Sent for Approval Successfully !");
+        return res;
+    }
+
+    public ByteArrayInputStream generateOrderPdf(Long orderId) {
+        if (orderId == 0L) {
+            orderPdf.generateErrorPdf();
+        }
+        return orderPdf.generateOrderPdf(transJobCardItemOrderRepository.findById(orderId).get());
     }
 }
