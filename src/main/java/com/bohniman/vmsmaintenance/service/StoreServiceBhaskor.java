@@ -10,10 +10,13 @@ import com.bohniman.vmsmaintenance.model.MasterRack;
 import com.bohniman.vmsmaintenance.model.MasterShelves;
 import com.bohniman.vmsmaintenance.model.MasterState;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
+import com.bohniman.vmsmaintenance.model.TransChallan;
+import com.bohniman.vmsmaintenance.model.TransItemPurchase;
 import com.bohniman.vmsmaintenance.model.TransJobCardItemOrder;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItems;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
+import com.bohniman.vmsmaintenance.payload.ItemListNotInChallanPayload;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.payload.MasterItemBrandPayload;
 import com.bohniman.vmsmaintenance.payload.MasterRackPayload;
@@ -26,6 +29,8 @@ import com.bohniman.vmsmaintenance.repository.MasterRackRepository;
 import com.bohniman.vmsmaintenance.repository.MasterShelvesRepository;
 import com.bohniman.vmsmaintenance.repository.MasterStateRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
+import com.bohniman.vmsmaintenance.repository.TransChallanRepository;
+import com.bohniman.vmsmaintenance.repository.TransItemPurchaseRepository;
 import com.bohniman.vmsmaintenance.repository.TransJobCardItemOrderRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardItemRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardRepository;
@@ -68,6 +73,12 @@ public class StoreServiceBhaskor {
 
     @Autowired
     OrderPdf orderPdf;
+
+    @Autowired
+    TransChallanRepository transChallanRepository;
+
+    @Autowired
+    TransItemPurchaseRepository transItemPurchaseRepository;
 
     // ========================================================================
     // ADD NEW VENDOR
@@ -487,5 +498,51 @@ public class StoreServiceBhaskor {
             orderPdf.generateErrorPdf();
         }
         return orderPdf.generateOrderPdf(transJobCardItemOrderRepository.findById(orderId).get());
+    }
+
+    public TransJobCardItemOrder getOrderById(Long orderId) {
+        return transJobCardItemOrderRepository.findById(orderId).get();
+    }
+
+    public JsonResponse getAllChallanByOrder(Long orderId) {
+        JsonResponse res = new JsonResponse();
+        List<TransChallan> challanList = transChallanRepository.findAllByOrder_id(orderId);
+        res.setPayload(challanList);
+        if (challanList.isEmpty() || challanList.size() == 0) {
+            res.setMessage("No Challan Entry Found.");
+        } else {
+            res.setMessage("All Challans fetched successfully.");
+        }
+        res.setResult(true);
+        return res;
+    }
+
+    // *************************** */
+    // FOR RITUSMOI TO VIEW
+    // *************************** */
+    public List<ItemListNotInChallanPayload> getItemListNotInChallanByOrderId(Long orderId) {
+
+        List<ItemListNotInChallanPayload> itemList = new ArrayList<>();
+
+        List<TransVehicleJobCardItems> itemListByOrder = transVehicleJobCardItemRepository
+                .findAllByOrder_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(orderId);
+
+        for (TransVehicleJobCardItems item : itemListByOrder) {
+            ItemListNotInChallanPayload ip = new ItemListNotInChallanPayload();
+            ip.setTransVendorItemId(item.getTransVendorItem().getId());
+            ip.setItemName(item.getTransVendorItem().getMasterItemBrand().getItem().getItemName());
+            ip.setItemUnit(item.getTransVendorItem().getMasterItemBrand().getItem().getItemUnit());
+            ip.setOrderQuantity(item.getQuantity());
+            List<TransItemPurchase> purchaseList = transItemPurchaseRepository
+                    .findAllByOrder_idAndTransVendorItem_id(orderId, item.getTransVendorItem().getId());
+            Double totalInChallan = 0D;
+            for (TransItemPurchase purchase : purchaseList) {
+                totalInChallan += purchase.getPuchaseQuantity();
+            }
+            ip.setQuantityRemainingToReceive(item.getQuantity() - totalInChallan);
+            itemList.add(ip);
+        }
+
+        return itemList;
     }
 }

@@ -1,6 +1,7 @@
 package com.bohniman.vmsmaintenance.controller;
 
 import java.io.ByteArrayInputStream;
+import java.util.Date;
 
 import javax.validation.Valid;
 
@@ -9,6 +10,7 @@ import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
 import com.bohniman.vmsmaintenance.model.MasterRack;
 import com.bohniman.vmsmaintenance.model.MasterShelves;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
+import com.bohniman.vmsmaintenance.model.TransChallan;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
@@ -265,7 +267,7 @@ public class StoreControllerBhaskor {
     @ResponseBody
     public ResponseEntity<JsonResponse> addShelve(@Valid @ModelAttribute MasterShelves masterShelves,
             BindingResult bindingResult) throws BindException {
-        System.out.println(masterShelves);
+        // System.out.println(masterShelves);
         if (!bindingResult.hasErrors()) {
             JsonResponse res = storeService.saveNewShelves(masterShelves);
             if (res.getResult()) {
@@ -426,6 +428,64 @@ public class StoreControllerBhaskor {
             headers.setContentDispositionFormData("Content-Disposition", "order.pdf");
             return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF)
                     .body(new InputStreamResource(bis));
+        }
+    }
+
+    // ========================================================================
+    // GET CHALLAN ENTRY PAGE
+    // ========================================================================
+    @PostMapping(value = "/vehicle/job-card/challanEntry")
+    public ModelAndView challanEntryPage(ModelAndView mv, @RequestParam("orderId") Long orderId,
+            @RequestParam("jobCardId") Long jobCardId) {
+        mv = new ModelAndView("store/challan_entry");
+        mv.addObject("order", storeService.getOrderById(orderId));
+        mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
+        mv.addObject("itemList", storeService.getItemListNotInChallanByOrderId(orderId));
+        mv.addObject("challan", new TransChallan());
+        return mv;
+    }
+
+    // ========================================================================
+    // ALL CHALLANS OF AN ORDER
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/allChallan/{orderId}")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllChallan(@PathVariable("orderId") Long orderId) {
+        JsonResponse res = storeService.getAllChallanByOrder(orderId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // NEW CHALLAN ENTRY
+    // ========================================================================
+    @PostMapping(value = "/vehicle/job-card/newChallan")
+    public ModelAndView newChallan(ModelAndView mv, @Valid @ModelAttribute TransChallan transChallan,
+            BindingResult bindingResult, @RequestParam("jobCardId") Long jobCardId,
+            @RequestParam(value = "transVendorItemId[]") Long[] transVendorItemId,
+            @RequestParam(value = "noOfItem[]") Long[] noOfItem,
+            @RequestParam(value = "warrantyUpto[]") Date[] warrantyUpto) {
+        System.out.println(transChallan.toString());
+        System.out.println(jobCardId);
+        System.out.println(transVendorItemId.length);
+        System.out.println(warrantyUpto[0]);
+        if (!bindingResult.hasErrors()) {
+            mv = new ModelAndView("store/challan_entry");
+            mv.addObject("order", storeService.getOrderById(transChallan.getOrder().getId()));
+            mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
+            mv.addObject("itemList", storeService.getItemListNotInChallanByOrderId(transChallan.getOrder().getId()));
+            mv.addObject("challan", new TransChallan());
+            return mv;
+        } else {
+            mv = new ModelAndView("store/challan_entry");
+            mv.addObject("order", storeService.getOrderById(transChallan.getOrder().getId()));
+            mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
+            mv.addObject("itemList", storeService.getItemListNotInChallanByOrderId(transChallan.getOrder().getId()));
+            mv.addObject("challan", transChallan);
+            return mv;
         }
     }
 }

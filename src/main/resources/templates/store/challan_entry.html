@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <title>APVMS | STORE</title>
+    <style type="text/css">
+        .modal-lg {
+            max-width: 65vw;
+        }
+
+        .modal-xlg {
+            max-width: 80vw;
+        }
+
+        .modal-xxlg {
+            max-width: 95vw;
+        }
+
+        .divider {
+            border-bottom: 3px solid #0085a1;
+            margin-top: 12px;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .errorBorder {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <div class="container-fluid main-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                    </div>
+                    <div class="col-md-9">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item"><a th:href="@{/store/vehicle}">Vehicle</a></li>
+                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}"
+                                    th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
+                                <li class="breadcrumb-item">
+                                    Job Card : #<span class="text-success" th:text="${transVehicleJobCard.id}"></span>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    Vendor Order
+                                </li>
+                                <li class="breadcrumb-item">
+                                    Order Id - <span th:text="${order.id}"></span>
+                                </li>
+                            </ol>
+                        </nav>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h4><i class="fas fa-car"></i>Order Details</h4>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <h4><span class="badge badge-success p-2">
+                                                        ID - <span th:text="${order.id}"></span></span>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                ORDER DETAILS
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                                            href="#home" role="tab" aria-controls="home"
+                                                            aria-selected="true">Order Challans</a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content" id="myTabContent">
+                                                    <div class="tab-pane fade show active p-3" id="home" role="tabpanel"
+                                                        aria-labelledby="home-tab">
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <h5 class="card-title">Challan List</h5>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-4">
+                                                                <a class="btn btn-primary p-1 float-right" href="#"
+                                                                    data-target="#modalChallan" data-toggle="modal">Add
+                                                                    New Challan</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12" id="div-challan-list">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+        </div>
+    </main>
+    <!-- Modal Item-->
+    <div class="modal fade" id="modalChallan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xlg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Add new Challan for
+                        Order ID - <span th:text="${order.id}"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-challan" th:action="@{/store/vehicle/job-card/newChallan}" method="POST"
+                        th:object="${challan}">
+                        <input type="hidden" class="form-control" id="order.id" th:field="*{order.id}"
+                            th:value="${order.id}">
+                        <input type="hidden" class="form-control" id="jobCardId" name="jobCardId"
+                            th:value="${transVehicleJobCard.id}">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="exampleFormControlInput1">Challan No</label>
+                                    <input type="text" class="form-control" id="challanNo"
+                                        placeholder="Enter Challan No" th:field="*{challanNo}">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="exampleFormControlInput1">Challan Date</label>
+                                    <input type="text" class="form-control" id="challanDate" placeholder="dd/mm/yyyy"
+                                        th:field="*{challanDate}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h5>List Of Item</h5>
+                            </div>
+                            <div class="col-12">
+                                <table id="table-order-items" class="display table">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>SL No.</th>
+                                            <th>Item Name</th>
+                                            <th>Item Unit</th>
+                                            <th>Order Quantity</th>
+                                            <th>Remaining Quantity</th>
+                                            <th>No of Item Received</th>
+                                            <th>Warranty Upto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="item,iter : ${itemList}" class="text-center">
+                                            <td th:text="${iter.count}"></td>
+                                            <td th:text="${item.itemName}"></td>
+                                            <td th:text="${item.itemUnit}"></td>
+                                            <td th:text="${item.orderQuantity}"></td>
+                                            <td th:text="${item.quantityRemainingToReceive}"></td>
+                                            <td>
+                                                <input type="hidden" name="transVendorItemId"
+                                                    th:value="${item.transVendorItemId}">
+                                                <input type="number" class="form-control" id="noOfItem"
+                                                    name="noOfItem[]">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control warranty-upto" id="warrantyUpto"
+                                                    name="warrantyUpto">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" data-dismiss="modal">Save Challan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var orderId = /*[[${order.id}]]*/ '0';
+         /*]]>*/
+    </script>
+    <script>
+        $(function () {
+            // SIDEBAR LINK ACTIVE
+            $('#side-link-vehicle').addClass('list-group-item-secondary');
+
+            //GET CHALLANS
+            getChallanList();
+
+            $("#challanDate").datepicker({
+                // minDate: '+0d',
+                maxDate: '+0d',
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: 'dd/mm/yy'
+                // format: 'dd/mm/yyyy'
+            });
+
+            $(document).on('show.bs.modal', '#modalChallan', function (e) {
+                $("#table-order-items").DataTable();
+                $(".warranty-upto").datepicker({
+                    minDate: '+0d',
+                    // maxDate: '+0d',
+                    changeMonth: true,
+                    changeYear: true,
+                    dateFormat: 'dd/mm/yy'
+                    // format: 'dd/mm/yyyy'
+                });
+            });
+
+            $(document).on('hidden.bs.modal', '#modalChallan', function (e) {
+                getChallanList();
+            });
+
+            $(document).on('submit', '#form-challan', function (e) {
+
+            });
+
+        });
+    </script>
+    <script>
+        // GET CHALLAN LIST
+        function getChallanList() {
+            $.ajax({
+                type: "GET",
+                url: contextPath + "store/vehicle/job-card/allChallan/" + orderId,
+                timeout: 600000,
+                beforeSend: function () {
+                    $('body').block({
+                        message: '<h3>Please wait...</h3>',
+                        css: {
+                            border: '3px solid darkgrey'
+                        }
+                    });
+                },
+                success: function (response) {
+                    var content = `
+                        <table id="table-items" class="display table ">
+                            <thead class="text-center">
+                                <tr>
+                                    <th style="width: 15%">SL No.</th>
+                                    <th style="width: 15%">Challan No</th>
+                                    <th style="width: 15%">Challan Date</th>
+                                    <th style="width: 15%">No Of Items</th>
+                                    <th style="width: 15%">Total Quantity</th>
+                                    <th style="width: 15%">Bill Id</th>
+                                    <th style="width: 15%">Action</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                        </table>`;
+                    $('#div-challan-list').html(content);
+                    var tablechallans = $('#table-challans').DataTable({
+                        "columnDefs": [{
+                            "className": "text-center",
+                            "targets": [0, 1, 2, 3, 4, 5]
+                        }]
+                    });
+                    $.each(response.payload, function (key, challan) {
+                        tablechallans.row.add([
+                            `<b>${key + 1}</b>`,
+                            `${challan.challanNo}`,
+                            `${challan.challanDate}`,
+                            `${challan.noOfItems}`,
+                            `${challan.totalQuantity}`,
+                            `${challan.transBill.billNo}`,
+                            `<a class="btn btn-danger p-1 delete-challan" data-challan-id="${challan.id}" href="javascript:void(0)">DELETE</a>`
+                        ]).draw(false);
+                    });
+                },
+                error: function (e) {
+                    console.log(e);
+                },
+                complete: function () {
+                    $('body').unblock();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

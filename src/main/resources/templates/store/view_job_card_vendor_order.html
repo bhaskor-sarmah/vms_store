@@ -136,8 +136,14 @@
                                                                         </form>
                                                                     </span>
                                                                     <span  th:case="'PLACED'" th:id="'divDownloadPdf_' + ${iter.count}">
-                                                                        <a class="btn btn-success p-1 w-100" th:href="@{/store/vehicle/job-card/challanEntry}">Challan Entry</a>
-                                                                        <br/>
+                                                                        <!-- <a class="btn btn-success p-1 w-100" th:href="@{/store/vehicle/job-card/challanEntry/order.orderId}"></a> -->
+                                                                        <form method="POST" class="challanEntryForm" th:id="'challanEntryForm_' + ${iter.count}" th:action="@{/store/vehicle/job-card/challanEntry}">
+                                                                            <input type="hidden" name="orderId" th:value="${order.orderId}" th:id="'order_' + ${iter.count}">
+                                                                            <input type="hidden" name="jobCardId" th:value="${order.jobCardId}">
+                                                                            <button type="submit" name="submit" class="btn btn-success p-1 w-100">
+                                                                                Challan Entry
+                                                                            </button>
+                                                                        </form>
                                                                         <br/>
                                                                         <form class="downloadPdfForm" th:id="'formDownloadPdf_' + ${iter.count}">
                                                                             <input type="hidden" name="orderId" th:value="${order.orderId}" th:id="'order_' + ${iter.count}">
