@@ -19,10 +19,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
+@RequestMapping(value = {"/store" , "/headmechanic" , "/mtoadmin", "/user", "/admin"})
 public class LoggedController {
     
     @Autowired
@@ -34,17 +36,17 @@ public class LoggedController {
     // ========================================================================
     // Change Password Page
     // ========================================================================
-    @GetMapping(value = {"/user/change-password" , "/admin/change-password"})
+    @GetMapping("/change-password")
     public ModelAndView changePassword(ModelAndView mv) {
         mv = new ModelAndView();
-        mv.setViewName("user/change_password");
+        mv.setViewName("logged/change_password");
         return mv;
     }
 
     // ========================================================================
     // Change Password Put
     // ========================================================================
-    @PutMapping(value = {"/user/put-change-password" , "/admin/put-change-password"})
+    @PutMapping("/put-change-password")
 	public ResponseEntity<JsonResponse> postChangePassword(@Valid @ModelAttribute ChangePassword changePassword,
 			BindingResult bindingResult) throws BindException {
 

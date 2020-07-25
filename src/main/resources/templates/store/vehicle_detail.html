@@ -5,7 +5,7 @@
     <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
     <title>APVMS | STORE</title>
 </head>
 
@@ -96,8 +96,7 @@
                                             <div class="col-3">
                                                 <div class="row">
                                                     <div class="col-12 mb-2" th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">
-                                                        <a class="btn btn-primary p-2 w-100" href="#modalVehicle" data-toggle="modal" data-vehicle-id="${vehicle.id}" data-vehicle-registration-no="${vehicle.vehicleRegistrationNo}" data-vehicle-type-id="${vehicle.vehicleType.vehicleTypeId}" data-vehicle-model="${vehicle.vehicleModel}"
-                                                            data-vehicle-category-id="${vehicle.vehicleCategory.vehicleCategoryId}" data-fuel-type-id="${vehicle.fuelType.fuelTypeId}" data-mileage="${vehicle.mileage}">EDIT VEHICLE</a>
+                                                        <a class="btn btn-primary p-2 w-100" href="#modalVehicle" data-toggle="modal" th:attr="data-vehicle-id=${masterVehicle.id},data-vehicle-registration-no=${masterVehicle.vehicleRegistrationNo},data-vehicle-type-id=${masterVehicle.vehicleType.vehicleTypeId},data-vehicle-model=${masterVehicle.vehicleModel},data-vehicle-category-id=${masterVehicle.vehicleCategory.vehicleCategoryId}, data-fuel-type-id=${masterVehicle.fuelType.fuelTypeId}, data-mileage=${masterVehicle.mileage}">EDIT VEHICLE</a>
                                                     </div>
                                                     <div class="col-12" th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">
                                                         <a class="btn btn-danger p-2 w-100 delete-vehicle" href="#modalScrap" data-toggle="modal">SCRAP VEHICLE</a>
@@ -122,7 +121,7 @@
                                                         <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Assigned Items</a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Items Log</a>
+                                                        <a class="nav-link" id="log-tab" data-toggle="tab" href="#log" role="tab" aria-controls="log" aria-selected="false">Items Log</a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" id="timeline-tab" data-toggle="tab" href="#timeline" role="tab" aria-controls="profile" aria-selected="false">Vehicle Health History</a>
@@ -138,85 +137,24 @@
                                                                 <h5 class="card-title">Assigned Items to car</h5>
                                                             </div>
                                                             <div class="col-4">
-                                                                <a class="btn btn-success p-1 float-right" href="#modalItem" data-toggle="modal" th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">Assign Item</a>
+                                                                <a class="btn btn-success p-1 float-right" href="#modalAssignItem" data-toggle="modal" th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">Assign Item</a>
                                                             </div>
                                                             <div class="col-4">
                                                                 <a class="btn btn-primary p-1 float-right" th:href="@{/store/inventory}" th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">Add Items to Inventory</a>
                                                             </div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-12">
-                                                                <table class="table table-striped table-sm">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th scope="col">#</th>
-                                                                            <th scope="col">Item Name</th>
-                                                                            <th scope="col">Quantity Available In Car</th>
-                                                                            <th scope="col">Action</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <th scope="row">1</th>
-                                                                            <td>Lathi</td>
-                                                                            <td>25 piece</td>
-                                                                            <td>
-                                                                                <a class="btn btn-danger p-1" href="#" data-toggle="modal">Remove</a>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <th scope="row">2</th>
-                                                                            <td>Diesel</td>
-                                                                            <td>10 litres</td>
-                                                                            <td>
-                                                                                <a class="btn btn-danger p-1" href="#" data-toggle="modal">Remove</a>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <th scope="row">3</th>
-                                                                            <td>Siren</td>
-                                                                            <td>1 piece</td>
-                                                                            <td>
-                                                                                <a class="btn btn-danger p-1" href="#" data-toggle="modal">Remove</a>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
+                                                            <div class="col-12" id="div-assigned-item">
+
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="tab-pane fade p-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                                        <table class="table table-bordered table-sm">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th scope="col">#</th>
-                                                                    <th scope="col">Decription</th>
-                                                                    <th scope="col">Remarks</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <th scope="row">1</th>
-                                                                    <td>2 Lathis assigned</td>
-                                                                    <td>2nd June 2019</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th scope="row">2</th>
-                                                                    <td>2 Seat Cover assigned</td>
-                                                                    <td>2nd June 2019</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th scope="row">3</th>
-                                                                    <td>3 Lathis assigned</td>
-                                                                    <td>2nd June 2019</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th scope="row">4</th>
-                                                                    <td>1 Lathi removed</td>
-                                                                    <td>2nd June 2019</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
+                                                    <div class="tab-pane fade p-3" id="log" role="tabpanel" aria-labelledby="log-tab">
+                                                        <div class="row">
+                                                            <div class="col-12" id="div-item-log">
+
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="tab-pane fade p-3" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">
                                                         <div class="row" th:if="${not #lists.isEmpty(masterVehicle.health)}">
@@ -291,33 +229,18 @@
                 </div>
                 <div class="modal-body">
                     <form id="form-vehicle">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Registration No Of Vehicle : <span class="text-success" id="txtRegistrationNo"></span></label>
+                        </div>
                         <div><input type="hidden" name="id"></div>
+                        <div><input type="hidden" name="vehicleRegistrationNo"></div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Vehicle Type</label>
                             <select class="form-control" name="vehicleType.vehicleTypeId" required>
                             <th:block th:if="${not #lists.isEmpty(vehicleTypeList)}">
                                 <option th:each="x:${vehicleTypeList}" th:text="${x.title}" th:value="${x.vehicleTypeId}"></option>
                             </th:block>
-                      </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Registration No Of Vehicle (<span class="text-success">eg: AS-01-XX-1234</span>)</label>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" id="regnPart1" maxlength="2" minlength="2" required onkeyup="this.value = this.value.toUpperCase();">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">-</span>
-                                </div>
-                                <input type="text" class="form-control" id="regnPart2" maxlength="2" minlength="2" required onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">-</span>
-                                </div>
-                                <input type="text" class="form-control" id="regnPart3" maxlength="2" onkeyup="this.value = this.value.toUpperCase();">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">-</span>
-                                </div>
-                                <input type="text" class="form-control" id="regnPart4" maxlength="4" minlength="4" required onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
-                            </div>
-                            <span><span name="vehicleRegistrationNo"></span></span>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Category</label>
@@ -397,63 +320,175 @@
         </div>
     </div>
 
-    <!-- Modal Item-->
-    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Modal Assign Item-->
+    <div class="modal fade" id="modalAssignItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Assign Items from Inventory</h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Assign Items to Vehicle</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="form-assign-item">
+                        <div><input type="hidden" name="vehicle.id" th:value="${masterVehicle.id}"></div>
                         <div class="form-group">
-                            <label for="exampleFormControlSelect1">Select Item (<span class="text-success">26 Available</span>)</label>
-                            <select class="form-control">
-                                <option value="">---Please Select---</option>
-                                <option value="Lathi">Lathi</option>
-                                <option value="Siren">Siren</option>
-                                <option value="Diesel">Diesel</option>
+                            <label for="exampleFormControlSelect1">Select Item </label>
+                            <select class="js-data-example-ajax w-100" style="width: 100%" name="vehicle_inventory.id">
+                                
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Quantity</label>
-                            <input type="number" class="form-control" id="exampleFormControlInput1">
+                            <input type="number" class="form-control" name="quantity">
+                        </div>
+                        <div class="form-group">
+                            <ul id="assignItemErrors" style="list-style-type: none;"></ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Assign</button>
                         </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Assign</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal Remove Item-->
+    <div class="modal fade" id="modalRemoveItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Remove Item from Vehicle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-remove-item">
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-5 col-form-label">Item to be removed</label>
+                            <label for="inputPassword" class="col-sm-5 col-form-label text-success" id="modalRemoveItemName"></label>
+                        </div>
+                        <div><input type="hidden" name="id"></div>
+                        <div><input type="hidden" name="quantity"></div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-5 col-form-label">Returning item count</label>
+                            <div class="col-sm-7">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control input-remove" name="quantityReturned" min="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text modal-remove-unit"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-5 col-form-label">Damaged Items count</label>
+                            <div class="col-sm-7">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control input-remove" name="quantityDamaged" min="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text modal-remove-unit"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-5 col-form-label">Items lost</label>
+                            <div class="col-sm-7">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control input-remove" name="quantityLost" min="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text modal-remove-unit"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-5 col-form-label">Used items count</label>
+                            <div class="col-sm-7">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control input-remove" name="quantityUsed" min="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text modal-remove-unit"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-5 col-form-label">TOTAL COUNT</label>
+                            <div class="col-sm-7">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="totalCount" min="0" readonly>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text modal-remove-unit"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-12 text-center text-danger" id="modalReturnTotalMessage"></label>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="btnModalRemoveItem">Remove</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script th:inline="javascript">
+        var vehicleId = /*[[${masterVehicle.id}]]*/ '';
+    </script>
     <script>
         $(function() {
             $('#side-link-vehicle').addClass('list-group-item-secondary');
+
+            $('.js-data-example-ajax').select2({
+                    ajax: {
+                        url: contextPath + "store/inventory/search-item",
+                        dataType: 'json',
+                        data: function(params) {
+                            return {
+                                searchText: params.term
+                            };
+                        },
+                        processResults: function(response, params) {
+                            var data = $.map(response.payload.objectList1, function(org) {
+                                org.id = org.id;
+                                org.text = org.name + " (" + org.quantityInStore + " " + org.unit + " available.)";
+                                return org;
+                            });
+                            return {
+                                results: data,
+                            };
+                        },
+                        cache: true
+                    },
+                    placeholder: 'Search item',
+                    minimumInputLength: 2
+                })
+                .on('select2:selecting', function(event) {
+                    $('.js-data-example-ajax').find('option').remove();
+                });
 
             // NEW ITEM
             $(document).on("submit", "#form-vehicle", function(e) {
                 e.preventDefault();
                 $('.error-message').remove();
-                let regnNo = "";
-                if ($('#regnPart3').val().trim() === "") {
-                    regnNo = $('#regnPart1').val() + "-" + $('#regnPart2').val() + "-" + $('#regnPart4').val();
-                } else {
-                    regnNo = $('#regnPart1').val() + "-" + $('#regnPart2').val() + "-" + $('#regnPart3').val() + "-" + $('#regnPart4').val();
-                }
                 let form = $(this)[0]; // You need to use standard javascript object here
                 let formData = new FormData(form);
-                formData.set("vehicleRegistrationNo", regnNo);
                 $.confirm({
                     title: 'Confirm!',
                     content: 'Are you sure you submit the form ?',
@@ -477,15 +512,17 @@
                                 contentType: false,
                                 processData: false,
                                 success: function(response) {
-                                    $('#form-vehicle').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
                                         content: "Vehicle Saved Successfully",
                                         type: 'green',
-                                        typeAnimated: true
+                                        typeAnimated: true,
+                                        buttons: {
+                                            ok: function() {
+                                                location.reload();
+                                            }
+                                        }
                                     });
-                                    getVehicleList();
-                                    $('#modalVehicle').modal('hide');
                                 },
                                 error: function(e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
@@ -493,10 +530,7 @@
                                         $.each(e.responseJSON.errorMessages, function(key,
                                             value) {
                                             $("#form-vehicle").contents().find(
-                                                '[name=' + key + ']').after(
-                                                '<span class="error-message">' +
-                                                value + '</span>');
-                                            $('#' + key).html(
+                                                '[name="' + key + '"]').after(
                                                 '<span class="error-message">' +
                                                 value + '</span>');
                                         });
@@ -519,7 +553,125 @@
                 });
             });
 
-            // SCRAp VEHICLE
+            // ASSIGN ITEM
+            $(document).on("submit", "#form-assign-item", function(e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you want to assign the item ?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/inventory/vehicle/assign-item",
+                                timeout: 600000,
+                                beforeSend: function() {
+                                    $('body').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: $('#form-assign-item').serialize(),
+                                success: function(response) {
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: "Item Added Successfully",
+                                        type: 'green',
+                                        typeAnimated: true
+                                    });
+                                    getAssignedItemList();
+                                    $('#modalAssignItem').modal('hide');
+                                },
+                                error: function(e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        $.each(e.responseJSON.errorMessages, function(key, value) {
+                                            $("#assignItemErrors").append(`<li class="error-message text-center">${value}</li>`)
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function() {
+                                    $('body').unblock();
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
+
+            // ASSIGN ITEM
+            $(document).on("submit", "#form-remove-item", function(e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you want to remove the item ?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/inventory/vehicle/remove-item",
+                                timeout: 600000,
+                                beforeSend: function() {
+                                    $('body').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: $('#form-remove-item').serialize(),
+                                success: function(response) {
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: "Item Removed Successfully",
+                                        type: 'green',
+                                        typeAnimated: true
+                                    });
+                                    getAssignedItemList();
+                                    $('#modalRemoveItem').modal('hide');
+                                },
+                                error: function(e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        $.each(e.responseJSON.errorMessages, function(key, value) {
+                                            $("#removeItemErrors").append(`<li class="error-message text-center">${value}</li>`)
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function() {
+                                    $('body').unblock();
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
+
+            // SCRAP VEHICLE
             $(document).on("submit", "#form-scrap", function(e) {
                 e.preventDefault();
                 $('.error-message').remove();
@@ -544,7 +696,7 @@
                                 },
                                 data: $('#form-scrap').serialize(),
                                 success: function(response) {
-                                    $('#form-vehicle').trigger('reset');
+                                    location.reload();
                                     $.alert({
                                         title: 'Success!',
                                         content: "Vehicle Scrapped Successfully",
@@ -582,76 +734,153 @@
                 });
             });
 
+            //ON ASSIGN MODAL SHOW
+            $(document).on('show.bs.modal', '#modalAssignItem', function(e) {
+                $('#form-assign-item').contents().find('[name="quantity"]').val(0);
+                $('.js-data-example-ajax').val(null).trigger('change');
+            });
+
+            //ON REMOVE MODAL SHOW
+            $(document).on('show.bs.modal', '#modalRemoveItem', function(e) {
+                $('#modalRemoveItemName').html(e.relatedTarget.dataset.itemName);
+                $('#form-remove-item').contents().find('[name="id"]').val(e.relatedTarget.dataset.id);
+                $('#form-remove-item').contents().find('[name="quantity"]').val(e.relatedTarget.dataset.quantity);
+                $('#form-remove-item').contents().find('[name="quantityReturned"]').val(0);
+                $('#form-remove-item').contents().find('[name="quantityDamaged"]').val(0);
+                $('#form-remove-item').contents().find('[name="quantityLost"]').val(0);
+                $('#form-remove-item').contents().find('[name="quantityUsed"]').val(0);
+                $('#form-remove-item').contents().find('[name="totalCount"]').val(0);
+                $('.modal-remove-unit').html(e.relatedTarget.dataset.unit);
+                $('#modalReturnTotalMessage').html("Total count must be equal to : " + e.relatedTarget.dataset.quantity + " " + e.relatedTarget.dataset.unit);
+                $('#btnModalRemoveItem').prop('disabled', true);
+            });
 
             //ON MODAL SHOW
             $(document).on('show.bs.modal', '#modalVehicle', function(e) {
                 $('.error-message').remove();
-                let vehicleId = e.relatedTarget.dataset.vehicleId;
-                $("#form-vehicle").contents().find('[name=mileage]').val("0");
-                if (vehicleId == 0) {
-                    $("#form-vehicle").contents().find('[name=id]').val("");
+                $("#form-vehicle").contents().find('[name=id]').val(e.relatedTarget.dataset.vehicleId);
+                $("#form-vehicle").contents().find('[name=vehicleModel]').val(e.relatedTarget.dataset.vehicleModel);
+                $("#form-vehicle").contents().find('[name=vehicleRegistrationNo]').val(e.relatedTarget.dataset.vehicleRegistrationNo);
+                $("#form-vehicle").contents().find('[name="vehicleType.vehicleTypeId"]').val(e.relatedTarget.dataset.vehicleTypeId);
+                $("#form-vehicle").contents().find('[name="vehicleCategory.vehicleCategoryId"]').val(e.relatedTarget.dataset.vehicleCategoryId);
+                $("#form-vehicle").contents().find('[name="fuelType.fuelTypeId"]').val(e.relatedTarget.dataset.fuelTypeId);
+                $("#form-vehicle").contents().find('[name=mileage]').val(e.relatedTarget.dataset.mileage);
+                $('#txtRegistrationNo').html(e.relatedTarget.dataset.vehicleRegistrationNo);
+            });
+
+            $(document).on('keyup change', '.input-remove', function(e) {
+                if ($(this).val() === "" || $(this).val() == undefined) {
+                    $(this).val(0);
+                }
+                let quantityReturned = $('#form-remove-item').contents().find('[name="quantityReturned"]').val();
+                let quantityDamaged = $('#form-remove-item').contents().find('[name="quantityDamaged"]').val();
+                let quantityLost = $('#form-remove-item').contents().find('[name="quantityLost"]').val();
+                let quantityUsed = $('#form-remove-item').contents().find('[name="quantityUsed"]').val();
+                let quantity = $('#form-remove-item').contents().find('[name="quantity"]').val();
+                let totalCount = parseFloat(quantityReturned) + parseFloat(quantityDamaged) + parseFloat(quantityLost) + parseFloat(quantityUsed);
+                $('#form-remove-item').contents().find('[name="totalCount"]').val(totalCount);
+
+                if (totalCount == parseFloat(quantity)) {
+                    $('#btnModalRemoveItem').prop('disabled', false);
                 } else {
-                    $("#form-vehicle").contents().find('[name=id]').val(e.relatedTarget.dataset.vehicleId);
-                    $("#form-vehicle").contents().find('[name=vehicleModel]').val(e.relatedTarget.dataset.vehicleModel);
-                    $("#form-vehicle").contents().find('[name=vehicleRegistrationNo]').val(e.relatedTarget.dataset.vehicleRegistrationNo);
-                    $("#form-vehicle").contents().find('[name="vehicleType.vehicleTypeId"]').val(e.relatedTarget.dataset.vehicleTypeId);
-                    $("#form-vehicle").contents().find('[name="vehicleCategory.vehicleCategoryId"]').val(e.relatedTarget.dataset.vehicleCategoryId);
-                    $("#form-vehicle").contents().find('[name="fuelType.fuelTypeId"]').val(e.relatedTarget.dataset.fuelTypeId);
-                    $("#form-vehicle").contents().find('[name=mileage]').val(e.relatedTarget.dataset.mileage);
+                    $('#btnModalRemoveItem').prop('disabled', true);
                 }
             });
 
-            $('#div-item-list').html(`
-                        <table id="table-items" class="display table ">
+            // GET ITEM LIST
+            function getAssignedItemList() {
+                $.ajax({
+                    type: "GET",
+                    url: contextPath + "store/inventory/vehicle/assigned-items/" + vehicleId,
+                    timeout: 600000,
+                    beforeSend: function() {
+                        $('body').block({
+                            message: '<h3>Please wait...</h3>',
+                            css: {
+                                border: '3px solid darkgrey'
+                            }
+                        });
+                    },
+                    success: function(response) {
+                        var assignedContent = `
+                        <table id="table-assigned-item" class="table table-striped text-center table-sm table-hover" style="width:100%">
                             <thead class="text-center">
                                 <tr>
                                     <th>SL No.</th>
                                     <th>Item Name</th>
-                                    <th>Category</th>
-                                    <th>Quantity In Store</th>
-                                    <th >Action</th>
-                                    <th ></th>
+                                    <th>Quantity Assigned</th>
+                                    <th>Assigned On</th>
+                                    <th >Assigned By</th>
+                                    <th >Options</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-center">
+                            <tbody></tbody>
+                        </table>`;
+                        $('#div-assigned-item').html(assignedContent);
+
+                        var itemLog = `
+                        <table id="table-item-log" class="table table-striped text-center table-sm table-hover table-bordered small" style="width:100%">
+                            <thead class="text-center">
                                 <tr>
-                                    <td>1</td>
-                                    <td>Screw Driver</td>
-                                    <td>Inventory</td>
-                                    <td>25 piece</td>
-                                    <td>
-                                        <a class="btn btn-primary p-1 deleteItem" href="javascript:void(0)">DELETE</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal">EDIT</a>
-                                    </td>
+                                    <th rowspan="2">#</th>
+                                    <th rowspan="2">Item</th>
+                                    <th rowspan="2">Status</th>
+                                    <th colspan="5">Count</th>
+                                    <th  rowspan="2">Assigned On</th>
+                                    <th  rowspan="2">Removed On</th>
                                 </tr>
                                 <tr>
-                                    <td>1</td>
-                                    <td>Stick</td>
-                                    <td>Inventory</td>
-                                    <td>100 piece</td>
-                                    <td>
-                                        <a class="btn btn-primary p-1 deleteItem" href="javascript:void(0)">DELETE</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal">EDIT</a>
-                                    </td>
+                                    <th>Assigned</th>
+                                    <th>Used</th>
+                                    <th>Damaged</th>
+                                    <th>Lost</th>
+                                    <th>Returned</th>
                                 </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>SL No.</th>
-                                    <th>Item Name</th>
-                                    <th>Category</th>
-                                    <th>Quantity In Store</th>
-                                    <th >Action</th>
-                                    <th ></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-            `);
-            $('#table-items').DataTable();
+                            </thead>
+                            <tbody></tbody>
+                        </table>`;
+                        $('#div-item-log').html(itemLog);
+
+                        $.each(response.payload.objectList1, function(key, item) {
+                            if (item.assignedStatus == "ASSIGNED") {
+                                $('#table-assigned-item').append(
+                                    `<tr>
+                                    <td>${key+1}</td>
+                                    <td>${item.vehicle_inventory.name}</td>
+                                    <td>${item.quantity} ${item.vehicle_inventory.unit}</td>
+                                    <td>${moment(item.assignedDate).format("Do MMM YYYY hh:mm A")}</td>
+                                    <td >${item.createdBy}</td>
+                                    <td > <a class="btn btn-danger p-1 float-right" href="#modalRemoveItem" data-toggle="modal" data-id="${item.id}" data-item-name="${item.vehicle_inventory.name}"  data-quantity="${item.quantity}"  data-unit="${item.vehicle_inventory.unit}">Remove</a></td>
+                                </tr>`
+                                );
+                            }
+
+                            $('#table-item-log').append(
+                                `<tr>
+                                    <td>${key+1}</td>
+                                    <td>${item.vehicle_inventory.name}</td>
+                                    <td>${item.assignedStatus}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>${item.quantityUsed == null ? '-' :item.quantityUsed}</td>
+                                    <td>${item.quantityDamaged == null ? '-' :item.quantityDamaged}</td>
+                                    <td>${item.quantityLost == null ? '-' :item.quantityLost}</td>
+                                    <td>${item.quantityReturned == null ? '-' :item.quantityReturned}</td>
+                                    <td>${moment(item.assignedDate).format("Do MMM YYYY hh:mm A")}</td>
+                                    <td>${item.assignedStatus == "REMOVED" ? moment(item.returnedDate).format("Do MMM YYYY hh:mm A") : '-'}</td>
+                                </tr>`
+                            );
+                        });
+                    },
+                    error: function(e) {
+                        console.log(e);
+                    },
+                    complete: function() {
+                        $('body').unblock();
+                    }
+                });
+            }
+            getAssignedItemList();
+
         });
     </script>
 </body>

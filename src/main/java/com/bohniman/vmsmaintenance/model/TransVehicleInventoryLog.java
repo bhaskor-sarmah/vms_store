@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,20 +21,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class MasterVehicleInventory extends Auditable{
-
+public class TransVehicleInventoryLog  extends Auditable{
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank(message="* Name is required")
-    private String name;
-
-    @NotBlank(message="* Select a category")
-    private String category;
-
-    @NotBlank(message="* Select a unit")
-    private String unit;
 
     private Double totalQuantity = 0.00;
 
@@ -49,7 +41,16 @@ public class MasterVehicleInventory extends Auditable{
 
     private Double quantityUsed = 0.00;
 
-    @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
-    private Boolean isDeleted = false;
+    private String action;
+
+    private String remarks;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_vehicle", nullable = true)
+    private MasterVehicle masterVehicle;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_inventory", nullable = false)
+    private MasterVehicleInventory masterVehicleInventory;
 
 }

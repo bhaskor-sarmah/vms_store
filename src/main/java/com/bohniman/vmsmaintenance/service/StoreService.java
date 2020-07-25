@@ -25,6 +25,8 @@ import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.model.TransVehicleHealth;
+import com.bohniman.vmsmaintenance.model.TransVehicleInventory;
+import com.bohniman.vmsmaintenance.model.TransVehicleInventoryLog;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardForward;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItems;
@@ -53,6 +55,8 @@ import com.bohniman.vmsmaintenance.repository.MasterVehicleTypeRepository;
 // import com.bohniman.vmsmaintenance.repository.MasterVendorItemRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleHealthRepository;
+import com.bohniman.vmsmaintenance.repository.TransVehicleInventoryLogRepository;
+import com.bohniman.vmsmaintenance.repository.TransVehicleInventoryRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardForwardRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardItemRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardRepository;
@@ -121,6 +125,12 @@ public class StoreService {
     TransVehicleJobCardForwardRepository transVehicleJobCardForwardRepository;
 
     @Autowired
+    TransVehicleInventoryLogRepository transVehicleInventoryLogRepository;
+
+    @Autowired
+    TransVehicleInventoryRepository transVehicleInventoryRepository;
+
+    @Autowired
     UserRepository userRepository;
 
     // ========================================================================
@@ -128,6 +138,19 @@ public class StoreService {
     // ========================================================================
     public JsonResponse saveNewInventory(MasterVehicleInventory masterVehicleInventory) {
         JsonResponse res = new JsonResponse();
+
+        // FOR EDIT INVENTORY
+        if (!Objects.equals(masterVehicleInventory.getId(), null)) {
+            MasterVehicleInventory editInventory = getVehicleInventoryById(masterVehicleInventory.getId());
+            masterVehicleInventory.setTotalQuantity(editInventory.getTotalQuantity());
+            masterVehicleInventory.setQuantityAssigned(editInventory.getQuantityAssigned());
+            masterVehicleInventory.setQuantityInStore(editInventory.getQuantityInStore());
+            masterVehicleInventory.setQuantityDamaged(editInventory.getQuantityDamaged());
+            masterVehicleInventory.setQuantityReturned(editInventory.getQuantityReturned());
+            masterVehicleInventory.setQuantityLost(editInventory.getQuantityLost());
+            masterVehicleInventory.setQuantityUsed(editInventory.getQuantityUsed());
+        }
+
         masterVehicleInventoryRepository.save(masterVehicleInventory);
         res.setResult(true);
         res.setMessage("Item Saved Successfully");
@@ -844,7 +867,173 @@ public class StoreService {
         return transVendorItemRepository.getOne(id);
     }
 
-    public Object getJobCardForwarableUserList() {
-        return userRepository.findByRoles_role("HEADMECHANIC");
-    }
+	public Object getJobCardForwarableUserList() {
+		return  userRepository.findByRoles_role("HEADMECHANIC");
+	}
+
+	public Boolean checkIfItemExistsByItemName(String name) {
+		return masterVehicleInventoryRepository.existsByName(name);
+	}
+
+	public MasterVehicleInventory getVehicleInventoryById(Long id) {
+		return masterVehicleInventoryRepository.getOne(id);
+	}
+
+	public JsonResponse addInventoryStock(Long id, Double quantity) {
+		JsonResponse res = new JsonResponse();
+
+        MasterVehicleInventory inventory = masterVehicleInventoryRepository.getOne(id);
+        Double quantityInStore = inventory.getQuantityInStore()+quantity;
+        Double totalQuantityBought = inventory.getTotalQuantity()+quantity;
+        inventory.setQuantityInStore(quantityInStore);
+        inventory.setTotalQuantity(totalQuantityBought);
+        masterVehicleInventoryRepository.save(inventory);
+
+        TransVehicleInventoryLog log = new TransVehicleInventoryLog();
+        log.setMasterVehicleInventory(inventory);
+        log.setTotalQuantity(inventory.getTotalQuantity());
+        log.setQuantityAssigned(inventory.getQuantityAssigned());
+        log.setQuantityInStore(inventory.getQuantityInStore());
+        log.setQuantityDamaged(inventory.getQuantityDamaged());
+        log.setQuantityReturned(inventory.getQuantityReturned());
+        log.setQuantityLost(inventory.getQuantityLost());
+        log.setQuantityUsed(inventory.getQuantityUsed());
+        log.setAction("ADD");
+        log.setRemarks(quantity+" "+inventory.getUnit()+" New Stock Added.");
+        transVehicleInventoryLogRepository.save(log);
+
+        res.setResult(true);
+        res.setMessage("Stock Added Successfully.");
+		return res;
+	}
+
+	public JsonResponse searchInventoryItems(String searchText) {
+		    JsonResponse res = new JsonResponse();
+        PageableObjectPayload orgData = new PageableObjectPayload();
+        List<MasterVehicleInventory> itemList = new ArrayList<>();
+        MasterVehicleInventory itemData = null;
+
+        List<MasterVehicleInventory> databaseList = masterVehicleInventoryRepository.findByNameContainingAndIsDeletedFalse(searchText);
+
+        for (MasterVehicleInventory item : databaseList) {
+            itemData = new MasterVehicleInventory();
+            itemData.setId(item.getId());
+            itemData.setName(item.getName());
+            itemData.setUnit(item.getUnit());
+            itemData.setQuantityInStore(item.getQuantityInStore());
+
+            itemList.add(itemData);
+        }
+
+        orgData.setObjectList1(itemList);
+        res.setPayload(orgData);
+        res.setResult(true);
+
+        return res;
+	}
+
+	public JsonResponse assignInventoryItemToVehicle(@Valid TransVehicleInventory transVehicleInventory) {
+        JsonResponse res = new JsonResponse();
+        transVehicleInventory.setAssignedStatus("ASSIGNED");
+        transVehicleInventory = transVehicleInventoryRepository.save(transVehicleInventory);
+
+        MasterVehicleInventory inventory = masterVehicleInventoryRepository.getOne(transVehicleInventory.getVehicle_inventory().getId());
+        Double quantityInStore = inventory.getQuantityInStore()-transVehicleInventory.getQuantity();
+        Double quantityAssigned = inventory.getQuantityAssigned()+transVehicleInventory.getQuantity();
+        inventory.setQuantityInStore(quantityInStore);
+        inventory.setQuantityAssigned(quantityAssigned);
+        masterVehicleInventoryRepository.save(inventory);
+
+        TransVehicleInventoryLog log = new TransVehicleInventoryLog();
+        log.setMasterVehicle(transVehicleInventory.getVehicle());
+        log.setMasterVehicleInventory(inventory);
+        log.setTotalQuantity(inventory.getTotalQuantity());
+        log.setQuantityAssigned(inventory.getQuantityAssigned());
+        log.setQuantityInStore(inventory.getQuantityInStore());
+        log.setQuantityDamaged(inventory.getQuantityDamaged());
+        log.setQuantityReturned(inventory.getQuantityReturned());
+        log.setQuantityLost(inventory.getQuantityLost());
+        log.setQuantityUsed(inventory.getQuantityUsed());
+        log.setAction("ASSIGNED");
+        log.setRemarks(transVehicleInventory.getQuantity()+" "+inventory.getUnit()+" Assigned.");
+        transVehicleInventoryLogRepository.save(log);
+
+        res.setResult(true);
+        res.setMessage("Item Assigned Successfully");
+        return res;
+	}
+
+	public JsonResponse getAssignedItemList(Long vehicleId) {
+		JsonResponse res = new JsonResponse();
+        PageableObjectPayload orgData = new PageableObjectPayload();
+        List<TransVehicleInventory> itemList = new ArrayList<>();
+        TransVehicleInventory itemData = null;
+
+        List<TransVehicleInventory> databaseList = transVehicleInventoryRepository.findByVehicle_id(vehicleId);
+
+        for (TransVehicleInventory item : databaseList) {
+            itemData = new TransVehicleInventory();
+            itemData.setId(item.getId());
+            itemData.setAssignedStatus(item.getAssignedStatus());
+            itemData.setAssignedDate(item.getAssignedDate());
+            itemData.setReturnedDate(item.getReturnedDate());
+            itemData.setCreatedBy(item.getCreatedBy());
+            itemData.setQuantity(item.getQuantity());
+            itemData.setQuantityUsed(item.getQuantityUsed());
+            itemData.setQuantityDamaged(item.getQuantityDamaged());
+            itemData.setQuantityLost(item.getQuantityLost());
+            itemData.setQuantityReturned(item.getQuantityReturned());
+            itemData.setVehicle_inventory(item.getVehicle_inventory());
+
+            itemList.add(itemData);
+        }
+
+        orgData.setObjectList1(itemList);
+        res.setPayload(orgData);
+        res.setResult(true);
+
+        return res;
+	}
+
+	public JsonResponse removeInventoryItemFromVehicle(@Valid TransVehicleInventory incomingTransVehicleInventory) {
+        JsonResponse res = new JsonResponse();
+        TransVehicleInventory currentTransVehicleInventory = transVehicleInventoryRepository.getOne(incomingTransVehicleInventory.getId());
+        currentTransVehicleInventory.setAssignedStatus("REMOVED");
+        currentTransVehicleInventory.setReturnedDate(new Date());
+        currentTransVehicleInventory.setQuantityDamaged(incomingTransVehicleInventory.getQuantityDamaged());
+        currentTransVehicleInventory.setQuantityReturned(incomingTransVehicleInventory.getQuantityReturned());
+        currentTransVehicleInventory.setQuantityLost(incomingTransVehicleInventory.getQuantityLost());
+        currentTransVehicleInventory.setQuantityUsed(incomingTransVehicleInventory.getQuantityUsed());
+        currentTransVehicleInventory = transVehicleInventoryRepository.save(currentTransVehicleInventory);
+
+        MasterVehicleInventory inventory = masterVehicleInventoryRepository.getOne(currentTransVehicleInventory.getVehicle_inventory().getId());
+        Double quantityInStore = inventory.getQuantityInStore()+currentTransVehicleInventory.getQuantityReturned();
+        Double quantityAssigned = inventory.getQuantityAssigned()-currentTransVehicleInventory.getQuantityDamaged()-currentTransVehicleInventory.getQuantityLost()-currentTransVehicleInventory.getQuantityUsed()+currentTransVehicleInventory.getQuantityReturned();
+        inventory.setQuantityInStore(quantityInStore);
+        inventory.setQuantityAssigned(quantityAssigned);
+        inventory.setQuantityDamaged(inventory.getQuantityDamaged()+currentTransVehicleInventory.getQuantityDamaged());
+        inventory.setQuantityReturned(inventory.getQuantityReturned()+currentTransVehicleInventory.getQuantityReturned());
+        inventory.setQuantityLost(inventory.getQuantityLost()+currentTransVehicleInventory.getQuantityLost());
+        inventory.setQuantityUsed(inventory.getQuantityUsed()+currentTransVehicleInventory.getQuantityUsed());
+        masterVehicleInventoryRepository.save(inventory);
+
+        TransVehicleInventoryLog log = new TransVehicleInventoryLog();
+        log.setMasterVehicle(currentTransVehicleInventory.getVehicle());
+        log.setMasterVehicleInventory(inventory);
+        log.setTotalQuantity(inventory.getTotalQuantity());
+        log.setQuantityAssigned(inventory.getQuantityAssigned());
+        log.setQuantityInStore(inventory.getQuantityInStore());
+        log.setQuantityDamaged(inventory.getQuantityDamaged());
+        log.setQuantityReturned(inventory.getQuantityReturned());
+        log.setQuantityLost(inventory.getQuantityLost());
+        log.setQuantityUsed(inventory.getQuantityUsed());
+        log.setAction("REMOVED");
+        String unit = inventory.getUnit();
+        log.setRemarks("Used:"+incomingTransVehicleInventory.getQuantityUsed()+" "+unit+", Damaged:"+incomingTransVehicleInventory.getQuantityDamaged()+" "+unit+", Lost:"+incomingTransVehicleInventory.getQuantityLost()+" "+unit+", Returned:"+incomingTransVehicleInventory.getQuantityReturned()+" "+unit);
+        transVehicleInventoryLogRepository.save(log);
+
+        res.setResult(true);
+        res.setMessage("Item Removed Successfully");
+        return res;
+	}
 }

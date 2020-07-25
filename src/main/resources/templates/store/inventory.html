@@ -83,10 +83,6 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">Quantity Bought</label>
-                            <input type="number" class="form-control" name="quantityBought" min="0">
-                        </div>
-                        <div class="form-group">
                             <label for="exampleFormControlSelect1">Unit</label>
                             <select class="form-control" name="unit">
                                 <option value="">---Please Select---</option>
@@ -104,6 +100,46 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Add Stock -->
+    <div class="modal fade" id="modalAddStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Add <span class="lblModalAddStockItemName"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-add-stock">
+                        <div><input type="hidden" class="form-control" name="id"></div>
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Item Name : <span class="lblModalAddStockItemName"></span></label>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Stock Available : <span id="lblModalAddStockQuantityInStore"></span></label>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Enter Quantity</label>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" name="quantity" onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="lblModalAddStockUnit"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
@@ -185,6 +221,70 @@
                 });
             });
 
+            // ADD STOCK
+            $(document).on("submit", "#form-add-stock", function(e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you add the new stock ?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/inventory/add-stock",
+                                timeout: 600000,
+                                beforeSend: function() {
+                                    $('body').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: $("#form-add-stock").serialize(),
+                                success: function(response) {
+                                    $('#form-add-stock').trigger('reset');
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: "Stock Added Successfully",
+                                        type: 'green',
+                                        typeAnimated: true
+                                    });
+                                    getItemList();
+                                    $('#modalAddStock').modal('hide');
+                                },
+                                error: function(e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        $.each(e.responseJSON.errorMessages, function(key,
+                                            value) {
+                                            $("#form-add-stock").contents().find(
+                                                '[name=' + key + ']').after(
+                                                '<span class="error-message">' +
+                                                value + '</span>');
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function() {
+                                    $('body').unblock();
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
+
             //DELETE ITEM
             $(document).on('click', '.delete-item', function(e) {
                 e.preventDefault();
@@ -238,9 +338,17 @@
                     $("#form-item").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
                     $("#form-item").contents().find('[name=name]').val(e.relatedTarget.dataset.name);
                     $("#form-item").contents().find('[name=category]').val(e.relatedTarget.dataset.category);
-                    $("#form-item").contents().find('[name=quantityBought]').val(e.relatedTarget.dataset.quantityBought);
                     $("#form-item").contents().find('[name=unit]').val(e.relatedTarget.dataset.unit);
                 }
+            });
+
+            //ON MODAL SHOW
+            $(document).on('show.bs.modal', '#modalAddStock', function(e) {
+                $("#form-add-stock").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
+                $("#form-add-stock").contents().find('[name=quantity]').val(1);
+                $(".lblModalAddStockItemName").html(e.relatedTarget.dataset.name);
+                $("#lblModalAddStockQuantityInStore").html(e.relatedTarget.dataset.quantityInStore + ' ' + e.relatedTarget.dataset.unit);
+                $("#lblModalAddStockUnit").html(e.relatedTarget.dataset.unit);
             });
         });
     </script>
@@ -268,8 +376,8 @@
                                     <th>Item Name</th>
                                     <th>Category</th>
                                     <th>Quantity In Store</th>
-                                    <th >Action</th>
-                                    <th ></th>
+                                    <th >Add Stock</th>
+                                    <th >Options</th>
                                 </tr>
                             </thead>
                         </table>`;
@@ -286,9 +394,19 @@
                             `<b>${key + 1}</b>`,
                             `${item.name}`,
                             `${item.category}`,
-                            `${item.quantityBought} ${item.unit}`,
-                            `<a class="btn btn-primary p-1 delete-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a>`,
-                            `<a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal" data-item-id="${item.id}" data-name="${item.name}" data-category="${item.category}" data-unit="${item.unit}" data-quantity-in-store="${item.quantityBought}">EDIT</a>`
+                            `${item.quantityInStore} ${item.unit}`,
+                            `<a class="btn btn-primary p-1 w-100" href="#modalAddStock" data-toggle="modal" data-item-id="${item.id}" data-name="${item.name}" data-unit="${item.unit}" data-quantity-in-store="${item.quantityInStore}">ADD STOCK</a>`,
+                            `<div class="dropdown show">
+                                <a class="btn btn-secondary dropdown-toggle p-1 w-100" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Options
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item delete-item" data-item-id="${item.id}" href="javascript:void(0)">VIEW LOGS</a>
+                                    <a class="dropdown-item" href="#modalItem" data-toggle="modal" data-item-id="${item.id}" data-name="${item.name}" data-category="${item.category}" data-unit="${item.unit}">EDIT</a>
+                                    <a class="dropdown-item delete-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a>
+                                </div>
+                                </div>`
                         ]).draw(false);
                     });
                 },
