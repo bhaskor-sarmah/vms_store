@@ -2,6 +2,7 @@ package com.bohniman.vmsmaintenance.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -30,11 +31,12 @@ public class TransChallan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     @NotBlank(message = "* Challan No is required")
     private String challanNo;
 
     // @NotNull(message = "* Challan No is required")
-    private Long noOfItems;
+    private Double noOfItems;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -43,7 +45,6 @@ public class TransChallan {
 
     private Long totalQuantity;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_trans_bill")
     private TransBill transBill;

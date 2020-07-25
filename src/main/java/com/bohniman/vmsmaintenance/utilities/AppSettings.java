@@ -17,4 +17,12 @@ public class AppSettings {
     public static final String ORDER_STATUS_CLOSED = "CLOSED";
 
     public static final String VENDOR_ITEM_STATUS_ACTIVE = "ACTIVE";
+
+    public static final String PURCHASE_ITEM_STATUS_FRESH = "FRESH";
+    public static final String PURCHASE_ITEM_STATUS_USED = "USED";
+    public static final String PURCHASE_ITEM_STATUS_AUCTION = "AUCTION";
+    public static final String PURCHASE_ITEM_STATUS_SCRAP = "SCRAP";
+
+    public static final String PURCHASE_ITEM_TYPE_NEW = "NEW";
+    public static final String PURCHASE_ITEM_TYPE_OLD = "OLD";
 }

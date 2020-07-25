@@ -12,4 +12,6 @@ public interface TransChallanRepository extends JpaRepository<TransChallan, Long
 
     List<TransChallan> findAllByOrder_id(Long orderId);
 
+    TransChallan findByChallanNo(String challanNo);
+
 }

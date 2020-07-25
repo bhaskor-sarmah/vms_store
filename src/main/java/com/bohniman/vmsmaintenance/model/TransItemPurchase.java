@@ -28,7 +28,7 @@ public class TransItemPurchase {
 
     private Date purchaseDate;
 
-    private Long puchaseQuantity;
+    private Double puchaseQuantity;
 
     // private Long amount;
 

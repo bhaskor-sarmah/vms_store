@@ -46,7 +46,6 @@ public class DateUtil {
         return df.parse(date);
     }
 
-
     public static String getFormattedTime(Date date) {
         SimpleDateFormat df = new SimpleDateFormat("hh:mm:ss a");
         return df.format(date);
@@ -62,5 +61,16 @@ public class DateUtil {
         cal.setTime(date);
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
         return cal.getTime();
+    }
+
+    public static boolean isValidDate(String inDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(inDate.trim());
+        } catch (ParseException pe) {
+            return false;
+        }
+        return true;
     }
 }

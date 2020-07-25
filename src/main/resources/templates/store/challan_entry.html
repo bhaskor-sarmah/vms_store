@@ -70,21 +70,74 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-6">
-                                                <h4><i class="fas fa-car"></i>Order Details</h4>
+                                                <h4>Order Details</h4>
                                             </div>
-                                            <div class="col-6 text-right">
-                                                <h4><span class="badge badge-success p-2">
-                                                        ID - <span th:text="${order.id}"></span></span>
-                                                </h4>
+                                            <div class="col-6">
+                                                <a class="btn btn-success p-2 float-right" style="color: white;">BILL
+                                                    ENTRY</a>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-12">
-                                                ORDER DETAILS
+                                            <div class="col-12 col-md-6">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <h5>Order Id :</h5>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <h5>: <span th:text="${order.id}"></span>
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <h5>Vendor Name</h5>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <h5>: <span th:text="${order.vendor.vendorName}"></span>
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <h5>Order Date</h5>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <h5>: <span th:text="${order.orderDate}"></span>
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <h5>Order Amount</h5>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <h5>: <span th:text="${order.totalAmount}"></span>
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <h5>Order Status</h5>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <h5>: <span th:text="${order.orderStatus}"></span>
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                    </div>
+                                                    <div class="col-6">
+
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+
                                         <hr>
                                         <div class="row">
                                             <div class="col-12">
@@ -127,7 +180,7 @@
             <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
         </div>
     </main>
-    <!-- Modal Item-->
+    <!-- Modal Challan-->
     <div class="modal fade" id="modalChallan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-xlg" role="document">
@@ -139,10 +192,10 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form id="form-challan" th:action="@{/store/vehicle/job-card/newChallan}" method="POST"
-                        th:object="${challan}">
-                        <input type="hidden" class="form-control" id="order.id" th:field="*{order.id}"
+                <form id="form-challan" th:action="@{/store/vehicle/job-card/newChallan}" method="POST"
+                    th:object="${challan}" autocomplete="off">
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" id="order.id" th:name="order.id" th:id="order.id"
                             th:value="${order.id}">
                         <input type="hidden" class="form-control" id="jobCardId" name="jobCardId"
                             th:value="${transVehicleJobCard.id}">
@@ -152,13 +205,23 @@
                                     <label for="exampleFormControlInput1">Challan No</label>
                                     <input type="text" class="form-control" id="challanNo"
                                         placeholder="Enter Challan No" th:field="*{challanNo}">
+                                    <span th:if="${#fields.hasErrors('challanNo')}"
+                                  th:errors="*{challanNo}"
+                                  class="error-message"
+                                  ></span>
                                 </div>
+                                
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
                                     <label for="exampleFormControlInput1">Challan Date</label>
                                     <input type="text" class="form-control" id="challanDate" placeholder="dd/mm/yyyy"
                                         th:field="*{challanDate}">
+                                        
+                                <span th:if="${#fields.hasErrors('challanDate')}"
+                                th:errors="*{challanDate}"
+                                class="error-message"
+                                ></span>
                                 </div>
                             </div>
                         </div>
@@ -167,7 +230,11 @@
                             <div class="col-12">
                                 <h5>List Of Item</h5>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12 text-center">
+                                <span th:if="${#fields.hasErrors('noOfItems')}"
+                                  th:errors="*{noOfItems}"
+                                  class="error-message"
+                                  ></span>
                                 <table id="table-order-items" class="display table">
                                     <thead class="text-center">
                                         <tr>
@@ -188,28 +255,52 @@
                                             <td th:text="${item.orderQuantity}"></td>
                                             <td th:text="${item.quantityRemainingToReceive}"></td>
                                             <td>
-                                                <input type="hidden" name="transVendorItemId"
+                                                <input type="hidden" name="transVendorItemId[]"
                                                     th:value="${item.transVendorItemId}">
-                                                <input type="number" class="form-control" id="noOfItem"
-                                                    name="noOfItem[]">
+                                                <input type="hidden" name="quantityRemainingToReceive[]"
+                                                    th:value="${item.quantityRemainingToReceive}">
+                                                <input type="hidden" name="orderQuantity[]"
+                                                    th:value="${item.orderQuantity}">
+                                                <input type="number" class="form-control" name="noOfItem[]">
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control warranty-upto" id="warrantyUpto"
-                                                    name="warrantyUpto">
+                                                <input type="text" class="form-control warranty-upto" name="warrantyUpto[]" th:id="'warrantyUpto_' + ${iter.count}">
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success" data-dismiss="modal">Save Challan</button>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Save Challan</button>
+                    </div>
+
+                </form>
             </div>
         </div>
+    </div>
+
+    <!-- Modal Item-->
+    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xlg modal-dialog-scrollable" role="document">
+        <div class="modal-content" style="padding-left: 20px;padding-right: 20px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-car"></i> View Challan Items</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="item-div">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
     </div>
     <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
@@ -242,14 +333,17 @@
 
             $(document).on('show.bs.modal', '#modalChallan', function (e) {
                 $("#table-order-items").DataTable();
-                $(".warranty-upto").datepicker({
-                    minDate: '+0d',
-                    // maxDate: '+0d',
-                    changeMonth: true,
-                    changeYear: true,
-                    dateFormat: 'dd/mm/yy'
-                    // format: 'dd/mm/yyyy'
+                $('.warranty-upto').each(function () {
+                    $(this).datepicker({
+                        minDate: '+0d',
+                        // maxDate: '+0d',
+                        changeMonth: true,
+                        changeYear: true,
+                        dateFormat: 'dd/mm/yy'
+                        // format: 'dd/mm/yyyy'
+                    });
                 });
+
             });
 
             $(document).on('hidden.bs.modal', '#modalChallan', function (e) {
@@ -259,6 +353,63 @@
             $(document).on('submit', '#form-challan', function (e) {
 
             });
+
+            $(document).on('show.bs.modal', '#modalItem', function (e) {
+                $("#item-div").html("");
+                let challanId = e.relatedTarget.dataset.challanId;
+                $.ajax({
+                    type: "GET",
+                    url: contextPath + "store/vehicle/job-card/getItemByChallan",
+                    timeout: 600000,
+                    data: 'challanId=' + challanId,
+                    beforeSend: function () {
+                        $('#item-div').block({
+                            message: '<h3>Please wait...</h3>',
+                            css: {
+                                border: '3px solid darkgrey'
+                            }
+                        });
+                    },
+                    success: function (response) {
+                        var content = `
+                        <table id="table-item" class="table table-striped jambo_table text-black text-center" style="width:100%">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>SL No.</th>
+                                    <th>Item Name</th>
+                                    <th>Item Unit</th>
+                                    <th>Purchase Quantity</th>
+                                    <th>Warranty Upto</th>
+                                </tr>
+                            </thead>
+                        </table>`;
+                        $('#item-div').html(content);
+                        var tableItems = $('#table-item').DataTable({
+                            "columnDefs": [{
+                                "className": "text-center",
+                                "targets": [0, 1, 2, 3, 4]
+                            }]
+                        });
+                        $.each(response.payload, function (key, item) {
+                            // alert(item.name);
+                            tableItems.row.add([
+                                `<b>${key + 1}</b>`,
+                                `${item.name}`,
+                                `${item.unit}`,
+                                `${item.quantity}`,
+                                `${item.warranty}`
+                            ]).draw(false);
+                        });
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    complete: function () {
+                        $('#item-div').unblock();
+                    }
+                });
+            });
+
 
         });
     </script>
@@ -279,7 +430,7 @@
                 },
                 success: function (response) {
                     var content = `
-                        <table id="table-items" class="display table ">
+                        <table id="table-challans" class="display table ">
                             <thead class="text-center">
                                 <tr>
                                     <th style="width: 15%">SL No.</th>
@@ -289,7 +440,7 @@
                                     <th style="width: 15%">Total Quantity</th>
                                     <th style="width: 15%">Bill Id</th>
                                     <th style="width: 15%">Action</th>
-                                    <th></th>
+                                    <th style="width: 15%"></th>
                                 </tr>
                             </thead>
                         </table>`;
@@ -308,7 +459,8 @@
                             `${challan.noOfItems}`,
                             `${challan.totalQuantity}`,
                             `${challan.transBill.billNo}`,
-                            `<a class="btn btn-danger p-1 delete-challan" data-challan-id="${challan.id}" href="javascript:void(0)">DELETE</a>`
+                            `<a class="btn btn-danger p-1 delete-challan" data-challan-id="${challan.id}" href="javascript:void(0)">DELETE</a>`,
+                            `<a class="btn btn-primary p-1 w-100" href="#modalItem" data-toggle="modal" data-challan-id="${challan.id}">View Items</a>`
                         ]).draw(false);
                     });
                 },
@@ -320,6 +472,29 @@
                 }
             });
         }
+    </script>
+    <script th:if="${msgSuccess}" th:inline="javascript">
+        /*<![CDATA[*/
+        var msg = /*[[${msgSuccess}]]*/ "";
+        /*]]>*/
+        $.alert({
+            title: 'Success!',
+            content: msg,
+            type: 'green',
+            typeAnimated: true
+        });
+    </script>
+    <script th:if="${msgErr}" th:inline="javascript">
+        /*<![CDATA[*/
+        var msg = /*[[${msgErr}]]*/ "";
+        /*]]>*/
+        $("#modalChallan").modal("show");
+        $.alert({
+            title: 'Error!',
+            content: msg,
+            type: 'red',
+            typeAnimated: true
+        });
     </script>
 </body>
 

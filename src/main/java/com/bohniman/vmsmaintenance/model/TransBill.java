@@ -32,5 +32,9 @@ public class TransBill {
             CascadeType.REFRESH }, fetch = FetchType.LAZY)
     List<TransChallan> challanList = new ArrayList<>();
 
-    private String status;//RECEIVED, APPROVED, PAID
+    private String status;// RECEIVED, APPROVED, PAID
+
+    public TransBill(String string) {
+        this.billNo = string;
+    }
 }

@@ -1,7 +1,11 @@
 package com.bohniman.vmsmaintenance.controller;
 
 import java.io.ByteArrayInputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -14,8 +18,10 @@ import com.bohniman.vmsmaintenance.model.TransChallan;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
+import com.bohniman.vmsmaintenance.payload.NewPurchaseItemPayload;
 import com.bohniman.vmsmaintenance.service.InventoryUnitService;
 import com.bohniman.vmsmaintenance.service.StoreServiceBhaskor;
+import com.bohniman.vmsmaintenance.utilities.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -463,29 +469,99 @@ public class StoreControllerBhaskor {
     // NEW CHALLAN ENTRY
     // ========================================================================
     @PostMapping(value = "/vehicle/job-card/newChallan")
-    public ModelAndView newChallan(ModelAndView mv, @Valid @ModelAttribute TransChallan transChallan,
+    public ModelAndView newChallan(ModelAndView mv, @Valid @ModelAttribute("challan") TransChallan transChallan,
             BindingResult bindingResult, @RequestParam("jobCardId") Long jobCardId,
             @RequestParam(value = "transVendorItemId[]") Long[] transVendorItemId,
-            @RequestParam(value = "noOfItem[]") Long[] noOfItem,
-            @RequestParam(value = "warrantyUpto[]") Date[] warrantyUpto) {
-        System.out.println(transChallan.toString());
-        System.out.println(jobCardId);
-        System.out.println(transVendorItemId.length);
-        System.out.println(warrantyUpto[0]);
+            @RequestParam(value = "noOfItem[]") Double[] noOfItem,
+            @RequestParam(value = "warrantyUpto[]") String[] warrantyUpto,
+            @RequestParam(value = "quantityRemainingToReceive[]") Double[] quantityRemainingToReceive,
+            @RequestParam(value = "orderQuantity[]") Double[] orderQuantity) {
+
+        if (storeService.checkIfChallanExist(transChallan.getChallanNo())) {
+            bindingResult.rejectValue("challanNo", "CustomError", "Challan No already exist !");
+        }
+
+        // System.out.println(transChallan.toString());
+        // System.out.println(jobCardId);
+        // System.out.println(transVendorItemId.length);
+        // System.out.println(warrantyUpto[0]);
+
+        DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false);
+        List<NewPurchaseItemPayload> newPurchaseItemList = new ArrayList<>();
+        for (int i = 0; i < transVendorItemId.length; i++) {
+            Date warrantyDate = null;
+            if (noOfItem[i] == null || noOfItem[i] == 0) {
+                continue;
+            }
+            if (warrantyUpto[i] != "") {
+                if (warrantyUpto[i].length() == 10 && DateUtil.isValidDate(warrantyUpto[i])) {
+                    try {
+                        warrantyDate = sdf.parse(warrantyUpto[i]);
+                    } catch (Exception e) {
+
+                    }
+                } else {
+                    bindingResult.rejectValue("noOfItems", "CustomError",
+                            "Invalid Date provided for item no " + (i + 1));
+                    break;
+                }
+            }
+            if (noOfItem[i] > quantityRemainingToReceive[i]) {
+                bindingResult.rejectValue("noOfItems", "CustomError",
+                        "Quantity greater than Remaining quantity for item no " + (i + 1));
+                break;
+            }
+            NewPurchaseItemPayload newPurchaseItem = new NewPurchaseItemPayload();
+            newPurchaseItem.setNoOfItem(noOfItem[i]);
+            newPurchaseItem.setOrderQuantity(orderQuantity[i]);
+            newPurchaseItem.setQuantityRemainingToReceive(quantityRemainingToReceive[i]);
+            newPurchaseItem.setTransVendorItemId(transVendorItemId[i]);
+            newPurchaseItem.setWarrantyUpto(warrantyDate);
+            newPurchaseItemList.add(newPurchaseItem);
+        }
         if (!bindingResult.hasErrors()) {
-            mv = new ModelAndView("store/challan_entry");
-            mv.addObject("order", storeService.getOrderById(transChallan.getOrder().getId()));
-            mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
-            mv.addObject("itemList", storeService.getItemListNotInChallanByOrderId(transChallan.getOrder().getId()));
-            mv.addObject("challan", new TransChallan());
-            return mv;
+            if (storeService.saveChallan(transChallan, jobCardId, newPurchaseItemList)) {
+                mv = new ModelAndView("store/challan_entry");
+                mv.addObject("order", storeService.getOrderById(transChallan.getOrder().getId()));
+                mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
+                mv.addObject("itemList",
+                        storeService.getItemListNotInChallanByOrderId(transChallan.getOrder().getId()));
+                mv.addObject("challan", new TransChallan());
+                mv.addObject("msgSuccess", "New Challan saved successfully !");
+                return mv;
+            } else {
+                mv = new ModelAndView("store/challan_entry");
+                mv.addObject("order", storeService.getOrderById(transChallan.getOrder().getId()));
+                mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
+                mv.addObject("itemList",
+                        storeService.getItemListNotInChallanByOrderId(transChallan.getOrder().getId()));
+                mv.addObject("challan", new TransChallan());
+                mv.addObject("msgErr", "Some Error has ocurred !");
+                return mv;
+            }
         } else {
             mv = new ModelAndView("store/challan_entry");
             mv.addObject("order", storeService.getOrderById(transChallan.getOrder().getId()));
             mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
             mv.addObject("itemList", storeService.getItemListNotInChallanByOrderId(transChallan.getOrder().getId()));
             mv.addObject("challan", transChallan);
+            mv.addObject("msgErr", "There are validation error !");
             return mv;
+        }
+    }
+
+    // ========================================================================
+    // ALL ITEM OF A CHALLAN
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/getItemByChallan")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getItemByChallan(@RequestParam("challanId") Long challanId) {
+        JsonResponse res = storeService.getAllItemByChallan(challanId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
         }
     }
 }

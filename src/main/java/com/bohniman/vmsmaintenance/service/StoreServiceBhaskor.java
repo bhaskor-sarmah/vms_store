@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import com.bohniman.vmsmaintenance.model.MasterItemBrand;
 import com.bohniman.vmsmaintenance.model.MasterRack;
 import com.bohniman.vmsmaintenance.model.MasterShelves;
 import com.bohniman.vmsmaintenance.model.MasterState;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
+import com.bohniman.vmsmaintenance.model.TransBill;
 import com.bohniman.vmsmaintenance.model.TransChallan;
 import com.bohniman.vmsmaintenance.model.TransItemPurchase;
 import com.bohniman.vmsmaintenance.model.TransJobCardItemOrder;
@@ -21,6 +24,8 @@ import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.payload.MasterItemBrandPayload;
 import com.bohniman.vmsmaintenance.payload.MasterRackPayload;
 import com.bohniman.vmsmaintenance.payload.MasterShelvePayload;
+import com.bohniman.vmsmaintenance.payload.NewPurchaseItemPayload;
+import com.bohniman.vmsmaintenance.payload.TransItemPurchasePayload;
 import com.bohniman.vmsmaintenance.payload.TransVendorItemPayload;
 import com.bohniman.vmsmaintenance.payload.VendorOrderItemPayload;
 import com.bohniman.vmsmaintenance.payload.ViewOrderItemPayload;
@@ -507,6 +512,12 @@ public class StoreServiceBhaskor {
     public JsonResponse getAllChallanByOrder(Long orderId) {
         JsonResponse res = new JsonResponse();
         List<TransChallan> challanList = transChallanRepository.findAllByOrder_id(orderId);
+        for (TransChallan challan : challanList) {
+            challan.setOrder(null);
+            if (challan.getTransBill() == null) {
+                challan.setTransBill(new TransBill(""));
+            }
+        }
         res.setPayload(challanList);
         if (challanList.isEmpty() || challanList.size() == 0) {
             res.setMessage("No Challan Entry Found.");
@@ -540,9 +551,69 @@ public class StoreServiceBhaskor {
                 totalInChallan += purchase.getPuchaseQuantity();
             }
             ip.setQuantityRemainingToReceive(item.getQuantity() - totalInChallan);
-            itemList.add(ip);
+            if (item.getQuantity() - totalInChallan > 0) {
+                itemList.add(ip);
+            }
         }
 
         return itemList;
+    }
+
+    public boolean saveChallan(@Valid TransChallan transChallan, Long jobCardId,
+            List<NewPurchaseItemPayload> purchaseItem) {
+        try {
+            Double noOfItems = 0D;
+            for (NewPurchaseItemPayload newPurchaseItem : purchaseItem) {
+                noOfItems += newPurchaseItem.getNoOfItem();
+            }
+            transChallan.setNoOfItems(noOfItems);
+            transChallan.setTotalQuantity(Long.valueOf(purchaseItem.size()));
+            transChallan = transChallanRepository.save(transChallan);
+
+            TransVehicleJobCard jobCard = transVehicleJobCardRepository.findById(jobCardId).get();
+            TransJobCardItemOrder order = transChallan.getOrder();
+            for (NewPurchaseItemPayload newPurchaseItem : purchaseItem) {
+                TransItemPurchase itemPurchase = new TransItemPurchase();
+                itemPurchase.setItemStatus(AppSettings.PURCHASE_ITEM_STATUS_FRESH);
+                itemPurchase.setItemType(AppSettings.PURCHASE_ITEM_TYPE_NEW);
+                itemPurchase.setPurchaseDate(transChallan.getChallanDate());
+                itemPurchase.setPuchaseQuantity(newPurchaseItem.getNoOfItem());
+                itemPurchase.setWarrantyUpto(newPurchaseItem.getWarrantyUpto());
+
+                itemPurchase.setJobCard(jobCard);
+                itemPurchase.setTransVendorItem(
+                        transVendorItemRepository.findById(newPurchaseItem.getTransVendorItemId()).get());
+                itemPurchase.setTransChallan(transChallan);
+                itemPurchase.setOrder(order);
+
+                transItemPurchaseRepository.save(itemPurchase);
+            }
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+    }
+
+    public boolean checkIfChallanExist(String challanNo) {
+        return transChallanRepository.findByChallanNo(challanNo) != null;
+    }
+
+    public JsonResponse getAllItemByChallan(Long challanId) {
+        JsonResponse res = new JsonResponse();
+        List<TransItemPurchase> purchaseItem = transItemPurchaseRepository.findAllByTransChallan_id(challanId);
+        List<TransItemPurchasePayload> purchaseItemPayload = new ArrayList<>();
+        for (TransItemPurchase purchase : purchaseItem) {
+            TransItemPurchasePayload tp = new TransItemPurchasePayload();
+            tp.setName(purchase.getTransVendorItem().getMasterItemBrand().getItem().getItemName());
+            tp.setUnit(purchase.getTransVendorItem().getMasterItemBrand().getItem().getItemUnit());
+            tp.setQuantity(purchase.getPuchaseQuantity());
+            tp.setWarranty((purchase.getWarrantyUpto() == null) ? "" : purchase.getWarrantyUpto().toString());
+            purchaseItemPayload.add(tp);
+        }
+        res.setPayload(purchaseItemPayload);
+        res.setResult(true);
+        res.setMessage("Order Items fetched successfully");
+        return res;
     }
 }

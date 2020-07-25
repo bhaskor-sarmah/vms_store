@@ -112,7 +112,7 @@
                                                             <td th:text="${order.amount}"></td>
                                                             <td>
                                                                 <a th:id="'anchor_' + ${iter.count}" class="btn btn-primary p-1 w-100" href="#modalItem" data-toggle="modal" 
-                                                                th:data-vendor-id="${order.vendorId}" th:data-jobcard-id="${order.jobCardId}" th:data-order-id="${order.orderId != null}?${order.orderId}:0">View Items
+                                                                th:data-vendor-id="${order.vendorId}" th:data-jobcard-id="${order.jobCardId}" th:data-order-id="${order.orderId != null}?${order.orderId}:0">View Items</a>
                                                             </td>
                                                             <td>
                                                                 <span th:switch="${order.status}">
