@@ -27,12 +27,12 @@ import lombok.NoArgsConstructor;
 public abstract class Auditable {
 
 	@CreatedBy
-	@Column(nullable = false, updatable = false)
+	@Column(nullable = true, updatable = false)
 	@Size(max = 80)
 	private String createdBy;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false, updatable = false)
+	@Column(nullable = true, updatable = false)
 	@CreatedDate
 	private Date createdAt;
 

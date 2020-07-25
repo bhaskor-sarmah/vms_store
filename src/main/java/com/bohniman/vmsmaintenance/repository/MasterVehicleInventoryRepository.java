@@ -12,4 +12,8 @@ public interface MasterVehicleInventoryRepository extends JpaRepository<MasterVe
 
 	List<MasterVehicleInventory> findByIsDeletedOrderByNameAsc(boolean b);
 
+	Boolean existsByName(String name);
+
+	List<MasterVehicleInventory> findByNameContainingAndIsDeletedFalse(String searchText);
+
 }

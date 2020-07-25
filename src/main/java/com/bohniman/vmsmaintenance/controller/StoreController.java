@@ -18,6 +18,7 @@ import com.bohniman.vmsmaintenance.model.MasterVehicle;
 import com.bohniman.vmsmaintenance.model.MasterVehicleCategory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleType;
+import com.bohniman.vmsmaintenance.model.TransVehicleInventory;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardForward;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItems;
@@ -239,6 +240,26 @@ public class StoreController {
     public ResponseEntity<JsonResponse> addInventory(
             @Valid @ModelAttribute MasterVehicleInventory masterVehicleInventory, BindingResult bindingResult)
             throws BindException {
+
+        // FOR NEW VEHICLE
+        if (Objects.equals(masterVehicleInventory.getId(), null)) {
+            Boolean itemExists = storeService.checkIfItemExistsByItemName(masterVehicleInventory.getName());
+            if (itemExists) {
+                bindingResult.rejectValue("name", "error.name", " * Item Already Exist.");
+            }
+        }
+        // FOR EDIT
+        else {
+            MasterVehicleInventory editInventory = storeService.getVehicleInventoryById(masterVehicleInventory.getId());
+            if (!Objects.equals(editInventory, null)
+                    && !Objects.equals(masterVehicleInventory.getName(), editInventory.getName())) {
+                Boolean itemExists = storeService.checkIfItemExistsByItemName(masterVehicleInventory.getName());
+                if (itemExists) {
+                    bindingResult.rejectValue("name", "error.name", " * Item Already Exist.");
+                }
+            }
+        }
+
         if (!bindingResult.hasErrors()) {
             JsonResponse res = storeService.saveNewInventory(masterVehicleInventory);
             if (res.getResult()) {
@@ -378,6 +399,15 @@ public class StoreController {
     public ResponseEntity<JsonResponse> addVehicle(@Valid @ModelAttribute MasterVehicle masterVehicle,
             BindingResult bindingResult) throws BindException {
 
+                
+        if (Objects.equals(masterVehicle.getFuelType().getFuelTypeId(), null)) {
+                bindingResult.rejectValue("fuelType.fuelTypeId", "error.fuelType.fuelTypeId",
+                        " * Please select fuel type");
+        }
+        if (Objects.equals(masterVehicle.getVehicleCategory().getVehicleCategoryId(), null)) {
+            bindingResult.rejectValue("vehicleCategory.vehicleCategoryId", "error.vehicleCategory.vehicleCategoryId",
+                    " * Please select category");
+    }
         // FOR NEW VEHICLE
         if (Objects.equals(masterVehicle.getId(), null)) {
             Boolean vehicleExists = storeService
@@ -461,8 +491,13 @@ public class StoreController {
     public ModelAndView pageVehicleDetail(ModelAndView mv, @PathVariable("vehicleId") Long vehicleId) {
         mv = new ModelAndView("store/vehicle_detail");
         MasterVehicle masterVehicle = storeService.getVehicleById(vehicleId);
-
         mv.addObject("masterVehicle", masterVehicle);
+        List<MasterVehicleCategory> vehicleCategoryList = storeService.getAllVehicleCategoryList();
+        mv.addObject("vehicleCategoryList", vehicleCategoryList);
+        List<MasterVehicleType> vehicleTypeList = storeService.getAllVehicleTypeList();
+        mv.addObject("vehicleTypeList", vehicleTypeList);
+        List<MasterFuelType> fuelTypeList = storeService.getAllFuelTypeList();
+        mv.addObject("fuelTypeList", fuelTypeList);
         return mv;
     }
 
@@ -1011,5 +1046,118 @@ public class StoreController {
     // mv.addObject("transVehicleJobCard", transVehicleJobCard);
     // return mv;
     // }
+
+    // ========================================================================
+    // ADD STOCK TO INVENTORY
+    // ========================================================================
+    @PostMapping(value = { "/inventory/add-stock" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addInventoryStock(@RequestParam("id") Long id,
+            @RequestParam("quantity") Double quantity) {
+        JsonResponse res = storeService.addInventoryStock(id, quantity);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // # GET SEARCHED INVENTORY ITEM FOR ASSIGNING TO VEHICLE
+    // ========================================================================
+    @GetMapping(value = { "/inventory/search-item" })
+    public ResponseEntity<JsonResponse> searchInventoryItems(@RequestParam(value = "searchText") String searchText) {
+
+        JsonResponse res = storeService.searchInventoryItems(searchText);
+
+        if (Objects.equals(res.getResult(), true)) {
+            return ResponseEntity.ok().body(res);
+        } else {
+            throw new BadRequestException("Operation Failed");
+        }
+    }
+
+    // ========================================================================
+    // ASSIGN INVENTORY ITEM TO VEHICLE
+    // ========================================================================
+    @PostMapping(value = { "/inventory/vehicle/assign-item" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> assignInventoryItemToVehicle(
+            @Valid @ModelAttribute TransVehicleInventory transVehicleInventory, BindingResult bindingResult)
+            throws BindException {
+
+                if (Objects.equals(transVehicleInventory.getVehicle_inventory(), null)
+                || Objects.equals(transVehicleInventory.getVehicle_inventory().getId(), 0L)) {
+            bindingResult.rejectValue("vehicle_inventory.id", "error.vehicle_inventory.id", " * Please select an item.");
+        }
+        if (Objects.equals(transVehicleInventory.getQuantity(), null)
+                || Objects.equals(transVehicleInventory.getQuantity(), 0.00)) {
+            bindingResult.rejectValue("quantity", "error.quantity", " * Quantity cannot be blank or 0");
+        } else {
+            // CHECK IF ITEM AVAILABLE
+            MasterVehicleInventory masterVehicleInventory = storeService
+                    .getVehicleInventoryById(transVehicleInventory.getVehicle_inventory().getId());
+            if (masterVehicleInventory.getQuantityInStore() < transVehicleInventory.getQuantity()) {
+                bindingResult.rejectValue("quantity", "error.quantity",
+                        " * Only " + masterVehicleInventory.getQuantityInStore() + " "
+                                + masterVehicleInventory.getUnit() + " available");
+            }
+        }
+
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.assignInventoryItemToVehicle(transVehicleInventory);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+
+    }
+
+    // ========================================================================
+    // REMOVE INVENTORY ITEM TO VEHICLE
+    // ========================================================================
+    @PostMapping(value = { "/inventory/vehicle/remove-item" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> removeInventoryItemFromVehicle(
+            @Valid @ModelAttribute TransVehicleInventory transVehicleInventory, BindingResult bindingResult)
+            throws BindException {
+
+                
+        // if (Objects.equals(transVehicleInventory.getQuantity(), null)
+        //         || Objects.equals(transVehicleInventory.getQuantity(), 0.00)) {
+        //     bindingResult.rejectValue("quantity", "error.quantity", " * Quantity cannot be blank or 0");
+        // } 
+
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.removeInventoryItemFromVehicle(transVehicleInventory);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+
+    }
+
+    // ========================================================================
+    // GET ALL VEHICLE ASSIGNED INVENTORY
+    // ========================================================================
+    @GetMapping(value = { "/inventory/vehicle/assigned-items/{vehicleId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAssignedItemList(@PathVariable("vehicleId") Long vehicleId) {
+
+        JsonResponse res = storeService.getAssignedItemList(vehicleId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
 
 }

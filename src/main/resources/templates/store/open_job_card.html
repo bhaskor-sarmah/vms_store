@@ -211,7 +211,8 @@
                 $('#addItemName').html(": " + e.relatedTarget.dataset.itemName);
                 $('#addMoq').html(": " + e.relatedTarget.dataset.moq + " " + e.relatedTarget.dataset.itemUnit);
                 $('#addPricePerUnit').html(": Rs. " + e.relatedTarget.dataset.pricePerUnit);
-                $('#form-add-item').contents().find('[name="transVendorItem.id"]').val(e.relatedTarget.dataset.vendorItemId)
+                $('#form-add-item').contents().find('[name="transVendorItem.id"]').val(e.relatedTarget.dataset.vendorItemId);
+                $('#form-add-item').contents().find('[name="quantity"]').val(e.relatedTarget.dataset.moq);
             });
 
             // REMOVE ITEM

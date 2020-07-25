@@ -32,8 +32,6 @@ public class User {
 	@Column(name = "user_id")
 	private long id;
 	@Column(name = "email")
-	@Email(message = "*Please provide a valid Email")
-	@NotEmpty(message = "*Please provide an email")
 	private String email;
 	@Column(name = "password")
 	@Size(min = 5, message = "*Your password must have at least 5 characters")

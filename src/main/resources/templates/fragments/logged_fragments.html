@@ -49,10 +49,10 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/user}"><i class="fas fa-home" aria-hidden="true"></i> Home</a>
+                <a class="nav-link" th:href="@{/__${#strings.toLowerCase(#authentication.principal.authorities[0].authority)}__}"><i class="fas fa-home" aria-hidden="true"></i> Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/user/change-password}"><i class="fas fa-key fa-fw"
+                <a class="nav-link" th:href="@{/__${#strings.toLowerCase(#authentication.principal.authorities[0].authority)}__/change-password}"><i class="fas fa-key fa-fw"
                         aria-hidden="true"></i> Change Password</a>
             </li>
             <li class="nav-item">
@@ -93,7 +93,7 @@
 
 <!-- STORE SIDEBAR  -->
 <th:block th:fragment="logged-store-sidebar">
-    <div class="list-group">
+    <div class="list-group mb-5">
         <a href="javascript:void(0);" class="list-group-item list-group-item-dark ">
             <div class="row">
                 <div class="col-3">
@@ -231,6 +231,9 @@
         $(function() {
             $('.loader').fadeOut();
         });
+    </script>
+    <script th:inline="javascript">
+        var role = /*[[${#authentication.principal.authorities[0].authority}]]*/ '';
     </script>
     </th:blocks>
 
