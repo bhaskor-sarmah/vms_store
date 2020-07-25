@@ -21,8 +21,10 @@ import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.TransVehicleInventory;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardForward;
+import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItemIssue;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItems;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
+import com.bohniman.vmsmaintenance.payload.JobCardIssueItemPurchasePayload;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.payload.ScrapVehiclePayload;
 import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
@@ -1158,6 +1160,44 @@ public class StoreController {
         } else {
             throw new MyResourceNotFoundException(res.getMessage());
         }
+    }
+
+    // ========================================================================
+    // JOB CARD ISSUE ITEM
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/{jobCardId}/issue-item")
+    public ModelAndView jobCardIssueItem(ModelAndView mv, @PathVariable("jobCardId") Long jobCardId) {
+        mv = new ModelAndView("store/job_card_issue_item");
+        TransVehicleJobCard transVehicleJobCard = storeService.getJobCardById(jobCardId);
+        mv.addObject("transVehicleJobCard", transVehicleJobCard);
+        List<JobCardIssueItemPurchasePayload> purchaseList = storeService.getJobCardPurchaseListForItemIssue(jobCardId);
+        mv.addObject("purchaseList", purchaseList);
+        List<TransVehicleJobCardItemIssue> issuedList = storeService.getJobCardItemIssuedList(jobCardId);
+        mv.addObject("issuedList", issuedList);
+        return mv;
+    }
+
+    // ========================================================================
+    // ISSUE ITEMS TO JOB CARD
+    // ========================================================================
+    @PostMapping(value = { "/vehicle/job-card/issue-item" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> issueItemsToJobCard(
+            @Valid @ModelAttribute JobCardIssueItemPurchasePayload itemPayload, BindingResult bindingResult)
+            throws BindException {
+                
+
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.issueItemsToJobCard(itemPayload);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+
     }
 
 }

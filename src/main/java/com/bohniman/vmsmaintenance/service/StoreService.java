@@ -23,14 +23,17 @@ import com.bohniman.vmsmaintenance.model.MasterVehicleCategory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
+import com.bohniman.vmsmaintenance.model.TransItemPurchase;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.model.TransVehicleHealth;
 import com.bohniman.vmsmaintenance.model.TransVehicleInventory;
 import com.bohniman.vmsmaintenance.model.TransVehicleInventoryLog;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardForward;
+import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItemIssue;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItems;
 import com.bohniman.vmsmaintenance.model.User;
+import com.bohniman.vmsmaintenance.payload.JobCardIssueItemPurchasePayload;
 import com.bohniman.vmsmaintenance.payload.JobCardItemPayload;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.payload.MasterRackPayload;
@@ -54,10 +57,12 @@ import com.bohniman.vmsmaintenance.repository.MasterVehicleRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleTypeRepository;
 // import com.bohniman.vmsmaintenance.repository.MasterVendorItemRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
+import com.bohniman.vmsmaintenance.repository.TransItemPurchaseRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleHealthRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleInventoryLogRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleInventoryRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardForwardRepository;
+import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardItemIssueRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardItemRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardRepository;
 import com.bohniman.vmsmaintenance.repository.TransVendorItemRepository;
@@ -129,6 +134,12 @@ public class StoreService {
 
     @Autowired
     TransVehicleInventoryRepository transVehicleInventoryRepository;
+
+    @Autowired
+    TransItemPurchaseRepository transItemPurchaseRepository;
+
+    @Autowired
+    TransVehicleJobCardItemIssueRepository transVehicleJobCardItemIssueRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -1035,5 +1046,71 @@ public class StoreService {
         res.setResult(true);
         res.setMessage("Item Removed Successfully");
         return res;
+	}
+
+	public TransVehicleJobCard getJobCardById(Long jobCardId) {
+		return transVehicleJobCardRepository.getOne(jobCardId);
+    }
+    
+    
+
+	public List<JobCardIssueItemPurchasePayload> getJobCardPurchaseListForItemIssue(Long jobCardId) {
+        List<JobCardIssueItemPurchasePayload> purchasePayloadList = new ArrayList<>();
+        JobCardIssueItemPurchasePayload purchasePayload = null;
+        
+        List<TransVehicleJobCardItems> itemList = transVehicleJobCardItemRepository.findByTransVehicleJobCard_idAndIsDeletedFalse(jobCardId);
+        List<TransItemPurchase> purchaseList = transItemPurchaseRepository.findByJobCard_id(jobCardId);
+        List<TransVehicleJobCardItemIssue> issueList = transVehicleJobCardItemIssueRepository.findByTransVehicleJobCard_idAndIsDeletedFalse(jobCardId);
+
+        for (TransVehicleJobCardItems item : itemList) {
+            purchasePayload = new JobCardIssueItemPurchasePayload();
+
+            purchasePayload.setTransVendorItemId(item.getTransVendorItem().getId());
+            purchasePayload.setItemName(item.getTransVendorItem().getMasterItemBrand().getItem().getItemName());
+            purchasePayload.setItemUnit(item.getTransVendorItem().getMasterItemBrand().getItem().getItemUnit());
+            purchasePayload.setOrderQuantity(item.getQuantity());
+
+            Double purchasedQuantity = 0D;
+            for (TransItemPurchase purchase : purchaseList) {
+                if(Objects.equals(purchase.getTransVendorItem().getId(),item.getTransVendorItem().getId())){
+                    purchasedQuantity += purchase.getPuchaseQuantity();
+                }
+            }
+
+            purchasePayload.setPurchaseQuantity(purchasedQuantity);
+
+            Double issueQuantity = 0D;
+            for (TransVehicleJobCardItemIssue issue : issueList) {
+                if(Objects.equals(issue.getTransVendorItem().getId(),item.getTransVendorItem().getId())){
+                    issueQuantity += issue.getQuantity();
+                }
+            }
+
+            purchasePayload.setRemainingQuantity(purchasedQuantity-issueQuantity);
+            if(purchasedQuantity-issueQuantity > 0){
+                purchasePayloadList.add(purchasePayload);
+            }
+        }
+
+        return purchasePayloadList;
+	}
+
+	public JsonResponse issueItemsToJobCard(@Valid JobCardIssueItemPurchasePayload itemPayload) {
+        JsonResponse res = new JsonResponse();
+
+        for(TransVehicleJobCardItemIssue item : itemPayload.getItem()){
+            if(item.getQuantity() > 0){
+                transVehicleJobCardItemIssueRepository.save(item);
+            }
+        }
+        
+
+        res.setResult(true);
+        res.setMessage("Items Issued Successfully");
+		return res;
+	}
+
+	public List<TransVehicleJobCardItemIssue> getJobCardItemIssuedList(Long jobCardId) {
+		return transVehicleJobCardItemIssueRepository.findByTransVehicleJobCard_idAndIsDeletedFalse(jobCardId);
 	}
 }
