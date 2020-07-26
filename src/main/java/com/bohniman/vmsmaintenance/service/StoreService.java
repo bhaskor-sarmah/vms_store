@@ -1138,6 +1138,7 @@ public class StoreService {
         try {
             TransVehicleJobCard item = transVehicleJobCardRepository.getOne(jobCardId);
             item.setStatus("CLOSED");
+            item.setClosedDate(new Date());
             transVehicleJobCardRepository.save(item);
             res.setResult(true);
             res.setMessage("Job Card Closed Successfully.");

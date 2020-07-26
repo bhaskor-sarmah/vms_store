@@ -80,11 +80,15 @@
                                                                     <td th:text="${x.id}"></td>
                                                                     <td>
                                                                         <span class="badge badge-success" th:if="${x.status == 'CREATED'}" th:text="${x.status}"></span>
-                                                                        <span class="badge badge-danger" th:if="${x.status == 'FORWARDED'}" th:text="${x.status}"></span>
+                                                                        <span class="badge badge-success" th:if="${x.status == 'FORWARDED'}" th:text="${x.status}"></span>
+                                                                        <span class="badge badge-success" th:if="${x.status == 'APPROVED'}" th:text="${x.status}"></span>
                                                                         <span class="badge badge-secondary" th:if="${x.status == 'CLOSED'}" th:text="${x.status}"></span>
                                                                     </td>
-                                                                    <td><span th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy HH:mm a')}"></span></td>
-                                                                    <td><span th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy HH:mm a')}"></span></td>
+                                                                    <td><span th:text="${#dates.format(x.openedDate, 'dd-MMM-yyyy HH:mm a')}"></span></td>
+                                                                    <td>
+                                                                        <span th:if="${x.status == 'CLOSED'}" th:text="${#dates.format(x.closedDate, 'dd-MMM-yyyy HH:mm a')}"></span>
+                                                                        <span th:if="${x.status != 'CLOSED'}">-</span>
+                                                                    </td>
                                                                     <td><a class="btn btn-primary p-1" th:href="@{/store/vehicle/job-card/__${x.id}__}">VIEW JOB CARD</a></td>
                                                                 </tr>
                                                             </tbody>
