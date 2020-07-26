@@ -28,4 +28,6 @@ public interface MasterShelvesRepository extends JpaRepository<MasterShelves, Lo
     @Query("UPDATE MasterShelves t SET t.isDeleted = 1 WHERE t.masterRack = :masterRack")
     int markShelveAsDeletedByRackId(@Param("masterRack") MasterRack masterRack);
 
+    List<MasterShelves> findByMasterRack_idAndIsDeletedFalse(Long rackId);
+
 }

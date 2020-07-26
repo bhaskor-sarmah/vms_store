@@ -17,6 +17,7 @@ public interface TransItemPurchaseRepository extends JpaRepository<TransItemPurc
     List<TransItemPurchase> findAllByOrder_idAndTransVendorItem_id(Long orderId, Long id);
 
     List<TransItemPurchase> findAllByTransChallan_id(Long challanId);
+	List<TransItemPurchase> findByJobCard_id(Long jobCardId);
 
     @Modifying
     @Query("UPDATE TransItemPurchase t SET t.isDeleted = 1 WHERE t.transChallan = :challanId")

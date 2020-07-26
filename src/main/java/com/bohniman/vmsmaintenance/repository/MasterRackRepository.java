@@ -12,4 +12,6 @@ public interface MasterRackRepository extends JpaRepository<MasterRack, Long> {
 
     List<MasterRack> findAllByIsDeleted(boolean b);
 
+    List<MasterRack> findByIsDeletedFalse();
+
 }

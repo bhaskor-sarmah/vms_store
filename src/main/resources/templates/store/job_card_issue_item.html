@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <title>APVMS | STORE</title>
+</head>
+
+<body>
+    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <div class="container-fluid main-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                    </div>
+                    <div class="col-md-9">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item"><a th:href="@{/store/vehicle}">Vehicle</a></li>
+                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
+                                <li class="breadcrumb-item"> Job card </li>
+                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}" th:text="${transVehicleJobCard.id}"></li>
+                                <li class="breadcrumb-item"> Issue Item </li>
+                            </ol>
+                        </nav>
+                        <div class="row" th:if="${transVehicleJobCard != null}">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <h4><i class="fas fa-credit-card"></i> Job Card Issue Item</h4>
+                                            </div>
+                                            <div class="col-2">
+
+                                            </div>
+                                            <div class="col-2">
+                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW VEHICLE</a>
+                                            </div>
+                                            <div class="col-3">
+                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__}">VIEW JOB CARD</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <h5 class="card-title">Registration No.</h5>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <h5 class="card-title"> : <span class="badge badge-success p-2" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span></h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <a class="btn btn-primary p-2 float-right w-100" th:if="${transVehicleJobCard.status == 'APPROVED'}" href="#modalIssueItem" data-toggle="modal">ISSUE ITEMS</a>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row mt-2">
+                                            <div class="col-12">
+                                                <h3 class="text-center" th:if="${#lists.isEmpty(issuedList)}">No item issued.</h3>
+
+                                                <table class="table table-bordered table-striped table-sm text-center" th:if="${not #lists.isEmpty(issuedList)}">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Item</th>
+                                                            <th>Quantity Issued</th>
+                                                            <th>Issued Date</th>
+                                                            <th>Issued By</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr th:each="x,iter : ${issuedList}">
+                                                            <td th:text="${iter.count}"></td>
+                                                            <td th:text="${x.transVendorItem.masterItemBrand.item.itemName}"></td>
+                                                            <td th:text="${x.quantity+' '+x.transVendorItem.masterItemBrand.item.itemUnit}"></td>
+                                                            <td th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy')}"></td>
+                                                            <td th:text="${x.createdBy}"></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+        </div>
+    </main>
+    <!-- Modal Item-->
+    <div class="modal fade" id="modalIssueItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" th:if="${transVehicleJobCard.status == 'APPROVED'}">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Issue Items to Job Card</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h3 class="text-center" th:if="${#lists.isEmpty(purchaseList)}">No item purchased. Please purchase items before issuing.</h3>
+                    <form id="form-issue-item" th:if="${not #lists.isEmpty(purchaseList)}">
+                        <table class="table table-bordered table-striped table-sm text-center">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Item</th>
+                                    <th>Purchased</th>
+                                    <th>Remaining</th>
+                                    <th>Issue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x,iter : ${purchaseList}">
+                                    <td th:text="${iter.count}"></td>
+                                    <td th:text="${x.itemName}"></td>
+                                    <td th:text="${x.purchaseQuantity+' '+x.itemUnit}"></td>
+                                    <td th:text="${x.remainingQuantity+' '+x.itemUnit}"></td>
+                                    <td>
+                                        <div><input type="hidden" th:name="|item[${iter.index}].transVendorItem.id|" th:value="${x.transVendorItemId}"></div>
+                                        <div><input type="hidden" th:name="|item[${iter.index}].transVehicleJobCard.id|" th:value="${transVehicleJobCard.id}"></div>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control number" min="0" th:attr="max=${x.remainingQuantity}" th:name="|item[${iter.index}].quantity|" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" th:text="${x.itemUnit}"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Issue</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+    <script th:inline="javascript">
+        var jobCardId = /*[[${transVehicleJobCard.id}]]*/ '';
+    </script>
+    <script>
+        $(function() {
+            $('#side-link-vehicle').addClass('list-group-item-secondary');
+
+            $(document).on('show.bs.modal', '#modalIssueItem', function(e) {
+                $('.number').val(0);
+            });
+
+            // ISSUE ITEM
+            $(document).on("submit", "#form-issue-item", function(e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you want to issue the items?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/vehicle/job-card/issue-item",
+                                timeout: 600000,
+                                beforeSend: function() {
+                                    $('body').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: $('#form-issue-item').serialize(),
+                                success: function(response) {
+                                    $.confirm({
+                                        title: 'Success!',
+                                        content: "Items Issued Successfully",
+                                        type: 'green',
+                                        typeAnimated: true,
+                                        buttons: {
+                                            ok: function() {
+                                                location.reload();
+                                            }
+                                        }
+                                    });
+                                },
+                                error: function(e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        $.each(e.responseJSON.errorMessages, function(key,
+                                            value) {
+                                            $("#form-issue-item").contents().find(
+                                                '[name="' + key + '"]').after(
+                                                '<span class="error-message">' +
+                                                value + '</span>');
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function() {
+                                    $('body').unblock();
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -37,24 +37,44 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <div class="row">
-                                            <div class="col-3">
+                                            <div class="col-5">
                                                 <h4><i class="fas fa-credit-card"></i> View Job Card</h4>
                                             </div>
-                                            <div class="col-3">
-                                                <h4><span class="badge badge-success p-2" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span></h4>
+                                            <div class="col-2">
+
+                                            </div>
+                                            <div class="col-2">
+
                                             </div>
                                             <div class="col-3">
-                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW VEHICLE</a>
-                                            </div>
-                                            <div class="col-3">
-                                                <a class="btn btn-primary p-2 float-right" th:if="${transVehicleJobCard.status == 'CREATED'}" href="#modalForward" data-toggle="modal">FORWARD JOB CARD</a>
-                                                <a class="btn btn-warning p-2 float-right" th:if="${transVehicleJobCard.status == 'APPROVED'}" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/vendor-order}">GENERATE VENDOR ORDER</a>
+                                                <div class="dropdown show">
+                                                    <a class="btn btn-secondary dropdown-toggle p-2  w-100" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        Options
+                                                    </a>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        <a class="dropdown-item" th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW VEHICLE</a>
+                                                        <a class="dropdown-item" th:if="${transVehicleJobCard.status == 'CREATED'}" href="#modalForward" data-toggle="modal">FORWARD JOB CARD</a>
+                                                        <a class="dropdown-item" th:if="${transVehicleJobCard.status == 'APPROVED'}" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/vendor-order}">GENERATE VENDOR ORDER</a>
+                                                        <a class="dropdown-item" th:if="${transVehicleJobCard.status == 'APPROVED'}" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/issue-item}">ISSUE ITEM</a>
+                                                        <a class="dropdown-item" th:href="@{/store/vehicle/edit-job-card/__${transVehicleJobCard.id}__}" th:if="${transVehicleJobCard.status == 'CREATED' || transVehicleJobCard.status == 'FORWARDED' || transVehicleJobCard.status == 'APPROVED'}">EDIT JOB CARD</a>
+                                                        <a class="dropdown-item" th:if="${transVehicleJobCard.status == 'APPROVED'}" href="javascript:void(0);" id="closeJobCard">CLOSE JOB CARD</a>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-6">
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <h5 class="card-title">Vehicle</h5>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <h5 class="card-title"> : <span class="badge badge-success p-2" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span></h5>
+                                                    </div>
+                                                </div>
                                                 <div class="row">
                                                     <div class="col-5">
                                                         <h5 class="card-title">Job Card Id</h5>
@@ -106,17 +126,44 @@
                                             </div>
                                         </div>
                                         <hr>
-                                        <div class="row mt-2">
-                                            <div class="col-12" id="div-job-card-items">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Added Items</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" id="log-tab" data-toggle="tab" href="#log" role="tab" aria-controls="log" aria-selected="false">Disposed Items</a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content" id="myTabContent">
+                                                    <div class="tab-pane fade show active p-3" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                                        <div class="row m-2">
+                                                            <div class="col-12" id="div-job-card-items"></div>
+                                                        </div>
+                                                        <div class="row m-2">
+                                                            <div class="col-12 text-right" id="div-total"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane fade p-3" id="log" role="tabpanel" aria-labelledby="log-tab">
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <h5 class="card-title">Disposed items </h5>
+                                                            </div>
+                                                            <div class="col-4">
 
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <a class="btn btn-primary p-1 float-right" href="#modalDisposeItem" data-toggle="modal" th:if="${transVehicleJobCard.status == 'APPROVED'}">Dispose New Item</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-2">
+                                                            <div class="col-12" id="div-disposed-items"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="row mt-2">
-                                            <div class="col-12 text-right" id="div-total">
-
-                                            </div>
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -159,6 +206,77 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Dispose Item-->
+    <div class="modal fade" id="modalDisposeItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-credit-card"></i> Dispose Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-dispose-item">
+                        <div><input type="hidden" name="transVehicleJobCard.id" th:value="${transVehicleJobCard.id}"></div>
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Item Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="itemName">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Quantity</label>
+                            <div class="col-sm-9">
+                                <input type="number" min="0" max="99999999" class="form-control" name="quantity">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Unit</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="unit" required>
+                                    <option value="">---Please Select---</option>
+                                    <th:block th:if="${not #lists.isEmpty(unitList)}">
+                                        <option th:each="x:${unitList}" th:text="${x.name}" th:value="${x.name}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Reason for Disposal</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="disposeReason">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Rack</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="masterRack.id" required>
+                                    <option value="">---Please Select---</option>
+                                    <th:block th:if="${not #lists.isEmpty(rackList)}">
+                                        <option th:each="x,iter : ${rackList}" th:value="${x.id}" th:text="${x.rackName}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Shelf</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="masterShelve.id" required>
+                                    <option value="">---Please Select---</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Dispose</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
@@ -172,7 +290,117 @@
         $(function() {
             $('#side-link-vehicle').addClass('list-group-item-secondary');
 
+            // NEW DISPOSE ITEM
+            $(document).on("submit", "#form-dispose-item", function(e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you submit the form ?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/vehicle/job-card/new-dispose-item",
+                                timeout: 600000,
+                                beforeSend: function() {
+                                    $('body').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: $("#form-dispose-item").serialize(),
+                                success: function(response) {
+                                    $('#form-dispose-item').trigger('reset');
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: "Item Disposed Successfully",
+                                        type: 'green',
+                                        typeAnimated: true
+                                    });
+                                    getDisposedItemList();
+                                    $('#modalDisposeItem').modal('hide');
+                                },
+                                error: function(e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        $.each(e.responseJSON.errorMessages, function(key,
+                                            value) {
+                                            $("#form-dispose-item").contents().find(
+                                                '[name=' + key + ']').after(
+                                                '<span class="error-message">' +
+                                                value + '</span>');
+                                            $('#' + key).html(
+                                                '<span class="error-message">' +
+                                                value + '</span>');
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function() {
+                                    $('body').unblock();
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
 
+
+
+            //DELETE DISPOSED ITEM
+            $(document).on('click', '.delete-dispose-item', function(e) {
+                e.preventDefault();
+                var ajax_return;
+                let itemId = e.target.dataset.itemId;
+                $.confirm({
+                    title: 'Warning!',
+                    content: "Are you sure you want to delete the disposed item?",
+                    type: 'red',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.confirm({
+                                content: function() {
+                                    var self = this;
+                                    return ajax_return = $.ajax({
+                                        type: "DELETE",
+                                        url: contextPath + "store/vehicle/job-card/delete-dispose-item/" + itemId
+                                    }).done(function(response) {
+                                        self.setTitle("Success!");
+                                        self.setType("green");
+                                        self.setContent(response.message);
+                                    }).fail(function(e) {
+                                        self.setTitle(e.responseJSON.httpStatus);
+                                        self.setType("red");
+                                        self.setContent("ERROR");
+                                    })
+                                    return true;
+                                },
+                                buttons: {
+                                    ok: function() {
+                                        ajax_return.done(function(message) {
+                                            getDisposedItemList();
+                                        })
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
 
             // FORWARD JOB CARD
             $(document).on("submit", "#form-forward-job-card", function(e) {
@@ -240,6 +468,40 @@
                 });
             });
 
+            // ON RACK SELECT
+            $(document).on("change", "[name='masterRack.id']", function(e) {
+                $.ajax({
+                    type: "GET",
+                    url: contextPath + "store/vehicle/job-card/get-shelf",
+                    timeout: 600000,
+                    beforeSend: function() {
+                        $('body').block({
+                            message: '<h3>Processing...</h3>',
+                            css: {
+                                border: '3px solid darkgrey'
+                            }
+                        });
+                    },
+                    data: {
+                        "rackId": $(this).children("option:selected").val()
+                    },
+                    success: function(response) {
+                        let optionList = [];
+                        optionList.push('<option value="">----Please Select----</option>');
+                        $.each(response.payload, function(key, shelf) {
+                            optionList.push('<option value="' + shelf.id + '">' + shelf.shelveName + '</option>');
+                        });
+                        $('#form-dispose-item').contents().find('[name="masterShelve.id"]').html(optionList.join(''));
+                    },
+                    error: function(e) {
+                        console.log(event)
+                    },
+                    complete: function() {
+                        $('body').unblock();
+                    }
+                });
+            });
+
             // GET ITEM LIST
             function getJobCardItemList() {
                 $.ajax({
@@ -300,7 +562,105 @@
                 });
             }
 
+            // GET ITEM LIST
+            function getDisposedItemList() {
+                $.ajax({
+                    type: "GET",
+                    url: contextPath + "store/vehicle/job-card/get-all-dispose-item/" + jobCardId,
+                    timeout: 600000,
+                    beforeSend: function() {
+                        $('body').block({
+                            message: '<h3>Please wait...</h3>',
+                            css: {
+                                border: '3px solid darkgrey'
+                            }
+                        });
+                    },
+                    success: function(response) {
+                        var content = `
+                        <table id="table-disposed-items" class="table table-bordered table-sm text-center" style="width:100%">
+                            <thead class="text-center text-uppercase">
+                                <tr>
+                                    <th>SL No.</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Reason For Disposal</th>
+                                    <th>Rack</th>
+                                    <th>Shelf</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>`;
+                        $('#div-disposed-items').html(content);
+
+                        $.each(response.payload, function(key, item) {
+                            $('#table-disposed-items').append(`
+                                <tr>
+                                    <th>${key + 1}</th>
+                                    <th>${item.itemName}</th>
+                                    <th>${item.quantity} ${item.unit}</th>
+                                    <th>${item.disposeReason}</th>
+                                    <th>${item.rackName}</th>
+                                    <th>${item.shelveName}</th>
+                                    <th ><a class="btn btn-danger p-1 delete-dispose-item" data-item-id="${item.id}" href="javascript:void(0)">DELETE</a></th>
+                                </tr>
+                        `);
+                        });
+                    },
+                    error: function(e) {
+                        console.log(e);
+                    },
+                    complete: function() {
+                        $('body').unblock();
+                    }
+                });
+            }
+
+            //CLOSE JOB CARD
+            $(document).on('click', '#closeJobCard', function(e) {
+                e.preventDefault();
+                var ajax_return;
+                $.confirm({
+                    title: 'Warning!',
+                    content: "Are you sure you want to close this job card?",
+                    type: 'red',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.confirm({
+                                content: function() {
+                                    var self = this;
+                                    return ajax_return = $.ajax({
+                                        type: "PUT",
+                                        url: contextPath + "store/vehicle/job-card-close/" + jobCardId
+                                    }).done(function(response) {
+                                        self.setTitle("Success!");
+                                        self.setType("green");
+                                        self.setContent(response.message);
+                                    }).fail(function(e) {
+                                        self.setTitle(e.responseJSON.httpStatus);
+                                        self.setType("red");
+                                        self.setContent("ERROR");
+                                    })
+                                    return true;
+                                },
+                                buttons: {
+                                    ok: function() {
+                                        ajax_return.done(function(message) {
+                                            location.reload();
+                                        })
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
+
             getJobCardItemList();
+            getDisposedItemList();
         });
     </script>
 </body>

@@ -3,10 +3,13 @@ package com.bohniman.vmsmaintenance.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -23,14 +26,19 @@ import com.bohniman.vmsmaintenance.model.MasterVehicleCategory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleType;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
+import com.bohniman.vmsmaintenance.model.TransDisposeItem;
+import com.bohniman.vmsmaintenance.model.TransItemPurchase;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
 import com.bohniman.vmsmaintenance.model.TransVehicleHealth;
 import com.bohniman.vmsmaintenance.model.TransVehicleInventory;
 import com.bohniman.vmsmaintenance.model.TransVehicleInventoryLog;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardForward;
+import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItemIssue;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItems;
 import com.bohniman.vmsmaintenance.model.User;
+import com.bohniman.vmsmaintenance.payload.DisposedItemPayload;
+import com.bohniman.vmsmaintenance.payload.JobCardIssueItemPurchasePayload;
 import com.bohniman.vmsmaintenance.payload.JobCardItemPayload;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.payload.MasterRackPayload;
@@ -54,10 +62,13 @@ import com.bohniman.vmsmaintenance.repository.MasterVehicleRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVehicleTypeRepository;
 // import com.bohniman.vmsmaintenance.repository.MasterVendorItemRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
+import com.bohniman.vmsmaintenance.repository.TransDisposeItemRepository;
+import com.bohniman.vmsmaintenance.repository.TransItemPurchaseRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleHealthRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleInventoryLogRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleInventoryRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardForwardRepository;
+import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardItemIssueRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardItemRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardRepository;
 import com.bohniman.vmsmaintenance.repository.TransVendorItemRepository;
@@ -129,6 +140,15 @@ public class StoreService {
 
     @Autowired
     TransVehicleInventoryRepository transVehicleInventoryRepository;
+
+    @Autowired
+    TransItemPurchaseRepository transItemPurchaseRepository;
+
+    @Autowired
+    TransVehicleJobCardItemIssueRepository transVehicleJobCardItemIssueRepository;
+
+    @Autowired
+    TransDisposeItemRepository transDisposeItemRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -593,6 +613,7 @@ public class StoreService {
                 vehicleId);
 
         transVehicleJobCard.setStatus("CREATED");
+        transVehicleJobCard.setOpenedDate(new Date());
         transVehicleJobCard = transVehicleJobCardRepository.save(transVehicleJobCard);
         res.setResult(true);
         res.setPayload(transVehicleJobCard.getId());
@@ -645,7 +666,7 @@ public class StoreService {
     // }
 
     public List<TransVehicleJobCard> getJobCardsByDateRange(Date dateFrom, Date dateTo) {
-        return transVehicleJobCardRepository.findByCreatedAtBetween(dateFrom, dateTo);
+        return transVehicleJobCardRepository.findByOpenedDateBetweenAndStatusNot(dateFrom, dateTo, "INITIATED");
     }
 
     // ========================================================================
@@ -1036,4 +1057,159 @@ public class StoreService {
         res.setMessage("Item Removed Successfully");
         return res;
 	}
+
+	public TransVehicleJobCard getJobCardById(Long jobCardId) {
+		return transVehicleJobCardRepository.getOne(jobCardId);
+    }
+    
+    
+
+	public List<JobCardIssueItemPurchasePayload> getJobCardPurchaseListForItemIssue(Long jobCardId) {
+        List<JobCardIssueItemPurchasePayload> purchasePayloadList = new ArrayList<>();
+        JobCardIssueItemPurchasePayload purchasePayload = null;
+        
+        List<TransVehicleJobCardItems> itemList = transVehicleJobCardItemRepository.findByTransVehicleJobCard_idAndIsDeletedFalse(jobCardId);
+        List<TransItemPurchase> purchaseList = transItemPurchaseRepository.findByJobCard_id(jobCardId);
+        List<TransVehicleJobCardItemIssue> issueList = transVehicleJobCardItemIssueRepository.findByTransVehicleJobCard_idAndIsDeletedFalse(jobCardId);
+
+        
+        Set<Long> setDuplicate = new HashSet<Long>(); 
+        for (TransVehicleJobCardItems item : itemList) {
+            if (setDuplicate.contains(item.getTransVendorItem().getId())){
+                continue;
+            }
+            else{
+                setDuplicate.add(item.getTransVendorItem().getId());
+            }
+
+            purchasePayload = new JobCardIssueItemPurchasePayload();
+
+            purchasePayload.setTransVendorItemId(item.getTransVendorItem().getId());
+            purchasePayload.setItemName(item.getTransVendorItem().getMasterItemBrand().getItem().getItemName());
+            purchasePayload.setItemUnit(item.getTransVendorItem().getMasterItemBrand().getItem().getItemUnit());
+            purchasePayload.setOrderQuantity(item.getQuantity());
+
+            Double purchasedQuantity = 0D;
+            for (TransItemPurchase purchase : purchaseList) {
+                if(Objects.equals(purchase.getTransVendorItem().getId(),item.getTransVendorItem().getId())){
+                    purchasedQuantity += purchase.getPuchaseQuantity();
+                }
+            }
+
+            purchasePayload.setPurchaseQuantity(purchasedQuantity);
+
+            Double issueQuantity = 0D;
+            for (TransVehicleJobCardItemIssue issue : issueList) {
+                if(Objects.equals(issue.getTransVendorItem().getId(),item.getTransVendorItem().getId())){
+                    issueQuantity += issue.getQuantity();
+                }
+            }
+
+            purchasePayload.setRemainingQuantity(purchasedQuantity-issueQuantity);
+            if(purchasedQuantity-issueQuantity > 0){
+                purchasePayloadList.add(purchasePayload);
+            }
+        }
+
+        return purchasePayloadList;
+	}
+
+	public JsonResponse issueItemsToJobCard(@Valid JobCardIssueItemPurchasePayload itemPayload) {
+        JsonResponse res = new JsonResponse();
+
+        for(TransVehicleJobCardItemIssue item : itemPayload.getItem()){
+            if(item.getQuantity() > 0){
+                transVehicleJobCardItemIssueRepository.save(item);
+            }
+        }
+        
+
+        res.setResult(true);
+        res.setMessage("Items Issued Successfully");
+		return res;
+	}
+
+	public List<TransVehicleJobCardItemIssue> getJobCardItemIssuedList(Long jobCardId) {
+		return transVehicleJobCardItemIssueRepository.findByTransVehicleJobCard_idAndIsDeletedFalse(jobCardId);
+	}
+
+	public JsonResponse closeJobCard(Long jobCardId) {
+		JsonResponse res = new JsonResponse();
+        try {
+            TransVehicleJobCard item = transVehicleJobCardRepository.getOne(jobCardId);
+            item.setStatus("CLOSED");
+            transVehicleJobCardRepository.save(item);
+            res.setResult(true);
+            res.setMessage("Job Card Closed Successfully.");
+        } catch (Exception e) {
+            res.setMessage("Job Card Could Not Be Closed.");
+        }
+        return res;
+	}
+
+	public List<MasterRack> getAllRackList() {
+		return masterRackRepository.findByIsDeletedFalse();
+	}
+
+	public JsonResponse getShelvesForJobCardDisposal(Long rackId) {
+        JsonResponse res = new JsonResponse();
+        List<MasterShelves> shelveList = masterShelvesRepository.findByMasterRack_idAndIsDeletedFalse(rackId);  
+        for(MasterShelves shelf : shelveList){
+            shelf.setMasterRack(null);
+        }
+        res.setResult(true);
+        res.setPayload(shelveList);
+        res.setMessage("Shelves fetched successfully.");
+		return res;
+    }
+    
+    public JsonResponse newDisposedItem(TransDisposeItem transDisposeItem) {
+        JsonResponse res = new JsonResponse();
+        transDisposeItemRepository.save(transDisposeItem);
+        res.setResult(true);
+        res.setMessage("Item Disposed Successfully");
+        return res;
+    }
+
+    public JsonResponse deleteDisposedItem(Long itemId) {
+        JsonResponse res = new JsonResponse();
+        try {
+            TransDisposeItem result = transDisposeItemRepository.getOne(itemId);
+            result.setIsDeleted(true);
+            transDisposeItemRepository.save(result);
+            res.setResult(true);
+            res.setMessage("Item Deleted Successfully.");
+        } catch (Exception e) {
+            res.setMessage("Item could not be deleted.");
+        }
+        return res;
+    }
+
+    public JsonResponse getAllDisposedItemByJobCard(Long jobCardId) {
+        JsonResponse res = new JsonResponse();
+        List<DisposedItemPayload> payloadList = new ArrayList<>();
+        DisposedItemPayload payload = null;
+
+        List<TransDisposeItem> itemList = transDisposeItemRepository.findByTransVehicleJobCard_idAndIsDeletedFalse(jobCardId);
+        for(TransDisposeItem item : itemList){
+            payload = new DisposedItemPayload();
+            payload.setId(item.getId());
+            payload.setItemName(item.getItemName());
+            payload.setQuantity(item.getQuantity());
+            payload.setUnit(item.getUnit());
+            payload.setDisposeReason(item.getDisposeReason());
+            payload.setRackId(item.getMasterRack().getId());
+            payload.setRackName(item.getMasterRack().getRackName());
+            payload.setShelveId(item.getMasterShelve().getId());
+            payload.setShelveName(item.getMasterShelve().getShelveName());
+
+            payloadList.add(payload);
+        }
+
+        res.setResult(true);
+        res.setPayload(payloadList);
+        res.setMessage("Disposed Item List fetched successfully.");
+
+        return res;
+    }
 }

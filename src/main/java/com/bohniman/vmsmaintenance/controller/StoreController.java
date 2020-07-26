@@ -1,6 +1,7 @@
 package com.bohniman.vmsmaintenance.controller;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -14,15 +15,19 @@ import com.bohniman.vmsmaintenance.model.MasterBrand;
 import com.bohniman.vmsmaintenance.model.MasterFuelType;
 import com.bohniman.vmsmaintenance.model.MasterItem;
 import com.bohniman.vmsmaintenance.model.MasterItemBrand;
+import com.bohniman.vmsmaintenance.model.MasterRack;
 import com.bohniman.vmsmaintenance.model.MasterVehicle;
 import com.bohniman.vmsmaintenance.model.MasterVehicleCategory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleInventory;
 import com.bohniman.vmsmaintenance.model.MasterVehicleType;
+import com.bohniman.vmsmaintenance.model.TransDisposeItem;
 import com.bohniman.vmsmaintenance.model.TransVehicleInventory;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardForward;
+import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItemIssue;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCardItems;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
+import com.bohniman.vmsmaintenance.payload.JobCardIssueItemPurchasePayload;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
 import com.bohniman.vmsmaintenance.payload.ScrapVehiclePayload;
 import com.bohniman.vmsmaintenance.service.InventoryCategoryService;
@@ -629,8 +634,14 @@ public class StoreController {
             mv.addObject("userList", storeService.getJobCardForwarableUserList());
         }
 
+        mv.addObject("unitList", new InventoryUnitService().getAll());
+
+        List<MasterRack> rackList = storeService.getAllRackList();
+        mv.addObject("rackList", rackList);
+
         return mv;
     }
+    
 
     // TO BE DELETED
     // ========================================================================
@@ -760,9 +771,19 @@ public class StoreController {
             dateTo = DateUtil.getDateFromString(toDate.get());
         }
 
+        Calendar calendarFrom = Calendar.getInstance();
+        calendarFrom.setTime(dateFrom);
+        calendarFrom.set(Calendar.HOUR_OF_DAY, 00);
+        calendarFrom.set(Calendar.MINUTE, 01);
+
+        Calendar calendarTo = Calendar.getInstance();
+        calendarTo.setTime(dateTo);
+        calendarTo.set(Calendar.HOUR_OF_DAY, 23);
+        calendarTo.set(Calendar.MINUTE, 59);
+
         mv = new ModelAndView("store/job_card_home");
 
-        List<TransVehicleJobCard> jobCards = storeService.getJobCardsByDateRange(dateFrom, dateTo);
+        List<TransVehicleJobCard> jobCards = storeService.getJobCardsByDateRange(calendarFrom.getTime(), calendarTo.getTime());
         mv.addObject("jobCards", jobCards);
 
         return mv;
@@ -1158,6 +1179,142 @@ public class StoreController {
         } else {
             throw new MyResourceNotFoundException(res.getMessage());
         }
+    }
+
+    // ========================================================================
+    // JOB CARD ISSUE ITEM
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/{jobCardId}/issue-item")
+    public ModelAndView jobCardIssueItem(ModelAndView mv, @PathVariable("jobCardId") Long jobCardId) {
+        mv = new ModelAndView("store/job_card_issue_item");
+        TransVehicleJobCard transVehicleJobCard = storeService.getJobCardById(jobCardId);
+        mv.addObject("transVehicleJobCard", transVehicleJobCard);
+        List<JobCardIssueItemPurchasePayload> purchaseList = storeService.getJobCardPurchaseListForItemIssue(jobCardId);
+        mv.addObject("purchaseList", purchaseList);
+        List<TransVehicleJobCardItemIssue> issuedList = storeService.getJobCardItemIssuedList(jobCardId);
+        mv.addObject("issuedList", issuedList);
+        return mv;
+    }
+
+    // ========================================================================
+    // ISSUE ITEMS TO JOB CARD
+    // ========================================================================
+    @PostMapping(value = { "/vehicle/job-card/issue-item" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> issueItemsToJobCard(
+            @Valid @ModelAttribute JobCardIssueItemPurchasePayload itemPayload, BindingResult bindingResult)
+            throws BindException {
+                
+
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.issueItemsToJobCard(itemPayload);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+
+    }
+
+    // ========================================================================
+    // CLOSE JOB CARD
+    // ========================================================================
+    @PutMapping(value = { "/vehicle/job-card-close/{jobCardId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> closeJobCard(@PathVariable("jobCardId") Long jobCardId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.closeJobCard(jobCardId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // # GET SHELVES FOR JOB CARD DISPOSAL ITEMS
+    // ========================================================================
+    @GetMapping(value = { "/vehicle/job-card/get-shelf" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getShelvesForJobCardDisposal(@RequestParam("rackId") Long rackId) {
+
+        JsonResponse res = storeService.getShelvesForJobCardDisposal(rackId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // ADD NEW DISPOSED ITEM
+    // ========================================================================
+    @PostMapping(value = { "/vehicle/job-card/new-dispose-item" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> newDisposedItem(@Valid @ModelAttribute TransDisposeItem transDisposeItem,
+            BindingResult bindingResult) throws BindException {
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.newDisposedItem(transDisposeItem);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // LIST ALL DISPOSED ITEM BY JOB CARD
+    // ========================================================================
+    @GetMapping(value = { "/vehicle/job-card/get-all-dispose-item/{jobCardId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllDisposedItemByJobCard(@PathVariable("jobCardId") Long jobCardId) {
+
+        JsonResponse res = storeService.getAllDisposedItemByJobCard(jobCardId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE DISPOSED ITEM
+    // ========================================================================
+    @DeleteMapping(value = { "/vehicle/job-card/delete-dispose-item/{itemId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteDisposedItem(@PathVariable("itemId") Long itemId) {
+        JsonResponse res = new JsonResponse();
+
+        res = storeService.deleteDisposedItem(itemId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // EDIT JOB CARD
+    // ========================================================================
+    @GetMapping(value = "/vehicle/edit-job-card/{jobCardId}")
+    public ModelAndView editJobCard(ModelAndView mv, @PathVariable("jobCardId") Long jobCardId) {
+        mv = new ModelAndView("store/open_job_card");
+
+        TransVehicleJobCard transVehicleJobCard = storeServiceBhaskor.getJobCardById(jobCardId);
+        mv.addObject("transVehicleJobCard", transVehicleJobCard);
+
+
+        List<TransVendorItem> transVendorItemList = storeService.getAllVendorItemsForJobCard();
+        mv.addObject("transVendorItemList", transVendorItemList);
+
+        return mv;
     }
 
 }
