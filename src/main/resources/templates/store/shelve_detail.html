@@ -149,10 +149,12 @@
                                 <tr>
                                     <th>SL No.</th>
                                     <th>Item Name</th>
-                                    <th>Item Details</th>
-                                    <th>Replacement Date</th>
+                                    <th>Dispose Reason</th>
+                                    <th>Dispose Date</th>
+                                    <th>Unit</th>
+                                    <th>Quantity</th>
+                                    <th style="width:20%">Job Card Id</th>
                                     <th>Action</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                         </table>`;
@@ -160,16 +162,18 @@
                     var tableShelves = $('#table-items').DataTable({
                         "columnDefs": [{
                             "className": "text-center",
-                            "targets": [0, 1, 2, 3, 4]
+                            "targets": [0, 1, 2, 3, 4, 5, 6, 7]
                         }]
                     });
                     $.each(response.payload, function (key, item) {
                         tableShelves.row.add([
                             `<b>${key + 1}</b>`,
                             `${item.itemName}`,
-                            `${item.itemDetails}`,
-                            `${moment(item.replacedDate).format('DD/MM/YYYY')}`,
-                            `<a class="btn btn-primary p-1 view-item" href="#">VIEW ITEM</a>`,
+                            `${item.disposeReason}`,
+                            `${moment(item.createdAt).format('DD/MM/YYYY')}`,
+                            `${item.unit}`,
+                            `${item.quantity}`,
+                            `${item.transVehicleJobCard.id}`,
                             `<a class="btn btn-success p-1 view-job-card" href="${contextPath}store/vehicle/job-card/${item.transVehicleJobCard.id}">VIEW JOB CARD</a>`
                         ]).draw(false);
                     });

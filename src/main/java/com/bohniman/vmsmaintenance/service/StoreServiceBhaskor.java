@@ -14,6 +14,7 @@ import com.bohniman.vmsmaintenance.model.MasterState;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
 import com.bohniman.vmsmaintenance.model.TransBill;
 import com.bohniman.vmsmaintenance.model.TransChallan;
+import com.bohniman.vmsmaintenance.model.TransDisposeItem;
 import com.bohniman.vmsmaintenance.model.TransItemPurchase;
 import com.bohniman.vmsmaintenance.model.TransJobCardItemOrder;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
@@ -36,6 +37,7 @@ import com.bohniman.vmsmaintenance.repository.MasterStateRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
 import com.bohniman.vmsmaintenance.repository.TransBillRepository;
 import com.bohniman.vmsmaintenance.repository.TransChallanRepository;
+import com.bohniman.vmsmaintenance.repository.TransDisposeItemRepository;
 import com.bohniman.vmsmaintenance.repository.TransItemPurchaseRepository;
 import com.bohniman.vmsmaintenance.repository.TransJobCardItemOrderRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardItemRepository;
@@ -89,6 +91,9 @@ public class StoreServiceBhaskor {
 
     @Autowired
     TransBillRepository transBillRepository;
+
+    @Autowired
+    TransDisposeItemRepository transDisposeItemRepository;
 
     // ========================================================================
     // ADD NEW VENDOR
@@ -308,7 +313,7 @@ public class StoreServiceBhaskor {
             msf.setId(m.getId());
             msf.setShelveName(m.getShelveName());
             msf.setShelveDetails(m.getShelveDetails());
-            msf.setTotalItems(0L);
+            msf.setTotalItems(transDisposeItemRepository.countByMasterShelve_idAndIsDeleted(m.getId(), false));
             payloadList.add(msf);
         }
         res.setResult(true);
@@ -329,12 +334,15 @@ public class StoreServiceBhaskor {
         return null;
     }
 
-    // ********************************* */
-    // TODO RITUSMOI OLD ITEM MASTER POPULATED
-    // ********************************* */
     public JsonResponse getAllShelveItemByShelveId(Long shelveId) {
         JsonResponse res = new JsonResponse();
-        List<String> shelveItemList = new ArrayList<>();
+        List<TransDisposeItem> shelveItemList = transDisposeItemRepository
+                .findAllByMasterShelve_idAndIsDeleted(shelveId, false);
+        for (TransDisposeItem item : shelveItemList) {
+            item.getTransVehicleJobCard().setForwards(null);
+            item.getTransVehicleJobCard().setItems(null);
+            item.getTransVehicleJobCard().setMasterVehicle(null);
+        }
         res.setResult(true);
         res.setPayload(shelveItemList);
         if (shelveItemList.isEmpty() || shelveItemList.size() == 0) {
