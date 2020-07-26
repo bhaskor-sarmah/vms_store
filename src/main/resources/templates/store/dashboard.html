@@ -19,7 +19,69 @@
                         <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
                     </div>
                     <div class="col-md-9">
-                        <div class="card mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card bg-light mb-3 text-center" style="max-width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-car fa-3x"></i> </h5>
+                                    </div>
+                                    <div class="card-header"><a th:href="@{/store/vehicle}" class="list-group-item list-group-item-action"> Vehicle Search</a></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light mb-3 text-center" style="max-width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-box-open fa-3x"></i> </h5>
+                                    </div>
+                                    <div class="card-header"><a th:href="@{/store/inventory}" class="list-group-item list-group-item-action"> Vehicle Inventory</a></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light mb-3 text-center" style="max-width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-user fa-3x"></i> </h5>
+                                    </div>
+                                    <div class="card-header"><a th:href="@{/store/vendor}" class="list-group-item list-group-item-action"> Vendors</a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card bg-light mb-3 text-center" style="max-width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-credit-card fa-3x"></i> </h5>
+                                    </div>
+                                    <div class="card-header"><a th:href="@{/store/job-card}" class="list-group-item list-group-item-action"> Job Card</a></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light mb-3 text-center" style="max-width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-wrench fa-3x"></i> </h5>
+                                    </div>
+                                    <div class="card-header"><a th:href="@{/store/old-car-parts}" class="list-group-item list-group-item-action"> Old/replace Car Parts</a></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light mb-3 text-center" style="max-width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-cubes fa-3x"></i> </h5>
+                                    </div>
+                                    <div class="card-header"><a th:href="@{/store/item}" class="list-group-item list-group-item-action"> Items</a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card bg-light mb-3 text-center" style="max-width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-registered fa-3x"></i> </h5>
+                                    </div>
+                                    <div class="card-header"><a th:href="@{/store/brand}" class="list-group-item list-group-item-action"> Brands</a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="card mb-3">
                             <div class="card-header">
                                 <i class="fas fa-car"></i> Vehicle Search
                                 <span class="float-right">Total Vehicles Registered : 109</span>
@@ -46,7 +108,7 @@
                                 </ol>
                                 <a th:href="@{/store/inventory}" class="btn btn-primary">Enter Inventory</a>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

@@ -25,8 +25,14 @@
                                 <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item"><a th:href="@{/store/vehicle}">Vehicle</a></li>
                                 <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
-                                <li class="breadcrumb-item">
+                                <li class="breadcrumb-item" th:if="${transVehicleJobCard.status == 'INITIATED'}">
                                     OPEN JOB CARD
+                                </li>
+                                <li class="breadcrumb-item" th:if="${transVehicleJobCard.status != 'INITIATED'}">
+                                    EDIT JOB CARD
+                                </li>
+                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard.status != 'INITIATED'}" th:text="${'#'+transVehicleJobCard.id}">
+
                                 </li>
                             </ol>
                         </nav>
@@ -36,7 +42,8 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-3">
-                                                <h4><i class="fas fa-credit-card"></i> Open Job Card</h4>
+                                                <h4 th:if="${transVehicleJobCard.status == 'INITIATED'}"><i class="fas fa-credit-card"></i> Open Job Card</h4>
+                                                <h4 th:if="${transVehicleJobCard.status != 'INITIATED'}"><i class="fas fa-credit-card"></i> Edit Job Card</h4>
                                             </div>
                                             <div class="col-3">
                                                 <h4><span class="badge badge-success p-2">Regn. No : <span th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span></span>
@@ -46,7 +53,8 @@
                                                 <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW VEHICLE</a>
                                             </div>
                                             <div class="col-3">
-                                                <a class="btn btn-primary p-2 float-right" href="javascript:void(0)" id="btn-open-job-card">OPEN JOB CARD</a>
+                                                <a class="btn btn-primary p-2 float-right" href="javascript:void(0)" id="btn-open-job-card" th:if="${transVehicleJobCard.status == 'INITIATED'}">OPEN JOB CARD</a>
+                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__}" ith:if="${transVehicleJobCard.status != 'INITIATED'}">EDIT COMPLETE</a>
                                             </div>
                                         </div>
                                     </div>

@@ -16,4 +16,6 @@ public interface MasterShelvesRepository extends JpaRepository<MasterShelves, Lo
 
     List<MasterShelves> findAllByMasterRack_id(Long rackId);
 
+	List<MasterShelves> findByMasterRack_idAndIsDeletedFalse(Long rackId);
+
 }

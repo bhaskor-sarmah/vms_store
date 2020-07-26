@@ -14,5 +14,7 @@ public interface TransVehicleJobCardRepository extends JpaRepository<TransVehicl
 	List<TransVehicleJobCard> findByCreatedAtBetween(Date dateFrom, Date dateTo);
 
 	TransVehicleJobCard findByIdAndMasterVehicle_id(Long jobCardId, Long vehicleId);
+
+	List<TransVehicleJobCard> findByOpenedDateBetweenAndStatusNot(Date dateFrom, Date dateTo, String string);
     
 }
