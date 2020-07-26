@@ -19,4 +19,12 @@ public interface TransVehicleJobCardItemRepository extends JpaRepository<TransVe
 
 	List<TransVehicleJobCardItems> findAllByOrder_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(
 			Long orderId);
+
+	List<TransVehicleJobCardItems> findAllByOrderIsNullAndTransVehicleJobCard_idAndIsDeleted(Long jobCardId, boolean b);
+
+	List<TransVehicleJobCardItems> findAllByOrderIsNullAndIsDeletedAndTransVehicleJobCard_idAndTransVendorItem_masterVendor_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(
+			boolean b, Long jobcardId, Long vendorId);
+
+	List<TransVehicleJobCardItems> findAllByOrder_idAndIsDeletedOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(
+			Long orderId, boolean b);
 }

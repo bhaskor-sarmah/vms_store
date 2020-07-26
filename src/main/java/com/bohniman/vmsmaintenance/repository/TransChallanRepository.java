@@ -14,4 +14,12 @@ public interface TransChallanRepository extends JpaRepository<TransChallan, Long
 
     TransChallan findByChallanNo(String challanNo);
 
+    List<TransChallan> findAllByTransBill_id(Long id);
+
+    List<TransChallan> findAllByOrder_idAndTransBillAndIsDeleted(Long orderId, Object object, boolean b);
+
+    List<TransChallan> findAllByTransBill_idAndIsDeleted(Long billId, boolean b);
+
+    List<TransChallan> findAllByOrder_idAndIsDeleted(Long orderId, boolean b);
+
 }

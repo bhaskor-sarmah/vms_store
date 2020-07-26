@@ -12,4 +12,6 @@ public interface TransJobCardItemOrderRepository extends JpaRepository<TransJobC
 
     List<TransJobCardItemOrder> findAllByTransVehicleJobCard_id(Long jobCardId);
 
+    List<TransJobCardItemOrder> findAllByTransVehicleJobCard_idAndIsDeleted(Long jobCardId, boolean b);
+
 }

@@ -44,4 +44,7 @@ public class TransVendorItem {
     private Date validFrom;
 
     private Date validTo;
+
+    @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
+    private Boolean isDeleted = false;
 }

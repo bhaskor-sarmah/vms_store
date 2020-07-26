@@ -15,8 +15,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
@@ -52,4 +50,7 @@ public class TransChallan {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_job_card_order", nullable = true)
     TransJobCardItemOrder order;
+
+    @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
+    private Boolean isDeleted = false;
 }

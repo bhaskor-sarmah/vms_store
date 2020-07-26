@@ -40,6 +40,8 @@ public class TransJobCardItemOrder extends Auditable {
 
     private Double totalAmount;
 
-    private String orderStatus; //CREATED,PLACED,RECEIVED,CLOSED
+    private String orderStatus; // CREATED,PLACED,RECEIVED,CLOSED
 
+    @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
+    private Boolean isDeleted = false;
 }

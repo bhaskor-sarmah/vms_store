@@ -25,4 +25,8 @@ public class AppSettings {
 
     public static final String PURCHASE_ITEM_TYPE_NEW = "NEW";
     public static final String PURCHASE_ITEM_TYPE_OLD = "OLD";
+
+    public static final String TRANS_BILL_STATUS_RECEIVED = "RECEIVED";
+    public static final String TRANS_BILL_STATUS_APPROVED = "APPROVED";
+    public static final String TRANS_BILL_STATUS_PAID = "PAID";
 }

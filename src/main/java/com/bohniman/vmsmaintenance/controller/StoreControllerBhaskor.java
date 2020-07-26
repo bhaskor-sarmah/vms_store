@@ -8,12 +8,14 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 import com.bohniman.vmsmaintenance.exception.BadRequestException;
 import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
 import com.bohniman.vmsmaintenance.model.MasterRack;
 import com.bohniman.vmsmaintenance.model.MasterShelves;
 import com.bohniman.vmsmaintenance.model.MasterVendor;
+import com.bohniman.vmsmaintenance.model.TransBill;
 import com.bohniman.vmsmaintenance.model.TransChallan;
 import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
 import com.bohniman.vmsmaintenance.model.TransVendorItem;
@@ -558,6 +560,113 @@ public class StoreControllerBhaskor {
     @ResponseBody
     public ResponseEntity<JsonResponse> getItemByChallan(@RequestParam("challanId") Long challanId) {
         JsonResponse res = storeService.getAllItemByChallan(challanId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE CHALLAN RECORD
+    // ========================================================================
+    @DeleteMapping(value = { "/vehicle/job-card/deleteChallan/{challanId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteChallan(@PathVariable("challanId") Long challanId) {
+        JsonResponse res = new JsonResponse();
+        res = storeService.deleteChallanById(challanId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // GET BILL ENTRY PAGE
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/getBill/{jobCardId}/{orderId}")
+    public ModelAndView billEntryPage(ModelAndView mv, @PathVariable("orderId") Long orderId,
+            @PathVariable("jobCardId") Long jobCardId) {
+        mv = new ModelAndView("store/bill_entry");
+        mv.addObject("order", storeService.getOrderById(orderId));
+        mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
+        return mv;
+    }
+
+    // ========================================================================
+    // ALL BILL OF AN ORDER
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/allBills//{orderId}")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllBill(@PathVariable("orderId") Long orderId) {
+        JsonResponse res = storeService.getAllBillByOrder(orderId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // DELETE BILL RECORD
+    // ========================================================================
+    @DeleteMapping(value = { "/vehicle/job-card/deleteBill/{billId}" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> deleteBill(@PathVariable("billId") Long billId) {
+        JsonResponse res = new JsonResponse();
+        res = storeService.deleteBillById(billId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new BadRequestException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // ALL CHALLANS OF AN ORDER
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/allChallanNotInBill/{orderId}")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getAllChallanNotInBill(@PathVariable("orderId") Long orderId) {
+        JsonResponse res = storeService.getAllChallanNotInBillByOrder(orderId);
+        if (res.getResult()) {
+            return ResponseEntity.ok(res);
+        } else {
+            throw new MyResourceNotFoundException(res.getMessage());
+        }
+    }
+
+    // ========================================================================
+    // ADD NEW BILL
+    // ========================================================================
+    @PostMapping(value = { "/vehicle/job-card/addBill" })
+    @ResponseBody
+    public ResponseEntity<JsonResponse> addBill(@Valid @ModelAttribute TransBill transBill, BindingResult bindingResult,
+            @RequestParam("challanIds") List<Long> challanIds) throws BindException {
+        // System.out.println(masterShelves);
+        // for (Long l : challanIds) {
+        // System.out.println(l);
+        // }
+        if (!bindingResult.hasErrors()) {
+            JsonResponse res = storeService.saveNewBill(transBill, challanIds);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
+            } else {
+                throw new BadRequestException(res.getMessage());
+            }
+        } else {
+            throw new BindException(bindingResult);
+        }
+    }
+
+    // ========================================================================
+    // ALL CHALLAN BY BILL
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/getChallanByBill")
+    @ResponseBody
+    public ResponseEntity<JsonResponse> getChallanByBill(@RequestParam("billId") Long billId) {
+        JsonResponse res = storeService.getAllChallanByBill(billId);
         if (res.getResult()) {
             return ResponseEntity.ok(res);
         } else {

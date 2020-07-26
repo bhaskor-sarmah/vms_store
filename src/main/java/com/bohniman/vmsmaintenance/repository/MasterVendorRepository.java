@@ -12,4 +12,6 @@ public interface MasterVendorRepository extends JpaRepository<MasterVendor, Long
 
     List<MasterVendor> findAllByOrderByVendorNameAsc();
 
+    List<MasterVendor> findAllByIsDeletedOrderByVendorNameAsc(boolean b);
+
 }

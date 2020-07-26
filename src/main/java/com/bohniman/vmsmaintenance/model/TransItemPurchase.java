@@ -2,6 +2,7 @@ package com.bohniman.vmsmaintenance.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -61,5 +62,8 @@ public class TransItemPurchase {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_trans_challan")
     private TransChallan transChallan;
+
+    @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
+    private Boolean isDeleted = false;
 
 }

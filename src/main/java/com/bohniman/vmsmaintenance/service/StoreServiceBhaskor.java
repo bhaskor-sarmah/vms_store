@@ -34,6 +34,7 @@ import com.bohniman.vmsmaintenance.repository.MasterRackRepository;
 import com.bohniman.vmsmaintenance.repository.MasterShelvesRepository;
 import com.bohniman.vmsmaintenance.repository.MasterStateRepository;
 import com.bohniman.vmsmaintenance.repository.MasterVendorRepository;
+import com.bohniman.vmsmaintenance.repository.TransBillRepository;
 import com.bohniman.vmsmaintenance.repository.TransChallanRepository;
 import com.bohniman.vmsmaintenance.repository.TransItemPurchaseRepository;
 import com.bohniman.vmsmaintenance.repository.TransJobCardItemOrderRepository;
@@ -45,6 +46,7 @@ import com.bohniman.vmsmaintenance.utilities.OrderPdf;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StoreServiceBhaskor {
@@ -85,6 +87,9 @@ public class StoreServiceBhaskor {
     @Autowired
     TransItemPurchaseRepository transItemPurchaseRepository;
 
+    @Autowired
+    TransBillRepository transBillRepository;
+
     // ========================================================================
     // ADD NEW VENDOR
     // ========================================================================
@@ -99,7 +104,7 @@ public class StoreServiceBhaskor {
     public JsonResponse getAllVendors() {
         JsonResponse res = new JsonResponse();
 
-        List<MasterVendor> vendorList = masterVendorRepository.findAllByOrderByVendorNameAsc();
+        List<MasterVendor> vendorList = masterVendorRepository.findAllByIsDeletedOrderByVendorNameAsc(false);
 
         res.setResult(true);
         res.setPayload(vendorList);
@@ -114,8 +119,17 @@ public class StoreServiceBhaskor {
     public JsonResponse deleteVendorById(Long vendorId) {
         JsonResponse res = new JsonResponse();
         try {
-            masterVendorRepository.deleteById(vendorId);
-            res.setMessage("Vendor Deleted Successfully.");
+            // masterVendorRepository.deleteById(vendorId);
+            Optional<MasterVendor> mro = masterVendorRepository.findById(vendorId);
+            if (mro.isPresent()) {
+                MasterVendor vendor = mro.get();
+                vendor.setIsDeleted(true);
+                masterVendorRepository.save(vendor);
+                transVendorItemRepository.markItemAsDeletedByVendorId(vendor);
+                res.setMessage("Vendor deleted successfully.");
+            } else {
+                res.setMessage("Vendor not found.");
+            }
             res.setResult(true);
         } catch (Exception e) {
             res.setMessage("Vendor could not be deleted.");
@@ -143,8 +157,15 @@ public class StoreServiceBhaskor {
     public JsonResponse deleteVendorItemById(Long itemId) {
         JsonResponse res = new JsonResponse();
         try {
-            transVendorItemRepository.deleteById(itemId);
-            res.setMessage("Vendor Item Deleted Successfully.");
+            Optional<TransVendorItem> mro = transVendorItemRepository.findById(itemId);
+            if (mro.isPresent()) {
+                TransVendorItem vendorItem = mro.get();
+                vendorItem.setIsDeleted(true);
+                transVendorItemRepository.save(vendorItem);
+                res.setMessage("Vendor Item Deleted Successfully.");
+            } else {
+                res.setMessage("Vendor Item not found.");
+            }
             res.setResult(true);
         } catch (Exception e) {
             res.setMessage("Vendor Item could not be deleted.");
@@ -155,9 +176,8 @@ public class StoreServiceBhaskor {
 
     public JsonResponse getAllVendorItems(Long vendorId) {
         JsonResponse res = new JsonResponse();
-
         List<TransVendorItem> vendorItemList = transVendorItemRepository
-                .findAllByMasterVendor_idOrderByMasterItemBrand_item_itemNameAsc(vendorId);
+                .findAllByIsDeletedAndMasterVendor_idOrderByMasterItemBrand_item_itemNameAsc(false, vendorId);
         List<TransVendorItemPayload> transVendorItems = new ArrayList<>();
         for (TransVendorItem item : vendorItemList) {
             TransVendorItemPayload tp = new TransVendorItemPayload();
@@ -182,7 +202,7 @@ public class StoreServiceBhaskor {
     public JsonResponse getAllRacks() {
         JsonResponse res = new JsonResponse();
 
-        List<MasterRack> rackList = masterRackRepository.findAll();
+        List<MasterRack> rackList = masterRackRepository.findAllByIsDeleted(false);
         List<MasterRackPayload> payloadList = new ArrayList<>();
         for (MasterRack m : rackList) {
             MasterRackPayload mrp = new MasterRackPayload();
@@ -190,7 +210,7 @@ public class StoreServiceBhaskor {
             mrp.setRackName(m.getRackName());
             mrp.setRackDetails(m.getRackDetails());
             mrp.setTotalItems(0L);
-            mrp.setTotalShelves(masterShelvesRepository.countByMasterRack_id(m.getId()));
+            mrp.setTotalShelves(masterShelvesRepository.countByMasterRack_idAndIsDeleted(m.getId(), false));
             payloadList.add(mrp);
         }
         res.setResult(true);
@@ -217,12 +237,15 @@ public class StoreServiceBhaskor {
             Optional<MasterRack> mro = masterRackRepository.findById(rackId);
             if (mro.isPresent()) {
                 try {
-                    // masterOldItemRepository.deleteByMasterRack_id(rackId);
-                    // System.out.println("All Items of the rack is deleted");
-                    masterShelvesRepository.deleteByMasterRack_id(rackId);
-                    System.out.println("All Shelves of the rack is deleted");
-                    masterRackRepository.deleteById(rackId);
+
+                    MasterRack rack = mro.get();
+                    rack.setIsDeleted(true);
+                    masterRackRepository.save(rack);
                     res.setMessage("Rack Deleted Successfully.");
+
+                    masterShelvesRepository.markShelveAsDeletedByRackId(rack);
+                    System.out.println("All Shelves of the rack is deleted");
+
                     res.setResult(true);
                 } catch (Exception e) {
                     res.setMessage("Some error ocurred while deleteing rack !");
@@ -258,9 +281,9 @@ public class StoreServiceBhaskor {
             Optional<MasterShelves> msl = masterShelvesRepository.findById(shelveId);
             if (msl.isPresent()) {
                 try {
-                    // masterOldItemRepository.deleteByMasterShelves_id(shelveId);
-                    // System.out.println("All Items of the Shelve is deleted");
-                    masterShelvesRepository.deleteById(shelveId);
+                    MasterShelves shelve = msl.get();
+                    shelve.setIsDeleted(true);
+                    masterShelvesRepository.save(shelve);
                     res.setMessage("Shelve Deleted Successfully.");
                     res.setResult(true);
                 } catch (Exception e) {
@@ -278,7 +301,7 @@ public class StoreServiceBhaskor {
     public JsonResponse getAllShelvesByRackId(Long rackId) {
         JsonResponse res = new JsonResponse();
 
-        List<MasterShelves> shelvesList = masterShelvesRepository.findAllByMasterRack_id(rackId);
+        List<MasterShelves> shelvesList = masterShelvesRepository.findAllByMasterRack_idAndIsDeleted(rackId, false);
         List<MasterShelvePayload> payloadList = new ArrayList<>();
         for (MasterShelves m : shelvesList) {
             MasterShelvePayload msf = new MasterShelvePayload();
@@ -306,11 +329,11 @@ public class StoreServiceBhaskor {
         return null;
     }
 
+    // ********************************* */
+    // TODO RITUSMOI OLD ITEM MASTER POPULATED
+    // ********************************* */
     public JsonResponse getAllShelveItemByShelveId(Long shelveId) {
         JsonResponse res = new JsonResponse();
-
-        // List<MasterOldItem> shelveItemList =
-        // masterOldItemRepository.findAllByMasterShelves_id(shelveId);
         List<String> shelveItemList = new ArrayList<>();
         res.setResult(true);
         res.setPayload(shelveItemList);
@@ -328,7 +351,8 @@ public class StoreServiceBhaskor {
 
     public List<MasterItemBrandPayload> getItemByVendorId(Long vendorId) {
         List<MasterItemBrand> itemlist = masterItemBrandRepository.findAll();
-        List<TransVendorItem> vendorItemList = transVendorItemRepository.findAllByMasterVendor_id(vendorId);
+        List<TransVendorItem> vendorItemList = transVendorItemRepository.findAllByMasterVendor_idAndIsDeleted(vendorId,
+                false);
         List<MasterItemBrandPayload> itemlistFiltered = new ArrayList<>();
         for (MasterItemBrand masterItemBrand : itemlist) {
             boolean found = false;
@@ -386,7 +410,7 @@ public class StoreServiceBhaskor {
 
         // GETTING ALL ITEMS GROUP BY VENDOR FOR WHICH NO ORDER IS FOUND
         List<TransVehicleJobCardItems> itemList = transVehicleJobCardItemRepository
-                .findAllByOrderIsNullAndTransVehicleJobCard_id(jobCardId);
+                .findAllByOrderIsNullAndTransVehicleJobCard_idAndIsDeleted(jobCardId, false);
         for (TransVehicleJobCardItems item : itemList) {
             boolean vendorFound = false;
             for (VendorOrderItemPayload v : vendorOrderItemList) {
@@ -409,7 +433,7 @@ public class StoreServiceBhaskor {
 
         // GETTING ALL ITEMS GROUP BY VENDOR FOR WHICH ORDER HAS BEEN PLACED
         List<TransJobCardItemOrder> itemOrderList = transJobCardItemOrderRepository
-                .findAllByTransVehicleJobCard_id(jobCardId);
+                .findAllByTransVehicleJobCard_idAndIsDeleted(jobCardId, false);
         for (TransJobCardItemOrder order : itemOrderList) {
             VendorOrderItemPayload vp = new VendorOrderItemPayload();
             vp.setVendorId(order.getVendor().getId());
@@ -427,8 +451,8 @@ public class StoreServiceBhaskor {
         JsonResponse res = new JsonResponse();
         if (orderId == 0) { // THESE ARE FRESH ITEM ORDER HAS NOT BEEN GENERATED
             List<TransVehicleJobCardItems> itemList = transVehicleJobCardItemRepository
-                    .findAllByOrderIsNullAndTransVehicleJobCard_idAndTransVendorItem_masterVendor_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(
-                            jobcardId, vendorId);
+                    .findAllByOrderIsNullAndIsDeletedAndTransVehicleJobCard_idAndTransVendorItem_masterVendor_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(
+                            false, jobcardId, vendorId);
             List<ViewOrderItemPayload> orderItemList = new ArrayList<>();
             for (TransVehicleJobCardItems item : itemList) {
                 Double pricePerUnit = item.getTransVendorItem().getPricePerUnit();
@@ -443,7 +467,8 @@ public class StoreServiceBhaskor {
             res.setPayload(orderItemList);
         } else { // THESE ITEMS ORDER HAS BEEN GENERATED
             List<TransVehicleJobCardItems> itemList = transVehicleJobCardItemRepository
-                    .findAllByOrder_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(orderId);
+                    .findAllByOrder_idAndIsDeletedOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(orderId,
+                            false);
             List<ViewOrderItemPayload> orderItemList = new ArrayList<>();
             for (TransVehicleJobCardItems item : itemList) {
                 Double pricePerUnit = item.getTransVendorItem().getPricePerUnit();
@@ -465,8 +490,8 @@ public class StoreServiceBhaskor {
     public JsonResponse generateOrder(Long vendorId, Long jobCardId) {
         JsonResponse res = new JsonResponse();
         List<TransVehicleJobCardItems> itemList = transVehicleJobCardItemRepository
-                .findAllByOrderIsNullAndTransVehicleJobCard_idAndTransVendorItem_masterVendor_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(
-                        jobCardId, vendorId);
+                .findAllByOrderIsNullAndIsDeletedAndTransVehicleJobCard_idAndTransVendorItem_masterVendor_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(
+                        false, jobCardId, vendorId);
         Double totalItemPrice = 0D;
         for (TransVehicleJobCardItems item : itemList) {
             totalItemPrice += item.getTransVendorItem().getPricePerUnit() * item.getQuantity();
@@ -511,7 +536,7 @@ public class StoreServiceBhaskor {
 
     public JsonResponse getAllChallanByOrder(Long orderId) {
         JsonResponse res = new JsonResponse();
-        List<TransChallan> challanList = transChallanRepository.findAllByOrder_id(orderId);
+        List<TransChallan> challanList = transChallanRepository.findAllByOrder_idAndIsDeleted(orderId, false);
         for (TransChallan challan : challanList) {
             challan.setOrder(null);
             if (challan.getTransBill() == null) {
@@ -528,15 +553,12 @@ public class StoreServiceBhaskor {
         return res;
     }
 
-    // *************************** */
-    // FOR RITUSMOI TO VIEW
-    // *************************** */
     public List<ItemListNotInChallanPayload> getItemListNotInChallanByOrderId(Long orderId) {
 
         List<ItemListNotInChallanPayload> itemList = new ArrayList<>();
 
         List<TransVehicleJobCardItems> itemListByOrder = transVehicleJobCardItemRepository
-                .findAllByOrder_idOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(orderId);
+                .findAllByOrder_idAndIsDeletedOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(orderId, false);
 
         for (TransVehicleJobCardItems item : itemListByOrder) {
             ItemListNotInChallanPayload ip = new ItemListNotInChallanPayload();
@@ -545,7 +567,8 @@ public class StoreServiceBhaskor {
             ip.setItemUnit(item.getTransVendorItem().getMasterItemBrand().getItem().getItemUnit());
             ip.setOrderQuantity(item.getQuantity());
             List<TransItemPurchase> purchaseList = transItemPurchaseRepository
-                    .findAllByOrder_idAndTransVendorItem_id(orderId, item.getTransVendorItem().getId());
+                    .findAllByOrder_idAndIsDeletedAndTransVendorItem_id(orderId, false,
+                            item.getTransVendorItem().getId());
             Double totalInChallan = 0D;
             for (TransItemPurchase purchase : purchaseList) {
                 totalInChallan += purchase.getPuchaseQuantity();
@@ -601,7 +624,8 @@ public class StoreServiceBhaskor {
 
     public JsonResponse getAllItemByChallan(Long challanId) {
         JsonResponse res = new JsonResponse();
-        List<TransItemPurchase> purchaseItem = transItemPurchaseRepository.findAllByTransChallan_id(challanId);
+        List<TransItemPurchase> purchaseItem = transItemPurchaseRepository
+                .findAllByTransChallan_idAndIsDeleted(challanId, false);
         List<TransItemPurchasePayload> purchaseItemPayload = new ArrayList<>();
         for (TransItemPurchase purchase : purchaseItem) {
             TransItemPurchasePayload tp = new TransItemPurchasePayload();
@@ -614,6 +638,139 @@ public class StoreServiceBhaskor {
         res.setPayload(purchaseItemPayload);
         res.setResult(true);
         res.setMessage("Order Items fetched successfully");
+        return res;
+    }
+
+    @Transactional
+    public JsonResponse deleteChallanById(Long challanId) {
+        JsonResponse res = new JsonResponse();
+        try {
+            Optional<TransChallan> msl = transChallanRepository.findById(challanId);
+            if (msl.isPresent()) {
+                try {
+                    TransChallan challan = msl.get();
+                    if (deleteChallan(challan)) {
+                        res.setMessage("Challan Deleted Successfully.");
+                    } else {
+                        res.setMessage("Some error ocurred while deleteing Challan !");
+                    }
+
+                    res.setResult(true);
+                } catch (Exception e) {
+                    res.setMessage("Some error ocurred while deleteing Challan !");
+                }
+            } else {
+                res.setMessage("Challan not found !");
+            }
+        } catch (Exception e) {
+            res.setMessage("Challan could not be deleted.");
+        }
+        return res;
+    }
+
+    public JsonResponse getAllBillByOrder(Long orderId) {
+        JsonResponse res = new JsonResponse();
+        List<TransBill> billList = transBillRepository.findAllByOrder_idAndIsDeleted(orderId, false);
+        for (TransBill bill : billList) {
+            bill.setOrder(null);
+        }
+        res.setPayload(billList);
+        if (billList.isEmpty() || billList.size() == 0) {
+            res.setMessage("No Bill Entry Found.");
+        } else {
+            res.setMessage("All Bills fetched successfully.");
+        }
+        res.setResult(true);
+        return res;
+    }
+
+    public JsonResponse deleteBillById(Long billId) {
+        JsonResponse res = new JsonResponse();
+        try {
+            Optional<TransBill> msl = transBillRepository.findById(billId);
+            if (msl.isPresent()) {
+                try {
+                    TransBill bill = msl.get();
+                    bill.setIsDeleted(true);
+                    bill = transBillRepository.save(bill);
+
+                    List<TransChallan> challanList = transChallanRepository.findAllByTransBill_id(bill.getId());
+                    for (TransChallan challan : challanList) {
+                        challan.setTransBill(null);
+                        transChallanRepository.save(challan);
+                    }
+                    res.setMessage("Bill Deleted Successfully.");
+
+                    res.setResult(true);
+                } catch (Exception e) {
+                    res.setMessage("Some error ocurred while deleteing Bill !");
+                }
+            } else {
+                res.setMessage("Bill not found !");
+            }
+        } catch (Exception e) {
+            res.setMessage("Bill could not be deleted.");
+        }
+        return res;
+    }
+
+    @Transactional
+    public boolean deleteChallan(TransChallan challan) {
+        boolean res = false;
+        try {
+            challan.setIsDeleted(true);
+            challan = transChallanRepository.save(challan);
+            transItemPurchaseRepository.markItemAsDeletedByChallanId(challan);
+            return true;
+        } catch (Exception e) {
+        }
+        return res;
+    }
+
+    public JsonResponse getAllChallanNotInBillByOrder(Long orderId) {
+        JsonResponse res = new JsonResponse();
+        List<TransChallan> challanList = transChallanRepository.findAllByOrder_idAndTransBillAndIsDeleted(orderId, null,
+                false);
+        for (TransChallan challan : challanList) {
+            challan.setOrder(null);
+        }
+        res.setPayload(challanList);
+        if (challanList.isEmpty() || challanList.size() == 0) {
+            res.setMessage("No Challan Entry Found.");
+        } else {
+            res.setMessage("All Challans fetched successfully.");
+        }
+        res.setResult(true);
+        return res;
+    }
+
+    public JsonResponse saveNewBill(@Valid TransBill transBill, List<Long> challanIds) {
+        JsonResponse res = new JsonResponse();
+        transBill.setStatus(AppSettings.TRANS_BILL_STATUS_RECEIVED);
+        transBill = transBillRepository.save(transBill);
+        for (Long id : challanIds) {
+            TransChallan challan = transChallanRepository.findById(id).get();
+            challan.setTransBill(transBill);
+            transChallanRepository.save(challan);
+        }
+        res.setResult(true);
+        res.setMessage("New Shelve Saved Successfully");
+        return res;
+    }
+
+    public JsonResponse getAllChallanByBill(Long billId) {
+        JsonResponse res = new JsonResponse();
+        List<TransChallan> challanList = transChallanRepository.findAllByTransBill_idAndIsDeleted(billId, false);
+        for (TransChallan challan : challanList) {
+            challan.setOrder(null);
+        }
+        res.setPayload(challanList);
+        if (challanList.isEmpty() || challanList.size() == 0) {
+            res.setMessage("No Challan Entry Found.");
+        } else {
+            res.setMessage("All Challans fetched successfully.");
+        }
+        res.setResult(true);
         return res;
     }
 }

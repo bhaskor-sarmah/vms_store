@@ -1,5 +1,6 @@
 package com.bohniman.vmsmaintenance.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,4 +32,7 @@ public class MasterShelves {
     @ManyToOne
     @JoinColumn(name = "fk_master_rack_id")
     private MasterRack masterRack;
+
+    @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
+    private Boolean isDeleted = false;
 }

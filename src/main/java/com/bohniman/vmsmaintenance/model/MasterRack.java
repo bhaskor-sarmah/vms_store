@@ -1,5 +1,6 @@
 package com.bohniman.vmsmaintenance.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,4 +24,7 @@ public class MasterRack {
 
     @NotBlank(message = "* Rack Details is required")
     private String rackDetails;
+
+    @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
+    private Boolean isDeleted = false;
 }
