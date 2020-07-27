@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <title>APVMS | DCP</title>
+</head>
+
+<body>
+    <th:block th:replace="fragments/logged_fragments :: logged-sidebar"></th:block>
+    <main id="panel">
+        <div id="panel-content">
+            <th:block th:replace="fragments/logged_fragments :: logged-navbar"></th:block>
+            <div class="container-fluid main-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <th:block th:replace="fragments/logged_fragments :: logged-dcp-sidebar"></th:block>
+                    </div>
+                    <div class="col-md-9">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item">
+                                    Order Sheets
+                                </li>
+                            </ol>
+                        </nav>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h3><i class="fas fa-list"></i> Order Sheets</h3>
+                                            </div>
+                                            <div class="col-1">
+
+                                            </div>
+                                            <div class="col-8">
+                                                <form method="GET" th:ction="@{/dcp/order-sheet}">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="">From</span>
+                                                        </div>
+                                                        <input type="text" class="form-control datepicker" name="fromDate" th:value="${#dates.format(dateFrom, 'dd-MM-yyyy')}">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text " id="">To</span>
+                                                        </div>
+                                                        <input type="text" class="form-control datepicker" name="toDate" th:value="${#dates.format(dateTo, 'dd-MM-yyyy')}">
+                                                        <div class="input-group-prepend">
+                                                            <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i> Search</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row" th:if="${not #lists.isEmpty(orderSheets)}">
+                                                    <div class="col-md-12">
+                                                        <table class="table table-bordered table-sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">#</th>
+                                                                    <th scope="col">JOB CARD ID</th>
+                                                                    <th scope="col">ORDER NO</th>
+                                                                    <th scope="col">VENDOR NAME</th>
+                                                                    <th scope="col">TOTAL BILL</th>
+                                                                    <th scope="col">CREATED ON</th>
+                                                                    <th scope="col">STATUS</th>
+                                                                    <th scope="col" colspan="3">ACTION</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr th:each="x,iterator :${orderSheets}">
+                                                                    <th scope="row" th:text="${iterator.count}">1</th>
+                                                                    <td th:text="${x.id}"></td>
+                                                                    <td th:text="${x.transVehicleJobCard.id}"></td>
+                                                                    <td th:text="${x.vendor.vendorName}"></td>
+                                                                    <td class="text-right" th:text="${'Rs '+x.totalAmount}"></td>
+                                                                    <td th:text="${#dates.format(x.createdAt, 'dd-MMM-YYYY')}"></td>
+                                                                    <td th:text="${x.orderStatus}"></td>
+                                                                    <td>
+                                                                        <a th:if="${x.orderStatus == 'PENDING'}" class="btn btn-success p-1 order-change-status" href="javascript:void(0);" th:attr="data-order-id=${x.id}" data-status-type="approve">APPROVE</a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a th:if="${x.orderStatus == 'PENDING'}" class="btn btn-danger p-1 order-change-status" href="javascript:void(0);" th:attr="data-order-id=${x.id}" data-status-type="reject">REJECT</a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a class="btn btn-primary p-1" href="#modalItem" data-toggle="modal" th:data-vendor-id="${x.vendor.id}" th:data-jobcard-id="${x.transVehicleJobCard.id}" th:data-order-id="${x.id}">VIEW ITEMS</a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="fragments/logged_fragments :: logged-footer"></th:block>
+        </div>
+    </main>
+    <!-- Modal Item-->
+    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xlg modal-dialog-scrollable" role="document">
+            <div class="modal-content" style="padding-left: 20px;padding-right: 20px;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-car"></i> View Order Items</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+                </div>
+                <div class="modal-body" id="item-div">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(function() {
+            $('#side-link-ordersheet').addClass('list-group-item-secondary');
+
+            $(".datepicker").datepicker({
+                dateFormat: 'dd-mm-yy'
+            });
+
+            $(document).on('show.bs.modal', '#modalItem', function(e) {
+                $("#item-div").html("");
+                let vendorId = e.relatedTarget.dataset.vendorId;
+                let jobcardId = e.relatedTarget.dataset.jobcardId;
+                let orderId = e.relatedTarget.dataset.orderId;
+                $.ajax({
+                    type: "GET",
+                    url: contextPath + "dcp/vehicle/job-card/getItemByOrder",
+                    timeout: 600000,
+                    data: 'vendorId=' + vendorId + '&jobcardId=' + jobcardId + '&orderId=' + orderId,
+                    beforeSend: function() {
+                        $('#item-div').block({
+                            message: '<h3>Please wait...</h3>',
+                            css: {
+                                border: '3px solid darkgrey'
+                            }
+                        });
+                    },
+                    success: function(response) {
+                        var content = `
+                        <table id="table-item" class="table table-striped jambo_table text-black text-center" style="width:100%">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>SL No.</th>
+                                    <th>Item Name</th>
+                                    <th>Item Unit</th>
+                                    <th>Price Per Unit</th>
+                                    <th>Quantity</th>
+                                    <th>Total Price</th>
+                                </tr>
+                            </thead>
+                        </table>`;
+                        $('#item-div').html(content);
+                        var tableItems = $('#table-item').DataTable({
+                            "columnDefs": [{
+                                "className": "text-center",
+                                "targets": [0, 1, 2, 3, 4]
+                            }]
+                        });
+                        $.each(response.payload, function(key, item) {
+                            // alert(item.name);
+                            tableItems.row.add([
+                                `<b>${key + 1}</b>`,
+                                `${item.name}`,
+                                `${item.unit}`,
+                                `${item.pricePerUnit}`,
+                                `${item.quantity}`,
+                                `${item.price}`
+                            ]).draw(false);
+                        });
+                    },
+                    error: function(e) {
+                        console.log(e);
+                    },
+                    complete: function() {
+                        $('#item-div').unblock();
+                    }
+                });
+            });
+
+            //ORDER CHANGE STATUS
+            $(document).on('click', '.order-change-status', function(e) {
+                e.preventDefault();
+                var ajax_return;
+                let orderId = e.target.dataset.orderId;
+                let statusType = e.target.dataset.statusType;
+                $.confirm({
+                    title: 'Warning!',
+                    content: "Are you sure you want to " + statusType + " the order ?",
+                    type: 'blue',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.confirm({
+                                content: function() {
+                                    var self = this;
+                                    return ajax_return = $.ajax({
+                                        type: "PUT",
+                                        url: contextPath + "dcp/vehicle/job-card/order/change-status/" + orderId + "/" + statusType
+                                    }).done(function(response) {
+                                        self.setTitle("Success!");
+                                        self.setType("green");
+                                        self.setContent(response.message);
+                                    }).fail(function(e) {
+                                        self.setTitle(e.responseJSON.httpStatus);
+                                        self.setType("red");
+                                        self.setContent("ERROR");
+                                    })
+                                    return true;
+                                },
+                                buttons: {
+                                    ok: function() {
+                                        ajax_return.done(function(message) {
+                                            location.reload();
+                                        })
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+
+</html>

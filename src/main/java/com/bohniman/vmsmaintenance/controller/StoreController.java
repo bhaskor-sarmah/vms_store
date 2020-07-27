@@ -785,6 +785,8 @@ public class StoreController {
 
         List<TransVehicleJobCard> jobCards = storeService.getJobCardsByDateRange(calendarFrom.getTime(), calendarTo.getTime());
         mv.addObject("jobCards", jobCards);
+        mv.addObject("dateFrom", dateFrom);
+        mv.addObject("dateTo", dateTo);
 
         return mv;
     }

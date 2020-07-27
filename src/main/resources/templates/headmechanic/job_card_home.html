@@ -6,7 +6,7 @@
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <title>APVMS | STORE</title>
+    <title>APVMS | HEADMECHANIC</title>
 </head>
 
 <body>
@@ -17,7 +17,7 @@
             <div class="container-fluid main-content">
                 <div class="row">
                     <div class="col-md-3">
-                        <th:block th:replace="fragments/logged_fragments :: logged-store-sidebar"></th:block>
+                        <th:block th:replace="fragments/logged_fragments :: logged-headmechanic-sidebar"></th:block>
                     </div>
                     <div class="col-md-9">
                         <nav aria-label="breadcrumb">
@@ -34,7 +34,7 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-3">
-                                                <h2><i class="fas fa-credit-card"></i> Job Card</h2>
+                                                <h3><i class="fas fa-credit-card"></i> My Job Cards</h3>
                                             </div>
                                             <div class="col-1">
 
@@ -72,7 +72,8 @@
                                                                     <th scope="col">STATUS</th>
                                                                     <th scope="col">OPENED ON</th>
                                                                     <th scope="col">CLOSED ON</th>
-                                                                    <th scope="col">ACTION</th>
+                                                                    <th scope="col">APPROVE</th>
+                                                                    <th scope="col">VIEW</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -91,7 +92,11 @@
                                                                         <span th:if="${x.status == 'CLOSED'}" th:text="${#dates.format(x.closedDate, 'dd-MMM-yyyy HH:mm a')}"></span>
                                                                         <span th:if="${x.status != 'CLOSED'}">-</span>
                                                                     </td>
-                                                                    <td><a class="btn btn-primary p-1" th:href="@{/store/vehicle/job-card/__${x.id}__}">VIEW JOB CARD</a></td>
+                                                                    <td>
+                                                                        <a th:if="${x.status == 'FORWARDED'}" class="btn btn-success p-1 job-card-change-status" href="javascript:void(0);" th:attr="data-job-card-id=${x.id}" data-status-type="approve">APPROVE</a>
+                                                                        <span th:if="${x.status != 'FORWARDED'}"></span>
+                                                                    </td>
+                                                                    <td><a class="btn btn-primary p-1" th:href="@{/headmechanic/vehicle/job-card/__${x.id}__}">VIEW JOB CARD</a></td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
@@ -117,11 +122,56 @@
 
     <script>
         $(function() {
-            $('#side-link-view-job-card').addClass('list-group-item-secondary');
+            $('#side-link-job-card').addClass('list-group-item-secondary');
 
             $(".datepicker").datepicker({
                 dateFormat: 'dd-mm-yy'
             });
+
+            //JOB CARD CHANGE STATUS
+            $(document).on('click', '.job-card-change-status', function(e) {
+                e.preventDefault();
+                var ajax_return;
+                let jobCardId = e.target.dataset.jobCardId;
+                let statusType = e.target.dataset.statusType;
+                $.confirm({
+                    title: 'Warning!',
+                    content: "Are you sure you want to " + statusType + " the job card ?",
+                    type: 'blue',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function() {
+                            $.confirm({
+                                content: function() {
+                                    var self = this;
+                                    return ajax_return = $.ajax({
+                                        type: "PUT",
+                                        url: contextPath + "headmechanic/vehicle/job-card/change-status/" + jobCardId + "/" + statusType
+                                    }).done(function(response) {
+                                        self.setTitle("Success!");
+                                        self.setType("green");
+                                        self.setContent(response.message);
+                                    }).fail(function(e) {
+                                        self.setTitle(e.responseJSON.httpStatus);
+                                        self.setType("red");
+                                        self.setContent("ERROR");
+                                    })
+                                    return true;
+                                },
+                                buttons: {
+                                    ok: function() {
+                                        ajax_return.done(function(message) {
+                                            location.reload();
+                                        })
+                                    }
+                                }
+                            });
+                        },
+                        cancel: function() {}
+                    }
+                });
+            });
+
         });
     </script>
 </body>

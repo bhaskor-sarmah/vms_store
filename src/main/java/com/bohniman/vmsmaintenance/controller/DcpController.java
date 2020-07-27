@@ -7,9 +7,9 @@ import java.util.Optional;
 
 import com.bohniman.vmsmaintenance.exception.BadRequestException;
 import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
-import com.bohniman.vmsmaintenance.model.TransVehicleJobCard;
+import com.bohniman.vmsmaintenance.model.TransJobCardItemOrder;
 import com.bohniman.vmsmaintenance.payload.JsonResponse;
-import com.bohniman.vmsmaintenance.service.HeadmechanicService;
+import com.bohniman.vmsmaintenance.service.DcpService;
 import com.bohniman.vmsmaintenance.utilities.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,27 +25,27 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping("/headmechanic")
-public class HeadMechanicController {
+@RequestMapping("/dcp")
+public class DcpController {
 
     @Autowired
-    HeadmechanicService headMechanicService;
+    DcpService dcpService;
     
     // ========================================================================
-    // HEADMECHANIC DASHBOARD PAGE
+    // DCP DASHBOARD PAGE
     // ========================================================================
     @GetMapping(value = "")
-    public ModelAndView pageHeadMechanicDashboard(ModelAndView mv) {
-        mv = new ModelAndView("headmechanic/dashboard");
+    public ModelAndView pageMtoAdminDashboard(ModelAndView mv) {
+        mv = new ModelAndView("dcp/dashboard");
 
         return mv;
     }
 
     // ========================================================================
-    // PAGE JOB CARD HOME
+    // PAGE ORDER SHEET HOME
     // ========================================================================
-    @GetMapping(value = "/job-card")
-    public ModelAndView jobCardHome(ModelAndView mv, @RequestParam Optional<String> fromDate,
+    @GetMapping(value = "/order-sheet")
+    public ModelAndView orderSheetHome(ModelAndView mv, @RequestParam Optional<String> fromDate,
             @RequestParam Optional<String> toDate) throws java.text.ParseException {
         Date dateFrom = new Date();
         Date dateTo = new Date();
@@ -64,10 +64,10 @@ public class HeadMechanicController {
         calendarTo.set(Calendar.HOUR_OF_DAY, 23);
         calendarTo.set(Calendar.MINUTE, 59);
 
-        mv = new ModelAndView("headmechanic/job_card_home");
+        mv = new ModelAndView("dcp/ordersheet_home");
 
-        List<TransVehicleJobCard> jobCards = headMechanicService.getJobCardsByDateRange(calendarFrom.getTime(), calendarTo.getTime());
-        mv.addObject("jobCards", jobCards);
+        List<TransJobCardItemOrder> orderSheets = dcpService.getOrderSheetsByDateRange(calendarFrom.getTime(), calendarTo.getTime());
+        mv.addObject("orderSheets", orderSheets);
         mv.addObject("dateFrom", dateFrom);
         mv.addObject("dateTo", dateTo);
 
@@ -75,13 +75,13 @@ public class HeadMechanicController {
     }
 
     // ========================================================================
-    // JOB CARD CHANGE STATUS
+    // FORWARD JOB CARD
     // ========================================================================
-    @PutMapping(value = { "/vehicle/job-card/change-status/{jobCardId}/{statusType}" })
+    @PutMapping(value = { "/vehicle/job-card/order/change-status/{orderId}/{statusType}" })
     @ResponseBody
-    public ResponseEntity<JsonResponse> jobCardChangeStatus(@PathVariable("jobCardId") Long jobCardId, @PathVariable("statusType") String statusType){
+    public ResponseEntity<JsonResponse> orderChangeStatus(@PathVariable("orderId") Long orderId, @PathVariable("statusType") String statusType){
 
-        JsonResponse res = headMechanicService.changeJobCardStatus(jobCardId, statusType);
+        JsonResponse res = dcpService.changeOrderStatus(orderId, statusType);
         if (res.getResult()) {
             return ResponseEntity.ok(res);
         } else {
@@ -90,28 +90,13 @@ public class HeadMechanicController {
     }
 
     // ========================================================================
-    // VIEW JOB CARD
+    // ALL ITEM OF A VENDOR AGAINST AN ORDER AND JOB CARD
     // ========================================================================
-    @GetMapping(value = "/vehicle/job-card/{jobCardId}")
-    public ModelAndView viewJobCard(ModelAndView mv, @PathVariable("jobCardId") Long jobCardId) {
-        mv = new ModelAndView("headmechanic/view_job_card");
-
-        TransVehicleJobCard transVehicleJobCard = headMechanicService.getJobCardById(jobCardId);
-        mv.addObject("transVehicleJobCard", transVehicleJobCard);
-
-        
-
-        return mv;
-    }
-
-    // ========================================================================
-    // GET ALL JOB CARD ITEMS
-    // ========================================================================
-    @GetMapping(value = { "/vehicle/job-card/get-all-items/{jobCardId}" })
+    @GetMapping(value = "/vehicle/job-card/getItemByOrder")
     @ResponseBody
-    public ResponseEntity<JsonResponse> getJobCardItemList(@PathVariable("jobCardId") Long jobCardId) {
-
-        JsonResponse res = headMechanicService.getJobCardItemList(jobCardId);
+    public ResponseEntity<JsonResponse> getItemByOrder(@RequestParam("orderId") Long orderId,
+            @RequestParam("jobcardId") Long jobcardId, @RequestParam("vendorId") Long vendorId) {
+        JsonResponse res = dcpService.getAllItemByOrder(orderId, vendorId, jobcardId);
         if (res.getResult()) {
             return ResponseEntity.ok(res);
         } else {
