@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('STORE')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-    <title>APVMS | STORE</title>
+    <!-- <title>APVMS | STORE</title> -->
 </head>
 
 <body>
@@ -404,7 +404,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Remove Item from Vehicle</h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Update Vehicle Item</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -412,7 +412,7 @@
                 <div class="modal-body">
                     <form id="form-remove-item">
                         <div class="form-group row">
-                            <label for="inputPassword" class="col-sm-5 col-form-label">Item to be removed</label>
+                            <label for="inputPassword" class="col-sm-5 col-form-label">Item to be Updated</label>
                             <label for="inputPassword" class="col-sm-5 col-form-label text-success" id="modalRemoveItemName"></label>
                         </div>
                         <div><input type="hidden" name="id"></div>
@@ -478,7 +478,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" id="btnModalRemoveItem">Remove</button>
+                            <button type="submit" class="btn btn-primary" id="btnModalRemoveItem">Update</button>
                         </div>
                     </form>
                 </div>

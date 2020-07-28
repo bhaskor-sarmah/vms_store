@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('HEADMECHANIC')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <title>APVMS | HEADMECHANIC</title>
+    <!-- <title>APVMS | HEADMECHANIC</title> -->
 </head>
 
 <body>
@@ -22,7 +22,8 @@
                     <div class="col-md-9">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item">
                                     Job Card
                                 </li>
@@ -45,7 +46,8 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="">From</span>
                                                         </div>
-                                                        <input type="text" class="form-control datepicker" name="fromDate" th:value="${#dates.format(dateFrom, 'dd-MM-yyyy')}">
+                                                        <input type="text" class="form-control datepicker"
+                                                            name="fromDate" th:value="${#dates.format(dateFrom, 'dd-MM-yyyy')}">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text " id="">To</span>
                                                         </div>
@@ -121,7 +123,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
 
     <script>
-        $(function() {
+        $(function () {
             $('#side-link-job-card').addClass('list-group-item-secondary');
 
             $(".datepicker").datepicker({
@@ -129,7 +131,7 @@
             });
 
             //JOB CARD CHANGE STATUS
-            $(document).on('click', '.job-card-change-status', function(e) {
+            $(document).on('click', '.job-card-change-status', function (e) {
                 e.preventDefault();
                 var ajax_return;
                 let jobCardId = e.target.dataset.jobCardId;
@@ -140,18 +142,18 @@
                     type: 'blue',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.confirm({
-                                content: function() {
+                                content: function () {
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "PUT",
                                         url: contextPath + "headmechanic/vehicle/job-card/change-status/" + jobCardId + "/" + statusType
-                                    }).done(function(response) {
+                                    }).done(function (response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
                                         self.setContent(response.message);
-                                    }).fail(function(e) {
+                                    }).fail(function (e) {
                                         self.setTitle(e.responseJSON.httpStatus);
                                         self.setType("red");
                                         self.setContent("ERROR");
@@ -159,15 +161,15 @@
                                     return true;
                                 },
                                 buttons: {
-                                    ok: function() {
-                                        ajax_return.done(function(message) {
+                                    ok: function () {
+                                        ajax_return.done(function (message) {
                                             location.reload();
                                         })
                                     }
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });

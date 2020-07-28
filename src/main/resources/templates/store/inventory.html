@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('STORE')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <title>APVMS | STORE</title>
+    <!-- <title>APVMS | STORE</title> -->
 </head>
 
 <body>
@@ -36,7 +36,9 @@
                                                 <h4><i class="fas fa-box-open"></i> Vehicle Inventory</h4>
                                             </div>
                                             <div class="col-3">
-                                                <button type="button" data-target="#modalItem" data-toggle="modal" class="btn btn-primary float-right" data-item-id="0">New Item</button>
+                                                <button type="button" data-target="#modalItem" data-toggle="modal"
+                                                    class="btn btn-primary float-right" data-item-id="0">New
+                                                    Item</button>
                                             </div>
                                         </div>
                                     </div>
@@ -57,11 +59,13 @@
         </div>
     </main>
     <!-- Modal Item-->
-    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Inventory Add/Edit Inventory</h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Inventory Add/Edit
+                        Inventory</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -78,7 +82,8 @@
                             <select class="form-control" name="category">
                                 <option value="">---Please Select---</option>
                                 <th:block th:if="${not #lists.isEmpty(categoryList)}">
-                                    <option th:each="x:${categoryList}" th:text="${x.name}" th:value="${x.name}">Consumable</option>
+                                    <option th:each="x:${categoryList}" th:text="${x.name}" th:value="${x.name}">
+                                        Consumable</option>
                                 </th:block>
                             </select>
                         </div>
@@ -87,7 +92,8 @@
                             <select class="form-control" name="unit">
                                 <option value="">---Please Select---</option>
                                 <th:block th:if="${not #lists.isEmpty(unitList)}">
-                                    <option th:each="x:${unitList}" th:text="${x.name}" th:value="${x.name}">Consumable</option>
+                                    <option th:each="x:${unitList}" th:text="${x.name}" th:value="${x.name}">Consumable
+                                    </option>
                                 </th:block>
                             </select>
                         </div>
@@ -95,35 +101,41 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="$('#form-item').submit();">Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#form-item').submit();">Save
+                        changes</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Add Stock -->
-    <div class="modal fade" id="modalAddStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalAddStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Add <span class="lblModalAddStockItemName"></span></h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-box-open"></i> Add <span
+                            class="lblModalAddStockItemName"></span></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="form-add-stock">
                         <div><input type="hidden" class="form-control" name="id"></div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">Item Name : <span class="lblModalAddStockItemName"></span></label>
+                            <label for="exampleFormControlInput1">Item Name : <span
+                                    class="lblModalAddStockItemName"></span></label>
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">Stock Available : <span id="lblModalAddStockQuantityInStore"></span></label>
+                            <label for="exampleFormControlInput1">Stock Available : <span
+                                    id="lblModalAddStockQuantityInStore"></span></label>
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Enter Quantity</label>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" name="quantity" onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
+                                <input type="text" class="form-control" name="quantity"
+                                    onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
                                 <div class="input-group-append">
                                     <span class="input-group-text" id="lblModalAddStockUnit"></span>
                                 </div>
@@ -147,7 +159,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
     <script>
-        $(function() {
+        $(function () {
             // SIDEBAR LINK ACTIVE
             $('#side-link-inventory').addClass('list-group-item-secondary');
 
@@ -155,7 +167,7 @@
             getItemList();
 
             // NEW ITEM
-            $(document).on("submit", "#form-item", function(e) {
+            $(document).on("submit", "#form-item", function (e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -164,12 +176,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/inventory/add",
                                 timeout: 600000,
-                                beforeSend: function() {
+                                beforeSend: function () {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -178,7 +190,7 @@
                                     });
                                 },
                                 data: $("#form-item").serialize(),
-                                success: function(response) {
+                                success: function (response) {
                                     $('#form-item').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
@@ -189,15 +201,15 @@
                                     getItemList();
                                     $('#modalItem').modal('hide');
                                 },
-                                error: function(e) {
+                                error: function (e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function(key,
+                                        $.each(e.responseJSON.errorMessages, function (key,
                                             value) {
                                             $("#form-item").contents().find(
                                                 '[name=' + key + ']').after(
-                                                '<span class="error-message">' +
-                                                value + '</span>');
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
                                             $('#' + key).html(
                                                 '<span class="error-message">' +
                                                 value + '</span>');
@@ -211,18 +223,18 @@
                                         });
                                     }
                                 },
-                                complete: function() {
+                                complete: function () {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
             // ADD STOCK
-            $(document).on("submit", "#form-add-stock", function(e) {
+            $(document).on("submit", "#form-add-stock", function (e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -231,12 +243,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/inventory/add-stock",
                                 timeout: 600000,
-                                beforeSend: function() {
+                                beforeSend: function () {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -245,7 +257,7 @@
                                     });
                                 },
                                 data: $("#form-add-stock").serialize(),
-                                success: function(response) {
+                                success: function (response) {
                                     $('#form-add-stock').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
@@ -256,15 +268,15 @@
                                     getItemList();
                                     $('#modalAddStock').modal('hide');
                                 },
-                                error: function(e) {
+                                error: function (e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function(key,
+                                        $.each(e.responseJSON.errorMessages, function (key,
                                             value) {
                                             $("#form-add-stock").contents().find(
                                                 '[name=' + key + ']').after(
-                                                '<span class="error-message">' +
-                                                value + '</span>');
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
                                         });
                                     } else {
                                         $.alert({
@@ -275,18 +287,18 @@
                                         });
                                     }
                                 },
-                                complete: function() {
+                                complete: function () {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
             //DELETE ITEM
-            $(document).on('click', '.delete-item', function(e) {
+            $(document).on('click', '.delete-item', function (e) {
                 e.preventDefault();
                 var ajax_return;
                 let itemId = e.target.dataset.itemId;
@@ -296,18 +308,18 @@
                     type: 'red',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.confirm({
-                                content: function() {
+                                content: function () {
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "DELETE",
                                         url: contextPath + "store/inventory/delete/" + itemId
-                                    }).done(function(response) {
+                                    }).done(function (response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
                                         self.setContent(response.message);
-                                    }).fail(function(e) {
+                                    }).fail(function (e) {
                                         self.setTitle(e.responseJSON.httpStatus);
                                         self.setType("red");
                                         self.setContent("ERROR");
@@ -315,22 +327,22 @@
                                     return true;
                                 },
                                 buttons: {
-                                    ok: function() {
-                                        ajax_return.done(function(message) {
+                                    ok: function () {
+                                        ajax_return.done(function (message) {
                                             getItemList();
                                         })
                                     }
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
 
             //ON MODAL SHOW
-            $(document).on('show.bs.modal', '#modalItem', function(e) {
+            $(document).on('show.bs.modal', '#modalItem', function (e) {
                 let itemId = e.relatedTarget.dataset.itemId;
                 if (itemId == 0) {
                     $("#form-item").contents().find('[name=id]').val("");
@@ -343,7 +355,7 @@
             });
 
             //ON MODAL SHOW
-            $(document).on('show.bs.modal', '#modalAddStock', function(e) {
+            $(document).on('show.bs.modal', '#modalAddStock', function (e) {
                 $("#form-add-stock").contents().find('[name=id]').val(e.relatedTarget.dataset.itemId);
                 $("#form-add-stock").contents().find('[name=quantity]').val(1);
                 $(".lblModalAddStockItemName").html(e.relatedTarget.dataset.name);
@@ -359,7 +371,7 @@
                 type: "GET",
                 url: contextPath + "store/inventory/all",
                 timeout: 600000,
-                beforeSend: function() {
+                beforeSend: function () {
                     $('body').block({
                         message: '<h3>Please wait...</h3>',
                         css: {
@@ -367,7 +379,7 @@
                         }
                     });
                 },
-                success: function(response) {
+                success: function (response) {
                     var content = `
                         <table id="table-items" class="table table-striped jambo_table text-black" style="width:100%">
                             <thead class="text-center">
@@ -389,7 +401,7 @@
                         }]
                     });
 
-                    $.each(response.payload, function(key, item) {
+                    $.each(response.payload, function (key, item) {
                         tableItems.row.add([
                             `<b>${key + 1}</b>`,
                             `${item.name}`,
@@ -409,10 +421,10 @@
                         ]).draw(false);
                     });
                 },
-                error: function(e) {
+                error: function (e) {
                     console.log(e);
                 },
-                complete: function() {
+                complete: function () {
                     $('body').unblock();
                 }
             });

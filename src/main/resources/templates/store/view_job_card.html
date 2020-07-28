@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('STORE')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-    <title>APVMS | STORE</title>
+    <!-- <title>APVMS | STORE</title> -->
 </head>
 
 <body>
@@ -22,9 +22,11 @@
                     <div class="col-md-9">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item"><a th:href="@{/store/vehicle}">Vehicle</a></li>
-                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}">
+                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}"
+                                    th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}">
 
                                 </li>
                                 <li class="breadcrumb-item">
@@ -48,16 +50,35 @@
                                             </div>
                                             <div class="col-3">
                                                 <div class="dropdown show">
-                                                    <a class="btn btn-secondary dropdown-toggle p-2  w-100" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <a class="btn btn-secondary dropdown-toggle p-2  w-100" href="#"
+                                                        role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                                                        aria-haspopup="true" aria-expanded="false">
                                                         Options
                                                     </a>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                        <a class="dropdown-item" th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW VEHICLE</a>
-                                                        <a class="dropdown-item" th:if="${transVehicleJobCard.status == 'CREATED'}" href="#modalForward" data-toggle="modal">FORWARD JOB CARD</a>
-                                                        <a class="dropdown-item" th:if="${transVehicleJobCard.status == 'APPROVED'}" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/vendor-order}">GENERATE VENDOR ORDER</a>
-                                                        <a class="dropdown-item" th:if="${transVehicleJobCard.status == 'APPROVED'}" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/issue-item}">ISSUE ITEM</a>
-                                                        <a class="dropdown-item" th:href="@{/store/vehicle/edit-job-card/__${transVehicleJobCard.id}__}" th:if="${transVehicleJobCard.status == 'CREATED' || transVehicleJobCard.status == 'FORWARDED' || transVehicleJobCard.status == 'APPROVED'}">EDIT JOB CARD</a>
-                                                        <a class="dropdown-item" th:if="${transVehicleJobCard.status == 'APPROVED'}" href="javascript:void(0);" id="closeJobCard">CLOSE JOB CARD</a>
+                                                        <a class="dropdown-item"
+                                                            th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW
+                                                            VEHICLE</a>
+                                                        <a class="dropdown-item"
+                                                            th:if="${transVehicleJobCard.status == 'CREATED'}"
+                                                            href="#modalForward" data-toggle="modal">FORWARD JOB
+                                                            CARD</a>
+                                                        <a class="dropdown-item"
+                                                            th:if="${transVehicleJobCard.status == 'APPROVED'}"
+                                                            th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/vendor-order}">GENERATE
+                                                            VENDOR ORDER</a>
+                                                        <a class="dropdown-item"
+                                                            th:if="${transVehicleJobCard.status == 'APPROVED'}"
+                                                            th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/issue-item}">ISSUE
+                                                            ITEM</a>
+                                                        <a class="dropdown-item"
+                                                            th:href="@{/store/vehicle/edit-job-card/__${transVehicleJobCard.id}__}"
+                                                            th:if="${transVehicleJobCard.status == 'CREATED' || transVehicleJobCard.status == 'FORWARDED' || transVehicleJobCard.status == 'APPROVED'}">EDIT
+                                                            JOB CARD</a>
+                                                        <a class="dropdown-item"
+                                                            th:if="${transVehicleJobCard.status == 'APPROVED'}"
+                                                            href="javascript:void(0);" id="closeJobCard">CLOSE JOB
+                                                            CARD</a>
                                                     </div>
                                                 </div>
 
@@ -72,7 +93,9 @@
                                                         <h5 class="card-title">Vehicle</h5>
                                                     </div>
                                                     <div class="col-7">
-                                                        <h5 class="card-title"> : <span class="badge badge-success p-2" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span></h5>
+                                                        <h5 class="card-title"> : <span class="badge badge-success p-2"
+                                                                th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span>
+                                                        </h5>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -80,7 +103,8 @@
                                                         <h5 class="card-title">Job Card Id</h5>
                                                     </div>
                                                     <div class="col-7">
-                                                        <h5 class="card-title"> : <span th:text="${'#'+transVehicleJobCard.id}"></span></h5>
+                                                        <h5 class="card-title"> : <span
+                                                                th:text="${'#'+transVehicleJobCard.id}"></span></h5>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -88,7 +112,8 @@
                                                         <h5 class="card-title">Status</h5>
                                                     </div>
                                                     <div class="col-7">
-                                                        <h5 class="card-title"> : <span class="badge badge-success" th:text="${transVehicleJobCard.status}"></span></h5>
+                                                        <h5 class="card-title"> : <span class="badge badge-success"
+                                                                th:text="${transVehicleJobCard.status}"></span></h5>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -287,11 +312,11 @@
         var jobCardId = /*[[${transVehicleJobCard.id}]]*/ '';
     </script>
     <script>
-        $(function() {
+        $(function () {
             $('#side-link-vehicle').addClass('list-group-item-secondary');
 
             // NEW DISPOSE ITEM
-            $(document).on("submit", "#form-dispose-item", function(e) {
+            $(document).on("submit", "#form-dispose-item", function (e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -300,12 +325,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/vehicle/job-card/new-dispose-item",
                                 timeout: 600000,
-                                beforeSend: function() {
+                                beforeSend: function () {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -314,7 +339,7 @@
                                     });
                                 },
                                 data: $("#form-dispose-item").serialize(),
-                                success: function(response) {
+                                success: function (response) {
                                     $('#form-dispose-item').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
@@ -325,15 +350,15 @@
                                     getDisposedItemList();
                                     $('#modalDisposeItem').modal('hide');
                                 },
-                                error: function(e) {
+                                error: function (e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function(key,
+                                        $.each(e.responseJSON.errorMessages, function (key,
                                             value) {
                                             $("#form-dispose-item").contents().find(
                                                 '[name=' + key + ']').after(
-                                                '<span class="error-message">' +
-                                                value + '</span>');
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
                                             $('#' + key).html(
                                                 '<span class="error-message">' +
                                                 value + '</span>');
@@ -347,12 +372,12 @@
                                         });
                                     }
                                 },
-                                complete: function() {
+                                complete: function () {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
@@ -360,7 +385,7 @@
 
 
             //DELETE DISPOSED ITEM
-            $(document).on('click', '.delete-dispose-item', function(e) {
+            $(document).on('click', '.delete-dispose-item', function (e) {
                 e.preventDefault();
                 var ajax_return;
                 let itemId = e.target.dataset.itemId;
@@ -370,18 +395,18 @@
                     type: 'red',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.confirm({
-                                content: function() {
+                                content: function () {
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "DELETE",
                                         url: contextPath + "store/vehicle/job-card/delete-dispose-item/" + itemId
-                                    }).done(function(response) {
+                                    }).done(function (response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
                                         self.setContent(response.message);
-                                    }).fail(function(e) {
+                                    }).fail(function (e) {
                                         self.setTitle(e.responseJSON.httpStatus);
                                         self.setType("red");
                                         self.setContent("ERROR");
@@ -389,21 +414,21 @@
                                     return true;
                                 },
                                 buttons: {
-                                    ok: function() {
-                                        ajax_return.done(function(message) {
+                                    ok: function () {
+                                        ajax_return.done(function (message) {
                                             getDisposedItemList();
                                         })
                                     }
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
             // FORWARD JOB CARD
-            $(document).on("submit", "#form-forward-job-card", function(e) {
+            $(document).on("submit", "#form-forward-job-card", function (e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -412,12 +437,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.ajax({
                                 type: "PUT",
                                 url: contextPath + "store/vehicle/job-card/forward",
                                 timeout: 600000,
-                                beforeSend: function() {
+                                beforeSend: function () {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -426,28 +451,28 @@
                                     });
                                 },
                                 data: $('#form-forward-job-card').serialize(),
-                                success: function(response) {
+                                success: function (response) {
                                     $.confirm({
                                         title: 'Success!',
                                         content: "Job Card Forwarded Successfully",
                                         type: 'green',
                                         typeAnimated: true,
                                         buttons: {
-                                            ok: function() {
+                                            ok: function () {
                                                 location.reload();
                                             }
                                         }
                                     });
                                 },
-                                error: function(e) {
+                                error: function (e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function(key,
+                                        $.each(e.responseJSON.errorMessages, function (key,
                                             value) {
                                             $("#form-forward-job-card").contents().find(
                                                 '[name=' + key + ']').after(
-                                                '<span class="error-message">' +
-                                                value + '</span>');
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
                                         });
                                     } else {
                                         $.alert({
@@ -458,23 +483,23 @@
                                         });
                                     }
                                 },
-                                complete: function() {
+                                complete: function () {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
             // ON RACK SELECT
-            $(document).on("change", "[name='masterRack.id']", function(e) {
+            $(document).on("change", "[name='masterRack.id']", function (e) {
                 $.ajax({
                     type: "GET",
                     url: contextPath + "store/vehicle/job-card/get-shelf",
                     timeout: 600000,
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('body').block({
                             message: '<h3>Processing...</h3>',
                             css: {
@@ -485,18 +510,18 @@
                     data: {
                         "rackId": $(this).children("option:selected").val()
                     },
-                    success: function(response) {
+                    success: function (response) {
                         let optionList = [];
                         optionList.push('<option value="">----Please Select----</option>');
-                        $.each(response.payload, function(key, shelf) {
+                        $.each(response.payload, function (key, shelf) {
                             optionList.push('<option value="' + shelf.id + '">' + shelf.shelveName + '</option>');
                         });
                         $('#form-dispose-item').contents().find('[name="masterShelve.id"]').html(optionList.join(''));
                     },
-                    error: function(e) {
+                    error: function (e) {
                         console.log(event)
                     },
-                    complete: function() {
+                    complete: function () {
                         $('body').unblock();
                     }
                 });
@@ -508,7 +533,7 @@
                     type: "GET",
                     url: contextPath + "store/vehicle/job-card/get-all-items/" + jobCardId,
                     timeout: 600000,
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('body').block({
                             message: '<h3>Please wait...</h3>',
                             css: {
@@ -516,7 +541,7 @@
                             }
                         });
                     },
-                    success: function(response) {
+                    success: function (response) {
                         var content = `
                         <table id="table-job-card-items" class="table table-bordered" style="width:100%">
                             <thead class="text-center text-uppercase">
@@ -536,7 +561,7 @@
 
 
                         let total = 0;
-                        $.each(response.payload, function(key, item) {
+                        $.each(response.payload, function (key, item) {
                             $('#table-job-card-items').append(`
                                 <tr>
                                     <th>${key + 1}</th>
@@ -553,10 +578,10 @@
 
                         $('#div-total').html(`<b>TOTAL AMOUNT : Rs. ${total.toFixed(2)}</b>`);
                     },
-                    error: function(e) {
+                    error: function (e) {
                         console.log(e);
                     },
-                    complete: function() {
+                    complete: function () {
                         $('body').unblock();
                     }
                 });
@@ -568,7 +593,7 @@
                     type: "GET",
                     url: contextPath + "store/vehicle/job-card/get-all-dispose-item/" + jobCardId,
                     timeout: 600000,
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('body').block({
                             message: '<h3>Please wait...</h3>',
                             css: {
@@ -576,7 +601,7 @@
                             }
                         });
                     },
-                    success: function(response) {
+                    success: function (response) {
                         var content = `
                         <table id="table-disposed-items" class="table table-bordered table-sm text-center" style="width:100%">
                             <thead class="text-center text-uppercase">
@@ -594,7 +619,7 @@
                         </table>`;
                         $('#div-disposed-items').html(content);
 
-                        $.each(response.payload, function(key, item) {
+                        $.each(response.payload, function (key, item) {
                             $('#table-disposed-items').append(`
                                 <tr>
                                     <th>${key + 1}</th>
@@ -608,17 +633,17 @@
                         `);
                         });
                     },
-                    error: function(e) {
+                    error: function (e) {
                         console.log(e);
                     },
-                    complete: function() {
+                    complete: function () {
                         $('body').unblock();
                     }
                 });
             }
 
             //CLOSE JOB CARD
-            $(document).on('click', '#closeJobCard', function(e) {
+            $(document).on('click', '#closeJobCard', function (e) {
                 e.preventDefault();
                 var ajax_return;
                 $.confirm({
@@ -627,18 +652,18 @@
                     type: 'red',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.confirm({
-                                content: function() {
+                                content: function () {
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "PUT",
                                         url: contextPath + "store/vehicle/job-card-close/" + jobCardId
-                                    }).done(function(response) {
+                                    }).done(function (response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
                                         self.setContent(response.message);
-                                    }).fail(function(e) {
+                                    }).fail(function (e) {
                                         self.setTitle(e.responseJSON.httpStatus);
                                         self.setType("red");
                                         self.setContent("ERROR");
@@ -646,15 +671,15 @@
                                     return true;
                                 },
                                 buttons: {
-                                    ok: function() {
-                                        ajax_return.done(function(message) {
+                                    ok: function () {
+                                        ajax_return.done(function (message) {
                                             location.reload();
                                         })
                                     }
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });

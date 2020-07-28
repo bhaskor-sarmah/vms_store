@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('STORE')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <title>APVMS | STORE</title>
+    <!-- <title>APVMS | STORE</title> -->
 </head>
 
 <body>
@@ -46,7 +46,8 @@
                                                 </h4>
                                             </div>
                                             <div class="col-3">
-                                                <button class="btn btn-secondary p-2 float-right" data-target="#modalForward" data-toggle="modal" disabled>DOWNLOAD
+                                                <button class="btn btn-secondary p-2 float-right"
+                                                    data-target="#modalForward" data-toggle="modal" disabled>DOWNLOAD
                                                     ORDER SHEET</a>
                                             </div>
                                         </div>
@@ -183,38 +184,38 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form>
-                                                    <div class="form-group">
-                                                        <label for="exampleFormControlSelect1">Select Whom To forward</label>
-                                                        <select class="form-control">
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Select Whom To forward</label>
+                            <select class="form-control">
                                 <option value="">---Please Select---</option>
                                 <option value="Lathi">Ritusmoi Kaushik (Head Mechanic)</option>
                                 <option value="Lathi">Pallab Handique (Head Mechanic)</option>
                                 <option value="Lathi">Sanjay Das (Head Mechanic)</option>
                             </select>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Forward</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
-                                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
-                                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-                                <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
-                                <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Forward</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
-                                <script>
-                                    $(function() {
-                                        $('#side-link-order-sheet').addClass('list-group-item-secondary');
+    <script>
+        $(function () {
+            $('#side-link-order-sheet').addClass('list-group-item-secondary');
 
-                                        $('#div-item-list').html(`
+            $('#div-item-list').html(`
                         <table id="table-items" class="display table ">
                             <thead class="text-center">
                                 <tr>
@@ -264,9 +265,9 @@
                             </tfoot>
                         </table>
             `);
-                                        $('#table-items').DataTable();
-                                    });
-                                </script>
+            $('#table-items').DataTable();
+        });
+    </script>
 </body>
 
 </html>

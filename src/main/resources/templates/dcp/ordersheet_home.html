@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('DCP')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <title>APVMS | DCP</title>
+    <!-- <title>APVMS | DCP</title> -->
 </head>
 
 <body>
@@ -23,7 +23,8 @@
                     <div class="col-md-9">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item">
                                     Order Sheets
                                 </li>
@@ -46,7 +47,8 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="">From</span>
                                                         </div>
-                                                        <input type="text" class="form-control datepicker" name="fromDate" th:value="${#dates.format(dateFrom, 'dd-MM-yyyy')}">
+                                                        <input type="text" class="form-control datepicker"
+                                                            name="fromDate" th:value="${#dates.format(dateFrom, 'dd-MM-yyyy')}">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text " id="">To</span>
                                                         </div>
@@ -138,14 +140,14 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
     <script>
-        $(function() {
+        $(function () {
             $('#side-link-ordersheet').addClass('list-group-item-secondary');
 
             $(".datepicker").datepicker({
                 dateFormat: 'dd-mm-yy'
             });
 
-            $(document).on('show.bs.modal', '#modalItem', function(e) {
+            $(document).on('show.bs.modal', '#modalItem', function (e) {
                 $("#item-div").html("");
                 let vendorId = e.relatedTarget.dataset.vendorId;
                 let jobcardId = e.relatedTarget.dataset.jobcardId;
@@ -155,7 +157,7 @@
                     url: contextPath + "dcp/vehicle/job-card/getItemByOrder",
                     timeout: 600000,
                     data: 'vendorId=' + vendorId + '&jobcardId=' + jobcardId + '&orderId=' + orderId,
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#item-div').block({
                             message: '<h3>Please wait...</h3>',
                             css: {
@@ -163,7 +165,7 @@
                             }
                         });
                     },
-                    success: function(response) {
+                    success: function (response) {
                         var content = `
                         <table id="table-item" class="table table-striped jambo_table text-black text-center" style="width:100%">
                             <thead class="text-center">
@@ -184,7 +186,7 @@
                                 "targets": [0, 1, 2, 3, 4]
                             }]
                         });
-                        $.each(response.payload, function(key, item) {
+                        $.each(response.payload, function (key, item) {
                             // alert(item.name);
                             tableItems.row.add([
                                 `<b>${key + 1}</b>`,
@@ -196,17 +198,17 @@
                             ]).draw(false);
                         });
                     },
-                    error: function(e) {
+                    error: function (e) {
                         console.log(e);
                     },
-                    complete: function() {
+                    complete: function () {
                         $('#item-div').unblock();
                     }
                 });
             });
 
             //ORDER CHANGE STATUS
-            $(document).on('click', '.order-change-status', function(e) {
+            $(document).on('click', '.order-change-status', function (e) {
                 e.preventDefault();
                 var ajax_return;
                 let orderId = e.target.dataset.orderId;
@@ -217,18 +219,18 @@
                     type: 'blue',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.confirm({
-                                content: function() {
+                                content: function () {
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "PUT",
                                         url: contextPath + "dcp/vehicle/job-card/order/change-status/" + orderId + "/" + statusType
-                                    }).done(function(response) {
+                                    }).done(function (response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
                                         self.setContent(response.message);
-                                    }).fail(function(e) {
+                                    }).fail(function (e) {
                                         self.setTitle(e.responseJSON.httpStatus);
                                         self.setType("red");
                                         self.setContent("ERROR");
@@ -236,15 +238,15 @@
                                     return true;
                                 },
                                 buttons: {
-                                    ok: function() {
-                                        ajax_return.done(function(message) {
+                                    ok: function () {
+                                        ajax_return.done(function (message) {
                                             location.reload();
                                         })
                                     }
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });

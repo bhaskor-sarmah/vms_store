@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('STORE')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <title>APVMS | STORE</title>
+    <!-- <title>APVMS | STORE</title> -->
 </head>
 
 <body>
@@ -36,7 +36,9 @@
                                                 <h4><i class="fas fa-cubes"></i> Items</h4>
                                             </div>
                                             <div class="col-3">
-                                                <button type="button" data-target="#modalItem" data-toggle="modal" class="btn btn-primary float-right" data-item-id="0">New Item</button>
+                                                <button type="button" data-target="#modalItem" data-toggle="modal"
+                                                    class="btn btn-primary float-right" data-item-id="0">New
+                                                    Item</button>
                                             </div>
                                         </div>
                                     </div>
@@ -57,7 +59,8 @@
         </div>
     </main>
     <!-- Modal Item-->
-    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -82,7 +85,8 @@
                             <select class="form-control" name="itemCategory">
                                 <option value="">---Please Select---</option>
                                 <th:block th:if="${not #lists.isEmpty(categoryList)}">
-                                    <option th:each="x:${categoryList}" th:text="${x.name}" th:value="${x.name}">Consumable</option>
+                                    <option th:each="x:${categoryList}" th:text="${x.name}" th:value="${x.name}">
+                                        Consumable</option>
                                 </th:block>
                             </select>
                         </div>
@@ -91,7 +95,8 @@
                             <select class="form-control" name="itemUnit">
                                 <option value="">---Please Select---</option>
                                 <th:block th:if="${not #lists.isEmpty(unitList)}">
-                                    <option th:each="x:${unitList}" th:text="${x.name}" th:value="${x.name}">Consumable</option>
+                                    <option th:each="x:${unitList}" th:text="${x.name}" th:value="${x.name}">Consumable
+                                    </option>
                                 </th:block>
                             </select>
                         </div>
@@ -99,7 +104,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="$('#form-item').submit();">Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#form-item').submit();">Save
+                        changes</button>
                 </div>
             </div>
         </div>
@@ -111,7 +117,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
     <script>
-        $(function() {
+        $(function () {
             // SIDEBAR LINK ACTIVE
             $('#side-link-item').addClass('list-group-item-secondary');
 
@@ -119,7 +125,7 @@
             getItemList();
 
             // NEW ITEM
-            $(document).on("submit", "#form-item", function(e) {
+            $(document).on("submit", "#form-item", function (e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -128,12 +134,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/item/add",
                                 timeout: 600000,
-                                beforeSend: function() {
+                                beforeSend: function () {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -142,7 +148,7 @@
                                     });
                                 },
                                 data: $("#form-item").serialize(),
-                                success: function(response) {
+                                success: function (response) {
                                     $('#form-item').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
@@ -153,15 +159,15 @@
                                     getItemList();
                                     $('#modalItem').modal('hide');
                                 },
-                                error: function(e) {
+                                error: function (e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function(key,
+                                        $.each(e.responseJSON.errorMessages, function (key,
                                             value) {
                                             $("#form-item").contents().find(
                                                 '[name=' + key + ']').after(
-                                                '<span class="error-message">' +
-                                                value + '</span>');
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
                                             $('#' + key).html(
                                                 '<span class="error-message">' +
                                                 value + '</span>');
@@ -175,18 +181,18 @@
                                         });
                                     }
                                 },
-                                complete: function() {
+                                complete: function () {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
             //DELETE ITEM
-            $(document).on('click', '.delete-item', function(e) {
+            $(document).on('click', '.delete-item', function (e) {
                 e.preventDefault();
                 var ajax_return;
                 let itemId = e.target.dataset.itemId;
@@ -196,18 +202,18 @@
                     type: 'red',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.confirm({
-                                content: function() {
+                                content: function () {
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "DELETE",
                                         url: contextPath + "store/item/delete/" + itemId
-                                    }).done(function(response) {
+                                    }).done(function (response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
                                         self.setContent(response.message);
-                                    }).fail(function(e) {
+                                    }).fail(function (e) {
                                         self.setTitle(e.responseJSON.httpStatus);
                                         self.setType("red");
                                         self.setContent("ERROR");
@@ -215,22 +221,22 @@
                                     return true;
                                 },
                                 buttons: {
-                                    ok: function() {
-                                        ajax_return.done(function(message) {
+                                    ok: function () {
+                                        ajax_return.done(function (message) {
                                             getItemList();
                                         })
                                     }
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
 
             //ON MODAL SHOW
-            $(document).on('show.bs.modal', '#modalItem', function(e) {
+            $(document).on('show.bs.modal', '#modalItem', function (e) {
                 let itemId = e.relatedTarget.dataset.itemId;
                 if (itemId == 0) {
                     $("#form-item").contents().find('[name=id]').val("");
@@ -255,7 +261,7 @@
                 type: "GET",
                 url: contextPath + "store/item/all",
                 timeout: 600000,
-                beforeSend: function() {
+                beforeSend: function () {
                     $('body').block({
                         message: '<h3>Please wait...</h3>',
                         css: {
@@ -263,7 +269,7 @@
                         }
                     });
                 },
-                success: function(response) {
+                success: function (response) {
                     var content = `
                         <table id="table-items" class="table table-striped jambo_table text-black" style="width:100%">
                             <thead class="text-center">
@@ -286,7 +292,7 @@
                         }]
                     });
 
-                    $.each(response.payload, function(key, item) {
+                    $.each(response.payload, function (key, item) {
                         tableItems.row.add([
                             `<b>${key + 1}</b>`,
                             `${item.itemName}`,
@@ -298,10 +304,10 @@
                         ]).draw(false);
                     });
                 },
-                error: function(e) {
+                error: function (e) {
                     console.log(e);
                 },
-                complete: function() {
+                complete: function () {
                     $('body').unblock();
                 }
             });

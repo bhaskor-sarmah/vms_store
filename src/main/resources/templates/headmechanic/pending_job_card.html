@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('HEADMECHANIC')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <title>APVMS | STORE</title>
+    <!-- <title>APVMS | STORE</title> -->
 </head>
 
 <body>
@@ -22,7 +22,8 @@
                     <div class="col-md-9">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item">
                                     Pending Job Card
                                 </li>
@@ -59,8 +60,12 @@
                                                             <td>435524</td>
                                                             <td><span class="badge badge-success">FRESH</span></td>
                                                             <td>2nd June 2019</td>
-                                                            <td><a class="btn btn-success p-1" href="/store/vehicle/1010/view-job-card">APPROVE</a></td>
-                                                            <td><a class="btn btn-danger p-1" href="/store/vehicle/1010/view-job-card">REJECT</a></td>
+                                                            <td><a class="btn btn-success p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">APPROVE</a>
+                                                            </td>
+                                                            <td><a class="btn btn-danger p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">REJECT</a>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th scope="row">2</th>
@@ -68,8 +73,12 @@
                                                             <td>456775</td>
                                                             <td><span class="badge badge-success">FRESH</span></td>
                                                             <td>1st Feb 2019</td>
-                                                            <td><a class="btn btn-success p-1" href="/store/vehicle/1010/view-job-card">APPROVE</a></td>
-                                                            <td><a class="btn btn-danger p-1" href="/store/vehicle/1010/view-job-card">REJECT</a></td>
+                                                            <td><a class="btn btn-success p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">APPROVE</a>
+                                                            </td>
+                                                            <td><a class="btn btn-danger p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">REJECT</a>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th scope="row">3</th>
@@ -77,8 +86,12 @@
                                                             <td>435524</td>
                                                             <td><span class="badge badge-success">FRESH</span></td>
                                                             <td>2nd Oct 2017</td>
-                                                            <td><a class="btn btn-success p-1" href="/store/vehicle/1010/view-job-card">APPROVE</a></td>
-                                                            <td><a class="btn btn-danger p-1" href="/store/vehicle/1010/view-job-card">REJECT</a></td>
+                                                            <td><a class="btn btn-success p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">APPROVE</a>
+                                                            </td>
+                                                            <td><a class="btn btn-danger p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">REJECT</a>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th scope="row">4</th>
@@ -86,8 +99,12 @@
                                                             <td>786543</td>
                                                             <td><span class="badge badge-success">FRESH</span></td>
                                                             <td>2nd June 2019</td>
-                                                            <td><a class="btn btn-success p-1" href="/store/vehicle/1010/view-job-card">APPROVE</a></td>
-                                                            <td><a class="btn btn-danger p-1" href="/store/vehicle/1010/view-job-card">REJECT</a></td>
+                                                            <td><a class="btn btn-success p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">APPROVE</a>
+                                                            </td>
+                                                            <td><a class="btn btn-danger p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">REJECT</a>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th scope="row">5</th>
@@ -95,8 +112,12 @@
                                                             <td>123546</td>
                                                             <td><span class="badge badge-success">FRESH</span></td>
                                                             <td>1st Feb 2019</td>
-                                                            <td><a class="btn btn-success p-1" href="/store/vehicle/1010/view-job-card">APPROVE</a></td>
-                                                            <td><a class="btn btn-danger p-1" href="/store/vehicle/1010/view-job-card">REJECT</a></td>
+                                                            <td><a class="btn btn-success p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">APPROVE</a>
+                                                            </td>
+                                                            <td><a class="btn btn-danger p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">REJECT</a>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th scope="row">6</th>
@@ -104,8 +125,12 @@
                                                             <td>654776</td>
                                                             <td><span class="badge badge-success">FRESH</span></td>
                                                             <td>2nd Oct 2017</td>
-                                                            <td><a class="btn btn-success p-1" href="/store/vehicle/1010/view-job-card">APPROVE</a></td>
-                                                            <td><a class="btn btn-danger p-1" href="/store/vehicle/1010/view-job-card">REJECT</a></td>
+                                                            <td><a class="btn btn-success p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">APPROVE</a>
+                                                            </td>
+                                                            <td><a class="btn btn-danger p-1"
+                                                                    href="/store/vehicle/1010/view-job-card">REJECT</a>
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -128,7 +153,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
 
     <script>
-        $(function() {
+        $(function () {
             $('#side-link-pending-job-card').addClass('list-group-item-secondary');
 
             $(".datepicker").datepicker({

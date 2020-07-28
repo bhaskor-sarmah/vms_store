@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('VENDOR')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-    <title>APVMS | VENDOR</title>
+    <!-- <title>APVMS | VENDOR</title> -->
 </head>
 
 <body>
@@ -32,7 +32,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
     <script>
-        $(function() {
+        $(function () {
             $('#side-link-dashboard').addClass('list-group-item-secondary');
         });
     </script>

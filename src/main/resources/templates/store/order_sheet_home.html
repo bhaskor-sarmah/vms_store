@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('STORE')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <title>APVMS | STORE</title>
+    <!-- <title>APVMS | STORE</title> -->
 </head>
 
 <body>
@@ -84,7 +84,8 @@
                                                             <td>19-07-2020</td>
                                                             <td><span class="badge badge-warning">PENDING
                                                                     APPROVAL</span></td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/view-order-details/12345">VIEW ORDER
+                                                            <td><a class="btn btn-primary p-1"
+                                                                    href="/store/view-order-details/12345">VIEW ORDER
                                                                     SHEET</a></td>
                                                         </tr>
                                                         <tr>
@@ -96,7 +97,8 @@
                                                             <td>06-07-2020</td>
                                                             <td><span class="badge badge-success">ORDER PLACED</span>
                                                             </td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/view-order-details/52175">VIEW ORDER
+                                                            <td><a class="btn btn-primary p-1"
+                                                                    href="/store/view-order-details/52175">VIEW ORDER
                                                                     SHEET</a></td>
                                                         </tr>
                                                         <tr>
@@ -109,7 +111,8 @@
                                                             <td><span class="badge badge-secondary">ORDER
                                                                     DELIVERED</span>
                                                             </td>
-                                                            <td><a class="btn btn-primary p-1" href="/store/view-order-details/45678">VIEW ORDER
+                                                            <td><a class="btn btn-primary p-1"
+                                                                    href="/store/view-order-details/45678">VIEW ORDER
                                                                     SHEET</a></td>
                                                         </tr>
                                                     </tbody>
@@ -133,7 +136,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
 
     <script>
-        $(function() {
+        $(function () {
             $('#side-link-order-sheet').addClass('list-group-item-secondary');
 
             $(".datepicker").datepicker({

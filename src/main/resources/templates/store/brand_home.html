@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <th:block th:replace="fragments/logged_fragments :: logged-links"></th:block>
+    <th:block th:replace="fragments/logged_fragments :: logged-links('STORE')"></th:block>
     <th:block th:replace="fragments/logged_fragments :: logged-css"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <title>APVMS | STORE</title>
+    <!-- <title>APVMS | STORE</title> -->
 </head>
 
 <body>
@@ -36,7 +36,9 @@
                                                 <h4><i class="far fa-registered"></i> Brands</h4>
                                             </div>
                                             <div class="col-3">
-                                                <button type="button" data-target="#modalBrand" data-toggle="modal" class="btn btn-primary float-right" data-brand-id="0">New Brand</button>
+                                                <button type="button" data-target="#modalBrand" data-toggle="modal"
+                                                    class="btn btn-primary float-right" data-brand-id="0">New
+                                                    Brand</button>
                                             </div>
                                         </div>
                                     </div>
@@ -57,7 +59,8 @@
         </div>
     </main>
     <!-- Modal Brand-->
-    <div class="modal fade" id="modalBrand" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalBrand" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -85,7 +88,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="$('#form-brand').submit();">Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#form-brand').submit();">Save
+                        changes</button>
                 </div>
             </div>
         </div>
@@ -97,7 +101,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
     <script>
-        $(function() {
+        $(function () {
             // SIDEBAR LINK ACTIVE
             $('#side-link-brand').addClass('list-group-item-secondary');
 
@@ -105,7 +109,7 @@
             getBrandList();
 
             // NEW ITEM
-            $(document).on("submit", "#form-brand", function(e) {
+            $(document).on("submit", "#form-brand", function (e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -114,12 +118,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/brand/add",
                                 timeout: 600000,
-                                beforeSend: function() {
+                                beforeSend: function () {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -128,7 +132,7 @@
                                     });
                                 },
                                 data: $("#form-brand").serialize(),
-                                success: function(response) {
+                                success: function (response) {
                                     $('#form-brand').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
@@ -139,15 +143,15 @@
                                     getBrandList();
                                     $('#modalBrand').modal('hide');
                                 },
-                                error: function(e) {
+                                error: function (e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function(key,
+                                        $.each(e.responseJSON.errorMessages, function (key,
                                             value) {
                                             $("#form-brand").contents().find(
                                                 '[name=' + key + ']').after(
-                                                '<span class="error-message">' +
-                                                value + '</span>');
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
                                             $('#' + key).html(
                                                 '<span class="error-message">' +
                                                 value + '</span>');
@@ -161,18 +165,18 @@
                                         });
                                     }
                                 },
-                                complete: function() {
+                                complete: function () {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
             //DELETE ITEM
-            $(document).on('click', '.delete-brand', function(e) {
+            $(document).on('click', '.delete-brand', function (e) {
                 e.preventDefault();
                 var ajax_return;
                 let brandId = e.target.dataset.brandId;
@@ -182,18 +186,18 @@
                     type: 'red',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.confirm({
-                                content: function() {
+                                content: function () {
                                     var self = this;
                                     return ajax_return = $.ajax({
                                         type: "DELETE",
                                         url: contextPath + "store/brand/delete/" + brandId
-                                    }).done(function(response) {
+                                    }).done(function (response) {
                                         self.setTitle("Success!");
                                         self.setType("green");
                                         self.setContent(response.message);
-                                    }).fail(function(e) {
+                                    }).fail(function (e) {
                                         self.setTitle(e.responseJSON.httpStatus);
                                         self.setType("red");
                                         self.setContent("ERROR");
@@ -201,22 +205,22 @@
                                     return true;
                                 },
                                 buttons: {
-                                    ok: function() {
-                                        ajax_return.done(function(message) {
+                                    ok: function () {
+                                        ajax_return.done(function (message) {
                                             getBrandList();
                                         })
                                     }
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
 
             //ON MODAL SHOW
-            $(document).on('show.bs.modal', '#modalBrand', function(e) {
+            $(document).on('show.bs.modal', '#modalBrand', function (e) {
                 let brandId = e.relatedTarget.dataset.brandId;
                 if (brandId == 0) {
                     $("#form-brand").contents().find('[name=id]').val("");
@@ -237,7 +241,7 @@
                 type: "GET",
                 url: contextPath + "store/brand/all",
                 timeout: 600000,
-                beforeSend: function() {
+                beforeSend: function () {
                     $('body').block({
                         message: '<h3>Please wait...</h3>',
                         css: {
@@ -245,7 +249,7 @@
                         }
                     });
                 },
-                success: function(response) {
+                success: function (response) {
                     var content = `
                         <table id="table-brands" class="table table-striped jambo_table text-black" style="width:100%">
                             <thead class="text-center">
@@ -266,7 +270,7 @@
                         }]
                     });
 
-                    $.each(response.payload, function(key, brand) {
+                    $.each(response.payload, function (key, brand) {
                         tableBrands.row.add([
                             `<b>${key + 1}</b>`,
                             `${brand.brandName}`,
@@ -276,10 +280,10 @@
                         ]).draw(false);
                     });
                 },
-                error: function(e) {
+                error: function (e) {
                     console.log(e);
                 },
-                complete: function() {
+                complete: function () {
                     $('body').unblock();
                 }
             });
