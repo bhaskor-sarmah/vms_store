@@ -197,7 +197,7 @@
                                 <h5>Enter Total Items</h5>
                             </div>
                             <div class="col-5 text-nowrap">
-                                : <input type="text" name="quantity" required>
+                                <label class="control-label">:</label> <input type="text" style="display:inline;" class="form-control" name="quantity" required>
                             </div>
                         </div>
 
@@ -248,6 +248,10 @@
                 $(`#table-items tbody #item-${rowId}`).remove();
             });
 
+            $('#modalAddItem').on('hidden.bs.modal', function () {
+                $('body').addClass('modal-open');
+            });
+
             // ADD ITEM
             $(document).on("submit", "#form-add-item", function (e) {
                 e.preventDefault();
@@ -266,7 +270,13 @@
                                 url: contextPath + "store/vehicle/job-card/add-item",
                                 timeout: 600000,
                                 beforeSend: function () {
-                                    $('body').block({
+                                    $('#modalItem').block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                    $('#modalAddItem').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
                                             border: '3px solid darkgrey'
@@ -305,7 +315,8 @@
                                     }
                                 },
                                 complete: function () {
-                                    $('body').unblock();
+                                    $('#modalItem').unblock();
+                                    $('#modalAddItem').unblock();
                                 }
                             });
                         },

@@ -50,7 +50,7 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-vendor text-primary"><a th:href="@{/store}"><i
                                             class="fas fa-tachometer-alt"></i> Dashboard / </a></li>
-                                <li class="breadcrumb-vendor"><a href="#">&nbsp;Vendors /</a></li>
+                                <li class="breadcrumb-vendor"><a th:href="@{/store/vendor}">&nbsp;Vendors /</a></li>
                                 <li class="breadcrumb-item text-success">
                                     ID - <span th:text="${vendor.id}"></span>
                                 </li>
@@ -659,7 +659,7 @@
                         data: 'itemId=' + id + '&vendorId=' + vendorId + '&price=' + price,
                         timeout: 600000,
                         beforeSend: function () {
-                            $('body').block({
+                            $('#modalItem').block({
                                 message: '<h3>Processing...</h3>',
                                 css: {
                                     border: '3px solid darkgrey'
@@ -684,7 +684,7 @@
                             });
                         },
                         complete: function () {
-                            $('body').unblock();
+                            $('#modalItem').unblock();
                         }
                     });
                 }

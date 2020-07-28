@@ -549,6 +549,8 @@ public class StoreServiceBhaskor {
             challan.setOrder(null);
             if (challan.getTransBill() == null) {
                 challan.setTransBill(new TransBill(""));
+            } else {
+                challan.getTransBill().setOrder(null);
             }
         }
         res.setPayload(challanList);
@@ -586,12 +588,12 @@ public class StoreServiceBhaskor {
                 itemList.add(ip);
             }
         }
-
         return itemList;
     }
 
-    public boolean saveChallan(@Valid TransChallan transChallan, Long jobCardId,
+    public JsonResponse saveChallan(@Valid TransChallan transChallan, Long jobCardId,
             List<NewPurchaseItemPayload> purchaseItem) {
+        JsonResponse res = new JsonResponse();
         try {
             Double noOfItems = 0D;
             for (NewPurchaseItemPayload newPurchaseItem : purchaseItem) {
@@ -619,11 +621,13 @@ public class StoreServiceBhaskor {
 
                 transItemPurchaseRepository.save(itemPurchase);
             }
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
+            res.setMessage("New Challan Saved Successfully");
+        } catch (Exception e) {
+            System.out.println("Exception : " + e.getMessage());
+            res.setMessage("Error saving new Challan");
         }
-
+        res.setResult(true);
+        return res;
     }
 
     public boolean checkIfChallanExist(String challanNo) {
@@ -771,6 +775,7 @@ public class StoreServiceBhaskor {
         List<TransChallan> challanList = transChallanRepository.findAllByTransBill_idAndIsDeleted(billId, false);
         for (TransChallan challan : challanList) {
             challan.setOrder(null);
+            challan.getTransBill().setOrder(null);
         }
         res.setPayload(challanList);
         if (challanList.isEmpty() || challanList.size() == 0) {
@@ -780,5 +785,14 @@ public class StoreServiceBhaskor {
         }
         res.setResult(true);
         return res;
+    }
+
+    public void closeOrder(Long orderId) {
+        Optional<TransJobCardItemOrder> orderOption = transJobCardItemOrderRepository.findById(orderId);
+        if (orderOption.isPresent()) {
+            TransJobCardItemOrder order = orderOption.get();
+            order.setOrderStatus(AppSettings.ORDER_STATUS_CLOSED);
+            transJobCardItemOrderRepository.save(order);
+        }
     }
 }

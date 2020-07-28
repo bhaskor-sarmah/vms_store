@@ -35,6 +35,7 @@ public class MasterVehicle extends Auditable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "model_name")
 	private String vehicleModel;
 
 	@NotBlank(message = "Registration Number is required")
@@ -45,7 +46,7 @@ public class MasterVehicle extends Auditable {
 	private MasterVehicleType vehicleType;
 
 	@ManyToOne
-	@JoinColumn(name = "fk_master_vehicle_category_id")
+	@JoinColumn(name = "category_id")
 	private MasterVehicleCategory vehicleCategory;
 
 	@ManyToOne
@@ -53,7 +54,7 @@ public class MasterVehicle extends Auditable {
 	private FuelType fuelType;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fk_mto_details_id")
+	@JoinColumn(name = "fk_mto_details")
 	private MasterMTODetails mto;
 
 	@NotNull(message = "Mileage is required")
@@ -75,4 +76,7 @@ public class MasterVehicle extends Auditable {
 	private String scrappedRemarks;
 
 	private String scrappedStatus;
+
+	@Column(columnDefinition = "varchar(255) default 'ACTIVE'")
+	private String vehicleStatus;
 }

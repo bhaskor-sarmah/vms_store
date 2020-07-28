@@ -442,9 +442,9 @@ public class StoreControllerBhaskor {
     // ========================================================================
     // GET CHALLAN ENTRY PAGE
     // ========================================================================
-    @PostMapping(value = "/vehicle/job-card/challanEntry")
-    public ModelAndView challanEntryPage(ModelAndView mv, @RequestParam("orderId") Long orderId,
-            @RequestParam("jobCardId") Long jobCardId) {
+    @RequestMapping(value = "/vehicle/job-card/{jobCardId}/{orderId}/challanEntry")
+    public ModelAndView challanEntryPage(ModelAndView mv, @PathVariable("orderId") Long orderId,
+            @PathVariable("jobCardId") Long jobCardId) {
         mv = new ModelAndView("store/challan_entry");
         mv.addObject("order", storeService.getOrderById(orderId));
         mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
@@ -471,13 +471,15 @@ public class StoreControllerBhaskor {
     // NEW CHALLAN ENTRY
     // ========================================================================
     @PostMapping(value = "/vehicle/job-card/newChallan")
-    public ModelAndView newChallan(ModelAndView mv, @Valid @ModelAttribute("challan") TransChallan transChallan,
-            BindingResult bindingResult, @RequestParam("jobCardId") Long jobCardId,
+    @ResponseBody
+    public ResponseEntity<JsonResponse> newChallan(ModelAndView mv,
+            @Valid @ModelAttribute("challan") TransChallan transChallan, BindingResult bindingResult,
+            @RequestParam("jobCardId") Long jobCardId,
             @RequestParam(value = "transVendorItemId[]") Long[] transVendorItemId,
             @RequestParam(value = "noOfItem[]") Double[] noOfItem,
             @RequestParam(value = "warrantyUpto[]") String[] warrantyUpto,
             @RequestParam(value = "quantityRemainingToReceive[]") Double[] quantityRemainingToReceive,
-            @RequestParam(value = "orderQuantity[]") Double[] orderQuantity) {
+            @RequestParam(value = "orderQuantity[]") Double[] orderQuantity) throws BindException {
 
         if (storeService.checkIfChallanExist(transChallan.getChallanNo())) {
             bindingResult.rejectValue("challanNo", "CustomError", "Challan No already exist !");
@@ -523,33 +525,14 @@ public class StoreControllerBhaskor {
             newPurchaseItemList.add(newPurchaseItem);
         }
         if (!bindingResult.hasErrors()) {
-            if (storeService.saveChallan(transChallan, jobCardId, newPurchaseItemList)) {
-                mv = new ModelAndView("store/challan_entry");
-                mv.addObject("order", storeService.getOrderById(transChallan.getOrder().getId()));
-                mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
-                mv.addObject("itemList",
-                        storeService.getItemListNotInChallanByOrderId(transChallan.getOrder().getId()));
-                mv.addObject("challan", new TransChallan());
-                mv.addObject("msgSuccess", "New Challan saved successfully !");
-                return mv;
+            JsonResponse res = storeService.saveChallan(transChallan, jobCardId, newPurchaseItemList);
+            if (res.getResult()) {
+                return ResponseEntity.ok(res);
             } else {
-                mv = new ModelAndView("store/challan_entry");
-                mv.addObject("order", storeService.getOrderById(transChallan.getOrder().getId()));
-                mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
-                mv.addObject("itemList",
-                        storeService.getItemListNotInChallanByOrderId(transChallan.getOrder().getId()));
-                mv.addObject("challan", new TransChallan());
-                mv.addObject("msgErr", "Some Error has ocurred !");
-                return mv;
+                throw new BadRequestException(res.getMessage());
             }
         } else {
-            mv = new ModelAndView("store/challan_entry");
-            mv.addObject("order", storeService.getOrderById(transChallan.getOrder().getId()));
-            mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
-            mv.addObject("itemList", storeService.getItemListNotInChallanByOrderId(transChallan.getOrder().getId()));
-            mv.addObject("challan", transChallan);
-            mv.addObject("msgErr", "There are validation error !");
-            return mv;
+            throw new BindException(bindingResult);
         }
     }
 
@@ -672,5 +655,18 @@ public class StoreControllerBhaskor {
         } else {
             throw new MyResourceNotFoundException(res.getMessage());
         }
+    }
+
+    // ========================================================================
+    // GET BILL ENTRY PAGE
+    // ========================================================================
+    @GetMapping(value = "/vehicle/job-card/{jobCardId}/closeOrder/{orderId}")
+    public ModelAndView closeOrder(ModelAndView mv, @PathVariable("orderId") Long orderId,
+            @PathVariable("jobCardId") Long jobCardId) {
+        mv = new ModelAndView("store/bill_entry");
+        storeService.closeOrder(orderId);
+        mv.addObject("order", storeService.getOrderById(orderId));
+        mv.addObject("transVehicleJobCard", storeService.getJobCardById(jobCardId));
+        return mv;
     }
 }

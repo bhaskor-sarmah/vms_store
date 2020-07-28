@@ -54,10 +54,15 @@
                                 <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}"
                                     th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
                                 <li class="breadcrumb-item">
-                                    Job Card : #<span class="text-success" th:text="${transVehicleJobCard.id}"></span>
+                                    <a th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__}">
+                                        Job Card : #<span class="text-success"
+                                            th:text="${transVehicleJobCard.id}"></span>
+                                    </a>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    Vendor Order
+                                    <a th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/vendor-order}">
+                                        Vendor Order
+                                    </a>
                                 </li>
                                 <li class="breadcrumb-item">
                                     Order Id - <span th:text="${order.id}"></span>
@@ -73,7 +78,12 @@
                                                 <h4>Order Details</h4>
                                             </div>
                                             <div class="col-6">
-                                                <a class="btn btn-success p-2 float-right" style="color: white;"
+                                                <a th:if="${order.orderStatus == 'CLOSED'}"
+                                                    class="btn btn-danger p-2 float-right" style="color: white;"
+                                                    th:href="@{/store/vehicle/job-card/getBill/__${transVehicleJobCard.id}__/__${order.id}__}">VIEW
+                                                    BILLS</a>
+                                                <a th:if="${order.orderStatus != 'CLOSED'}"
+                                                    class="btn btn-success p-2 float-right" style="color: white;"
                                                     th:href="@{/store/vehicle/job-card/getBill/__${transVehicleJobCard.id}__/__${order.id}__}">BILL
                                                     ENTRY</a>
                                             </div>
@@ -123,8 +133,15 @@
                                                         <h5>Order Status</h5>
                                                     </div>
                                                     <div class="col-6">
-                                                        <h5>: <span th:text="${order.orderStatus}"></span>
-                                                        </h5>
+                                                        <span th:if="${order.orderStatus != 'CLOSED'}">
+                                                            <h5>: <span th:text="${order.orderStatus}"></span>
+                                                            </h5>
+                                                        </span>
+                                                        <span th:if="${order.orderStatus == 'CLOSED'}">
+                                                            <h5>: <span th:text="${order.orderStatus}"
+                                                                    class="text-danger"></span>
+                                                            </h5>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -158,7 +175,8 @@
                                                             </div>
                                                             <div class="col-4"></div>
                                                             <div class="col-4">
-                                                                <a class="btn btn-primary p-1 float-right" href="#"
+                                                                <a th:if="${order.orderStatus != 'CLOSED'}"
+                                                                    class="btn btn-primary p-1 float-right" href="#"
                                                                     data-target="#modalChallan" data-toggle="modal">Add
                                                                     New Challan</a>
                                                             </div>
@@ -193,11 +211,9 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="form-challan" th:action="@{/store/vehicle/job-card/newChallan}" method="POST"
-                    th:object="${challan}" autocomplete="off">
+                <form id="form-challan" autocomplete="off">
                     <div class="modal-body">
-                        <input type="hidden" class="form-control" id="order.id" th:name="order.id" th:id="order.id"
-                            th:value="${order.id}">
+                        <input type="hidden" class="form-control" name="order.id" id="order.id" th:value="${order.id}">
                         <input type="hidden" class="form-control" id="jobCardId" name="jobCardId"
                             th:value="${transVehicleJobCard.id}">
                         <div class="row">
@@ -205,24 +221,15 @@
                                 <div class="form-group">
                                     <label for="exampleFormControlInput1">Challan No</label>
                                     <input type="text" class="form-control" id="challanNo"
-                                        placeholder="Enter Challan No" th:field="*{challanNo}">
-                                    <span th:if="${#fields.hasErrors('challanNo')}"
-                                  th:errors="*{challanNo}"
-                                  class="error-message"
-                                  ></span>
+                                        placeholder="Enter Challan No" name="challanNo">
                                 </div>
-                                
+
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
                                     <label for="exampleFormControlInput1">Challan Date</label>
                                     <input type="text" class="form-control" id="challanDate" placeholder="dd/mm/yyyy"
-                                        th:field="*{challanDate}">
-                                        
-                                <span th:if="${#fields.hasErrors('challanDate')}"
-                                th:errors="*{challanDate}"
-                                class="error-message"
-                                ></span>
+                                        name="challanDate">
                                 </div>
                             </div>
                         </div>
@@ -232,10 +239,7 @@
                                 <h5>List Of Item</h5>
                             </div>
                             <div class="col-12 text-center">
-                                <span th:if="${#fields.hasErrors('noOfItems')}"
-                                  th:errors="*{noOfItems}"
-                                  class="error-message"
-                                  ></span>
+                                <div id="noOfItemError"></div>
                                 <table id="table-order-items" class="display table">
                                     <thead class="text-center">
                                         <tr>
@@ -265,7 +269,8 @@
                                                 <input type="number" class="form-control" name="noOfItem[]">
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control warranty-upto" name="warrantyUpto[]" th:id="'warrantyUpto_' + ${iter.count}">
+                                                <input type="text" class="form-control warranty-upto"
+                                                    name="warrantyUpto[]" th:id="'warrantyUpto_' + ${iter.count}">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -285,23 +290,23 @@
 
     <!-- Modal Item-->
     <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xlg modal-dialog-scrollable" role="document">
-        <div class="modal-content" style="padding-left: 20px;padding-right: 20px;">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-car"></i> View Challan Items</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="item-div">
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        aria-hidden="true">
+        <div class="modal-dialog modal-xlg modal-dialog-scrollable" role="document">
+            <div class="modal-content" style="padding-left: 20px;padding-right: 20px;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-car"></i> View Challan Items</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="item-div">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
-    </div>
     </div>
     <th:block th:replace="fragments/logged_fragments :: logged-js-scripts"></th:block>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
@@ -313,6 +318,12 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         var orderId = /*[[${order.id}]]*/ '0';
+        /*]]>*/
+        /*<![CDATA[*/
+        var jobCardId = /*[[${transVehicleJobCard.id}]]*/ '0';
+        /*]]>*/
+        /*<![CDATA[*/
+        var orderStatus = /*[[${order.orderStatus}]]*/ '';
          /*]]>*/
     </script>
     <script>
@@ -352,7 +363,80 @@
             });
 
             $(document).on('submit', '#form-challan', function (e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you submit the form ?',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: contextPath + "store/vehicle/job-card/newChallan",
+                                timeout: 600000,
+                                beforeSend: function () {
+                                    $("#modalChallan").block({
+                                        message: '<h3>Processing...</h3>',
+                                        css: {
+                                            border: '3px solid darkgrey'
+                                        }
+                                    });
+                                },
+                                data: $("#form-challan").serialize(),
+                                success: function (response) {
+                                    $('#form-challan').trigger('reset');
 
+                                    $.confirm({
+                                        title: 'Success!',
+                                        content: "Challan Saved Successfully",
+                                        type: 'green',
+                                        typeAnimated: true,
+                                        buttons: {
+                                            ok: function () {
+                                                $("#modalChallan").block({
+                                                    message: '<h3>Processing...</h3>',
+                                                    css: {
+                                                        border: '3px solid darkgrey'
+                                                    }
+                                                });
+                                                window.location.replace(contextPath + "store/vehicle/job-card/" + jobCardId + "/" + orderId + "/challanEntry");
+                                            }
+                                        }
+                                    });
+                                },
+                                error: function (e) {
+                                    if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
+                                        .responseJSON.errorMessages != null) {
+                                        $.each(e.responseJSON.errorMessages, function (key,
+                                            value) {
+                                            $("#form-challan").contents().find(
+                                                '[name=' + key + ']').after(
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
+                                            if (key === 'noOfItems') {
+                                                $("#noOfItemError").html('<span class="error-message">' +
+                                                    value + '</span>');
+                                            }
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: e.responseJSON.httpStatus,
+                                            content: e.responseJSON.message,
+                                            type: 'red',
+                                            typeAnimated: true
+                                        });
+                                    }
+                                },
+                                complete: function () {
+                                    $("#modalChallan").unblock();
+                                }
+                            });
+                        },
+                        cancel: function () { }
+                    }
+                });
             });
 
             //DELETE ITEM
@@ -387,7 +471,13 @@
                                 buttons: {
                                     ok: function () {
                                         ajax_return.done(function (message) {
-                                            getChallanList();
+                                            $('#body').block({
+                                                message: '<h3>Processing...</h3>',
+                                                css: {
+                                                    border: '3px solid darkgrey'
+                                                }
+                                            });
+                                            window.location.replace(contextPath + "store/vehicle/job-card/" + jobCardId + "/" + orderId + "/challanEntry");
                                         })
                                     }
                                 }
@@ -496,18 +586,33 @@
                             "targets": [0, 1, 2, 3, 4, 5]
                         }]
                     });
-                    $.each(response.payload, function (key, challan) {
-                        tablechallans.row.add([
-                            `<b>${key + 1}</b>`,
-                            `${challan.challanNo}`,
-                            `${challan.challanDate}`,
-                            `${challan.noOfItems}`,
-                            `${challan.totalQuantity}`,
-                            `${challan.transBill.billNo}`,
-                            `<a class="btn btn-danger p-1 delete-challan" data-challan-id="${challan.id}" href="javascript:void(0)">DELETE</a>`,
-                            `<a class="btn btn-primary p-1 w-100" href="#modalItem" data-toggle="modal" data-challan-id="${challan.id}">View Items</a>`
-                        ]).draw(false);
-                    });
+                    if (orderStatus === 'CLOSED') {
+                        $.each(response.payload, function (key, challan) {
+                            tablechallans.row.add([
+                                `<b>${key + 1}</b>`,
+                                `${challan.challanNo}`,
+                                `${challan.challanDate}`,
+                                `${challan.noOfItems}`,
+                                `${challan.totalQuantity}`,
+                                `${challan.transBill.billNo}`,
+                                `<a class="btn btn-primary p-1 w-100" href="#modalItem" data-toggle="modal" data-challan-id="${challan.id}">View Items</a>`,
+                                ``
+                            ]).draw(false);
+                        });
+                    } else {
+                        $.each(response.payload, function (key, challan) {
+                            tablechallans.row.add([
+                                `<b>${key + 1}</b>`,
+                                `${challan.challanNo}`,
+                                `${challan.challanDate}`,
+                                `${challan.noOfItems}`,
+                                `${challan.totalQuantity}`,
+                                `${challan.transBill.billNo}`,
+                                `<a class="btn btn-danger p-1 delete-challan" data-challan-id="${challan.id}" href="javascript:void(0)">DELETE</a>`,
+                                `<a class="btn btn-primary p-1 w-100" href="#modalItem" data-toggle="modal" data-challan-id="${challan.id}">View Items</a>`
+                            ]).draw(false);
+                        });
+                    }
                 },
                 error: function (e) {
                     console.log(e);

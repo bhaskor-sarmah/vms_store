@@ -29,4 +29,8 @@ public class AppSettings {
     public static final String TRANS_BILL_STATUS_RECEIVED = "RECEIVED";
     public static final String TRANS_BILL_STATUS_APPROVED = "APPROVED";
     public static final String TRANS_BILL_STATUS_PAID = "PAID";
+
+    public static final String MASTER_VEHICLE_STATUS_ACTIVE = "ACTIVE";
+    public static final String MASTER_VEHICLE_STATUS_MAINTENANCE = "MAINTENANCE";
+    public static final String MASTER_VEHICLE_STATUS_SCRAP = "SCRAP";
 }

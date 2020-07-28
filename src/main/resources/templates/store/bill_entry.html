@@ -54,13 +54,21 @@
                                 <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}"
                                     th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
                                 <li class="breadcrumb-item">
-                                    Job Card : #<span class="text-success" th:text="${transVehicleJobCard.id}"></span>
+                                    <a th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__}">
+                                        Job Card : #<span class="text-success"
+                                            th:text="${transVehicleJobCard.id}"></span>
+                                    </a>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    Vendor Order
+                                    <a th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/vendor-order}">
+                                        Vendor Order
+                                    </a>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    Order Id - <span th:text="${order.id}"></span>
+                                    <a
+                                        th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/__${order.id}__/challanEntry}">
+                                        Order Id - <span th:text="${order.id}"></span>
+                                    </a>
                                 </li>
                             </ol>
                         </nav>
@@ -73,7 +81,9 @@
                                                 <h4>Order Details</h4>
                                             </div>
                                             <div class="col-6">
-                                                <a class="btn btn-danger p-2 float-right" style="color: white;">CLOSE
+                                                <a th:if="${order.orderStatus != 'CLOSED'}" class="btn btn-danger p-2
+                                                    float-right" style="color: white;"
+                                                    th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__/closeOrder/__${order.id}__}">CLOSE
                                                     ORDER</a>
                                             </div>
                                         </div>
@@ -122,8 +132,15 @@
                                                         <h5>Order Status</h5>
                                                     </div>
                                                     <div class="col-6">
-                                                        <h5>: <span th:text="${order.orderStatus}"></span>
-                                                        </h5>
+                                                        <span th:if="${order.orderStatus != 'CLOSED'}">
+                                                            <h5>: <span th:text="${order.orderStatus}"></span>
+                                                            </h5>
+                                                        </span>
+                                                        <span th:if="${order.orderStatus == 'CLOSED'}">
+                                                            <h5>: <span th:text="${order.orderStatus}"
+                                                                    class="text-danger"></span>
+                                                            </h5>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -156,7 +173,8 @@
                                                             </div>
                                                             <div class="col-4"></div>
                                                             <div class="col-4">
-                                                                <a class="btn btn-primary p-1 float-right" href="#"
+                                                                <a th:if="${order.orderStatus != 'CLOSED'}"
+                                                                    class="btn btn-primary p-1 float-right" href="#"
                                                                     data-target="#modalBill" data-toggle="modal">Add
                                                                     New Bill</a>
                                                             </div>
@@ -268,6 +286,9 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         var orderId = /*[[${order.id}]]*/ '0';
+        /*]]>*/
+        /*<![CDATA[*/
+        var orderStatus = /*[[${order.orderStatus}]]*/ '';
          /*]]>*/
     </script>
     <script>
@@ -362,7 +383,7 @@
                                 url: contextPath + "store/vehicle/job-card/addBill",
                                 timeout: 600000,
                                 beforeSend: function () {
-                                    $('body').block({
+                                    $("#modalBill").block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
                                             border: '3px solid darkgrey'
@@ -404,7 +425,7 @@
                                     }
                                 },
                                 complete: function () {
-                                    $('body').unblock();
+                                    $("#modalBill").unblock();
                                 }
                             });
                         },
@@ -552,16 +573,31 @@
                             "targets": [0, 1, 2, 3, 4]
                         }]
                     });
-                    $.each(response.payload, function (key, bill) {
-                        tablebills.row.add([
-                            `<b>${key + 1}</b>`,
-                            `${bill.billNo}`,
-                            `${bill.billDate}`,
-                            `${bill.billAmount}`,
-                            `<a class="btn btn-danger p-1 delete-bill" data-bill-id="${bill.id}" href="javascript:void(0)">DELETE</a>`,
-                            `<a class="btn btn-primary p-1 w-100" href="#modalChallan" data-toggle="modal" data-bill-id="${bill.id}">View Challans</a>`
-                        ]).draw(false);
-                    });
+                    if (orderStatus === 'CLOSED') {
+                        $.each(response.payload, function (key, bill) {
+
+                            tablebills.row.add([
+                                `<b>${key + 1}</b>`,
+                                `${bill.billNo}`,
+                                `${bill.billDate}`,
+                                `${bill.billAmount}`,
+                                `<a class="btn btn-primary p-1 w-100" href="#modalChallan" data-toggle="modal" data-bill-id="${bill.id}">View Challans</a>`,
+                                ``
+                            ]).draw(false);
+                        });
+                    } else {
+                        $.each(response.payload, function (key, bill) {
+
+                            tablebills.row.add([
+                                `<b>${key + 1}</b>`,
+                                `${bill.billNo}`,
+                                `${bill.billDate}`,
+                                `${bill.billAmount}`,
+                                `<a class="btn btn-danger p-1 delete-bill" data-bill-id="${bill.id}" href="javascript:void(0)">DELETE</a>`,
+                                `<a class="btn btn-primary p-1 w-100" href="#modalChallan" data-toggle="modal" data-bill-id="${bill.id}">View Challans</a>`
+                            ]).draw(false);
+                        });
+                    }
                 },
                 error: function (e) {
                     console.log(e);

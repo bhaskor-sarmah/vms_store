@@ -137,9 +137,9 @@
                                                                     </span>
                                                                     <span  th:case="'PLACED'" th:id="'divDownloadPdf_' + ${iter.count}">
                                                                         <!-- <a class="btn btn-success p-1 w-100" th:href="@{/store/vehicle/job-card/challanEntry/order.orderId}"></a> -->
-                                                                        <form method="POST" class="challanEntryForm" th:id="'challanEntryForm_' + ${iter.count}" th:action="@{/store/vehicle/job-card/challanEntry}">
-                                                                            <input type="hidden" name="orderId" th:value="${order.orderId}" th:id="'order_' + ${iter.count}">
-                                                                            <input type="hidden" name="jobCardId" th:value="${order.jobCardId}">
+                                                                        <form method="POST" class="challanEntryForm" th:id="'challanEntryForm_' + ${iter.count}" th:action="@{/store/vehicle/job-card/__${order.jobCardId}__/__${order.orderId}__/challanEntry}">
+                                                                            <!-- <input type="hidden" name="orderId" th:value="${order.orderId}" th:id="'order_' + ${iter.count}">
+                                                                            <input type="hidden" name="jobCardId" th:value="${order.jobCardId}"> -->
                                                                             <button type="submit" name="submit" class="btn btn-success p-1 w-100">
                                                                                 Challan Entry
                                                                             </button>
@@ -154,9 +154,19 @@
                                                                             </button>
                                                                         </form>
                                                                     </span>
+                                                                    <span  th:case="'CLOSED'" th:id="'divDownloadPdf_' + ${iter.count}">
+                                                                        <!-- <a class="btn btn-success p-1 w-100" th:href="@{/store/vehicle/job-card/challanEntry/order.orderId}"></a> -->
+                                                                        <form method="POST" class="challanEntryForm" th:id="'challanEntryForm_' + ${iter.count}" th:action="@{/store/vehicle/job-card/__${order.jobCardId}__/__${order.orderId}__/challanEntry}">
+                                                                            <!-- <input type="hidden" name="orderId" th:value="${order.orderId}" th:id="'order_' + ${iter.count}">
+                                                                            <input type="hidden" name="jobCardId" th:value="${order.jobCardId}"> -->
+                                                                            <button type="submit" name="submit" class="btn btn-warning p-1 w-100">
+                                                                                View Challans
+                                                                            </button>
+                                                                        </form>
+                                                                    </span>
                                                                     
-                                                                    <a th:case="'RECEIVED'" class="btn btn-success p-1 w-100" th:href="@{/}">Generate Order</a>
-                                                                    <a th:case="'CLOSED'" class="btn btn-success p-1 w-100" th:href="@{/}">Generate Order</a>
+                                                                    <!-- <a th:case="'RECEIVED'" class="btn btn-success p-1 w-100" th:href="@{/}">Generate Order</a> -->
+                                                                    <!-- <a th:case="'CLOSED'" class="btn btn-success p-1 w-100" th:href="@{/}">Generate Order</a> -->
                                                                 </span>
                                                             </td>
                                                             <td th:text="${order.status}" th:id="'status_' + ${iter.count}"></td>
@@ -411,7 +421,21 @@
                         // $("#" + formId).remove();
                         // $("#div_" + id).html("Approval Pending");
                         $("#status_" + id).html("PLACED");
-                        window.location.href = contextPath + "store/vehicle/job-card/downloadOrderPdf/" + orderId;
+
+                        var a = document.createElement('a');
+                        a.href = contextPath + "store/vehicle/job-card/downloadOrderPdf/" + orderId;
+                        document.body.appendChild(a);
+                        a.addEventListener("click", function (evt) {
+                            // Stop the link from doing what it would normally do.
+                            evt.preventDefault();
+                            // Open the file download in a new window. (It should just
+                            // show a normal file dialog)
+                            window.open(this.href, "_blank");
+                            // Then redirect the page you are on to whatever page you
+                            // want shown once the download has been triggered.
+                            window.location.href = contextPath + "store/vehicle/job-card/" + jobCardId + "/vendor-order";
+                        }, true);
+                        a.click();
                     },
                     error: function (e) {
                         if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
