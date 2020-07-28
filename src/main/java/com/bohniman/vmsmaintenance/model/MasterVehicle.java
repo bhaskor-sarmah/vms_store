@@ -49,8 +49,8 @@ public class MasterVehicle extends Auditable {
 	private MasterVehicleCategory vehicleCategory;
 
 	@ManyToOne
-	@JoinColumn(name = "fk_master_fuel_type_id")
-	private MasterFuelType fuelType;
+	@JoinColumn(name = "fuel_type_id")
+	private FuelType fuelType;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fk_mto_details_id")

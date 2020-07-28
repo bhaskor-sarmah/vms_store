@@ -23,7 +23,7 @@ public class MasterVehicleType {
 	private Long vehicleTypeId;
 
 	@NotBlank(message = "Vehicle type name required")
-	private String title;
+	private String vehicleType;
 
 	@Column(columnDefinition = "tinyint(1) default 1")
 	private Boolean status = true;

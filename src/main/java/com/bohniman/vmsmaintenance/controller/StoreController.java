@@ -11,8 +11,8 @@ import javax.validation.Valid;
 
 import com.bohniman.vmsmaintenance.exception.BadRequestException;
 import com.bohniman.vmsmaintenance.exception.MyResourceNotFoundException;
+import com.bohniman.vmsmaintenance.model.FuelType;
 import com.bohniman.vmsmaintenance.model.MasterBrand;
-import com.bohniman.vmsmaintenance.model.MasterFuelType;
 import com.bohniman.vmsmaintenance.model.MasterItem;
 import com.bohniman.vmsmaintenance.model.MasterItemBrand;
 import com.bohniman.vmsmaintenance.model.MasterRack;
@@ -390,7 +390,7 @@ public class StoreController {
         mv.addObject("vehicleCategoryList", vehicleCategoryList);
         List<MasterVehicleType> vehicleTypeList = storeService.getAllVehicleTypeList();
         mv.addObject("vehicleTypeList", vehicleTypeList);
-        List<MasterFuelType> fuelTypeList = storeService.getAllFuelTypeList();
+        List<FuelType> fuelTypeList = storeService.getAllFuelTypeList();
         mv.addObject("fuelTypeList", fuelTypeList);
 
         return mv;
@@ -404,15 +404,13 @@ public class StoreController {
     public ResponseEntity<JsonResponse> addVehicle(@Valid @ModelAttribute MasterVehicle masterVehicle,
             BindingResult bindingResult) throws BindException {
 
-                
-        if (Objects.equals(masterVehicle.getFuelType().getFuelTypeId(), null)) {
-                bindingResult.rejectValue("fuelType.fuelTypeId", "error.fuelType.fuelTypeId",
-                        " * Please select fuel type");
+        if (Objects.equals(masterVehicle.getFuelType().getId(), null)) {
+            bindingResult.rejectValue("fuelType.fuelTypeId", "error.fuelType.fuelTypeId", " * Please select fuel type");
         }
         if (Objects.equals(masterVehicle.getVehicleCategory().getVehicleCategoryId(), null)) {
             bindingResult.rejectValue("vehicleCategory.vehicleCategoryId", "error.vehicleCategory.vehicleCategoryId",
                     " * Please select category");
-    }
+        }
         // FOR NEW VEHICLE
         if (Objects.equals(masterVehicle.getId(), null)) {
             Boolean vehicleExists = storeService
@@ -501,7 +499,7 @@ public class StoreController {
         mv.addObject("vehicleCategoryList", vehicleCategoryList);
         List<MasterVehicleType> vehicleTypeList = storeService.getAllVehicleTypeList();
         mv.addObject("vehicleTypeList", vehicleTypeList);
-        List<MasterFuelType> fuelTypeList = storeService.getAllFuelTypeList();
+        List<FuelType> fuelTypeList = storeService.getAllFuelTypeList();
         mv.addObject("fuelTypeList", fuelTypeList);
         return mv;
     }
@@ -641,7 +639,6 @@ public class StoreController {
 
         return mv;
     }
-    
 
     // TO BE DELETED
     // ========================================================================
@@ -783,7 +780,8 @@ public class StoreController {
 
         mv = new ModelAndView("store/job_card_home");
 
-        List<TransVehicleJobCard> jobCards = storeService.getJobCardsByDateRange(calendarFrom.getTime(), calendarTo.getTime());
+        List<TransVehicleJobCard> jobCards = storeService.getJobCardsByDateRange(calendarFrom.getTime(),
+                calendarTo.getTime());
         mv.addObject("jobCards", jobCards);
         mv.addObject("dateFrom", dateFrom);
         mv.addObject("dateTo", dateTo);
@@ -1109,9 +1107,10 @@ public class StoreController {
             @Valid @ModelAttribute TransVehicleInventory transVehicleInventory, BindingResult bindingResult)
             throws BindException {
 
-                if (Objects.equals(transVehicleInventory.getVehicle_inventory(), null)
+        if (Objects.equals(transVehicleInventory.getVehicle_inventory(), null)
                 || Objects.equals(transVehicleInventory.getVehicle_inventory().getId(), 0L)) {
-            bindingResult.rejectValue("vehicle_inventory.id", "error.vehicle_inventory.id", " * Please select an item.");
+            bindingResult.rejectValue("vehicle_inventory.id", "error.vehicle_inventory.id",
+                    " * Please select an item.");
         }
         if (Objects.equals(transVehicleInventory.getQuantity(), null)
                 || Objects.equals(transVehicleInventory.getQuantity(), 0.00)) {
@@ -1149,11 +1148,11 @@ public class StoreController {
             @Valid @ModelAttribute TransVehicleInventory transVehicleInventory, BindingResult bindingResult)
             throws BindException {
 
-                
         // if (Objects.equals(transVehicleInventory.getQuantity(), null)
-        //         || Objects.equals(transVehicleInventory.getQuantity(), 0.00)) {
-        //     bindingResult.rejectValue("quantity", "error.quantity", " * Quantity cannot be blank or 0");
-        // } 
+        // || Objects.equals(transVehicleInventory.getQuantity(), 0.00)) {
+        // bindingResult.rejectValue("quantity", "error.quantity", " * Quantity cannot
+        // be blank or 0");
+        // }
 
         if (!bindingResult.hasErrors()) {
             JsonResponse res = storeService.removeInventoryItemFromVehicle(transVehicleInventory);
@@ -1206,7 +1205,6 @@ public class StoreController {
     public ResponseEntity<JsonResponse> issueItemsToJobCard(
             @Valid @ModelAttribute JobCardIssueItemPurchasePayload itemPayload, BindingResult bindingResult)
             throws BindException {
-                
 
         if (!bindingResult.hasErrors()) {
             JsonResponse res = storeService.issueItemsToJobCard(itemPayload);
@@ -1311,7 +1309,6 @@ public class StoreController {
 
         TransVehicleJobCard transVehicleJobCard = storeServiceBhaskor.getJobCardById(jobCardId);
         mv.addObject("transVehicleJobCard", transVehicleJobCard);
-
 
         List<TransVendorItem> transVendorItemList = storeService.getAllVendorItemsForJobCard();
         mv.addObject("transVendorItemList", transVendorItemList);

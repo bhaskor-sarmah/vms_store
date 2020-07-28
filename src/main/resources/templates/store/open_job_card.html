@@ -22,16 +22,20 @@
                     <div class="col-md-9">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
+                                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item"><a th:href="@{/store/vehicle}">Vehicle</a></li>
-                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}" th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
+                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard != null}"
+                                    th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></li>
                                 <li class="breadcrumb-item" th:if="${transVehicleJobCard.status == 'INITIATED'}">
                                     OPEN JOB CARD
                                 </li>
                                 <li class="breadcrumb-item" th:if="${transVehicleJobCard.status != 'INITIATED'}">
                                     EDIT JOB CARD
                                 </li>
-                                <li class="breadcrumb-item text-success" th:if="${transVehicleJobCard.status != 'INITIATED'}" th:text="${'#'+transVehicleJobCard.id}">
+                                <li class="breadcrumb-item text-success"
+                                    th:if="${transVehicleJobCard.status != 'INITIATED'}"
+                                    th:text="${'#'+transVehicleJobCard.id}">
 
                                 </li>
                             </ol>
@@ -42,19 +46,31 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-3">
-                                                <h4 th:if="${transVehicleJobCard.status == 'INITIATED'}"><i class="fas fa-credit-card"></i> Open Job Card</h4>
-                                                <h4 th:if="${transVehicleJobCard.status != 'INITIATED'}"><i class="fas fa-credit-card"></i> Edit Job Card</h4>
-                                            </div>
-                                            <div class="col-3">
-                                                <h4><span class="badge badge-success p-2">Regn. No : <span th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span></span>
+                                                <h4 th:if="${transVehicleJobCard.status == 'INITIATED'}"><i
+                                                        class="fas fa-credit-card"></i> Open Job Card</h4>
+                                                <h4 th:if="${transVehicleJobCard.status != 'INITIATED'}"><i
+                                                        class="fas fa-credit-card"></i> Edit Job Card
                                                 </h4>
                                             </div>
                                             <div class="col-3">
-                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW VEHICLE</a>
+                                                <h4><span class="badge badge-success p-2">Regn. No : <span
+                                                            th:text="${transVehicleJobCard.masterVehicle.vehicleRegistrationNo}"></span></span>
+                                                </h4>
                                             </div>
                                             <div class="col-3">
-                                                <a class="btn btn-primary p-2 float-right" href="javascript:void(0)" id="btn-open-job-card" th:if="${transVehicleJobCard.status == 'INITIATED'}">OPEN JOB CARD</a>
-                                                <a class="btn btn-primary p-2 float-right" th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__}" ith:if="${transVehicleJobCard.status != 'INITIATED'}">EDIT COMPLETE</a>
+                                                <a class="btn btn-primary p-2 float-right"
+                                                    th:href="@{/store/vehicle/__${transVehicleJobCard.masterVehicle.id}__}">VIEW
+                                                    VEHICLE</a>
+                                            </div>
+                                            <div class="col-3">
+                                                <a class="btn btn-primary p-2 float-right" href="javascript:void(0)"
+                                                    id="btn-open-job-card"
+                                                    th:if="${transVehicleJobCard.status == 'INITIATED'}">OPEN JOB
+                                                    CARD</a>
+                                                <a class="btn btn-primary p-2 float-right"
+                                                    th:href="@{/store/vehicle/job-card/__${transVehicleJobCard.id}__}"
+                                                    th:if="${transVehicleJobCard.status != 'INITIATED'}">EDIT
+                                                    COMPLETE</a>
                                             </div>
                                         </div>
                                     </div>
@@ -64,7 +80,8 @@
                                                 <h5>List of Items Added</h5>
                                             </div>
                                             <div class="col-4">
-                                                <a class="btn btn-primary p-2 float-right" href="#modalItem" data-toggle="modal">+ ADD ITEMS</a>
+                                                <a class="btn btn-primary p-2 float-right" href="#modalItem"
+                                                    data-toggle="modal">+ ADD ITEMS</a>
                                             </div>
                                         </div>
                                         <div class="row mt-2">
@@ -88,11 +105,13 @@
         </div>
     </main>
     <!-- Modal Item-->
-    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xlg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-cubes"></i> Assign Items to Job Card</h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-cubes"></i> Assign Items to Job Card
+                    </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -206,7 +225,7 @@
         var vehicleId = /*[[${transVehicleJobCard.masterVehicle.id}]]*/ '';
         var jobCardId = /*[[${transVehicleJobCard.id}]]*/ '';
 
-        $(function() {
+        $(function () {
             $('#side-link-vehicle').addClass('list-group-item-secondary');
 
             $('#tableItem').DataTable();
@@ -214,7 +233,7 @@
             getJobCardItemList();
 
             // ADD ITEM
-            $(document).on("show.bs.modal", "#modalAddItem", function(e) {
+            $(document).on("show.bs.modal", "#modalAddItem", function (e) {
                 $('#modalAddItemHeader').html(e.relatedTarget.dataset.itemName);
                 $('#addItemName').html(": " + e.relatedTarget.dataset.itemName);
                 $('#addMoq').html(": " + e.relatedTarget.dataset.moq + " " + e.relatedTarget.dataset.itemUnit);
@@ -224,13 +243,13 @@
             });
 
             // REMOVE ITEM
-            $(document).on("click", ".remove-item", function(e) {
+            $(document).on("click", ".remove-item", function (e) {
                 let rowId = e.target.dataset.rowId;
                 $(`#table-items tbody #item-${rowId}`).remove();
             });
 
             // ADD ITEM
-            $(document).on("submit", "#form-add-item", function(e) {
+            $(document).on("submit", "#form-add-item", function (e) {
                 e.preventDefault();
                 $('#item-error').html("");
                 let form = $(this)[0]; // You need to use standard javascript object here
@@ -241,12 +260,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/vehicle/job-card/add-item",
                                 timeout: 600000,
-                                beforeSend: function() {
+                                beforeSend: function () {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -257,7 +276,7 @@
                                 data: formData,
                                 contentType: false,
                                 processData: false,
-                                success: function(response) {
+                                success: function (response) {
                                     $.alert({
                                         title: 'Success!',
                                         content: "Item Added Successfully",
@@ -267,10 +286,10 @@
                                     getJobCardItemList();
                                     $('#modalAddItem').modal('hide');
                                 },
-                                error: function(e) {
+                                error: function (e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function(key,
+                                        $.each(e.responseJSON.errorMessages, function (key,
                                             value) {
                                             $("#item-error").append(
                                                 '<span class="error-message">' +
@@ -285,18 +304,18 @@
                                         });
                                     }
                                 },
-                                complete: function() {
+                                complete: function () {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
 
             // OPEN JOB CARD
-            $(document).on("click", "#btn-open-job-card", function(e) {
+            $(document).on("click", "#btn-open-job-card", function (e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -305,12 +324,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function() {
+                        confirm: function () {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/vehicle/job-card/open",
                                 timeout: 600000,
-                                beforeSend: function() {
+                                beforeSend: function () {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -322,28 +341,28 @@
                                     "vehicleId": vehicleId,
                                     "jobCardId": jobCardId
                                 },
-                                success: function(response) {
+                                success: function (response) {
                                     $.confirm({
                                         title: 'Success!',
                                         content: "Job Card Opened Successfully",
                                         type: 'green',
                                         typeAnimated: true,
                                         buttons: {
-                                            ok: function() {
+                                            ok: function () {
                                                 window.location.replace(contextPath + "store/vehicle/job-card/" + response.payload);
                                             }
                                         }
                                     });
                                 },
-                                error: function(e) {
+                                error: function (e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function(key,
+                                        $.each(e.responseJSON.errorMessages, function (key,
                                             value) {
                                             $("#form-job-card").contents().find(
                                                 '[name=' + key + ']').after(
-                                                '<span class="error-message">' +
-                                                value + '</span>');
+                                                    '<span class="error-message">' +
+                                                    value + '</span>');
                                             $('#' + key).html(
                                                 '<span class="error-message">' +
                                                 value + '</span>');
@@ -357,12 +376,12 @@
                                         });
                                     }
                                 },
-                                complete: function() {
+                                complete: function () {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function() {}
+                        cancel: function () { }
                     }
                 });
             });
@@ -374,7 +393,7 @@
                 type: "GET",
                 url: contextPath + "store/vehicle/job-card/get-all-items/" + jobCardId,
                 timeout: 600000,
-                beforeSend: function() {
+                beforeSend: function () {
                     $('body').block({
                         message: '<h3>Please wait...</h3>',
                         css: {
@@ -382,7 +401,7 @@
                         }
                     });
                 },
-                success: function(response) {
+                success: function (response) {
                     var content = `
                         <table id="table-job-card-items" class="table table-bordered" style="width:100%">
                             <thead class="text-center text-uppercase">
@@ -403,7 +422,7 @@
 
 
                     let total = 0;
-                    $.each(response.payload, function(key, item) {
+                    $.each(response.payload, function (key, item) {
                         $('#table-job-card-items').append(`
                                 <tr>
                                     <th>${key + 1}</th>
@@ -421,17 +440,17 @@
 
                     $('#div-total').html(`<b>TOTAL AMOUNT : Rs. ${total.toFixed(2)}</b>`);
                 },
-                error: function(e) {
+                error: function (e) {
                     console.log(e);
                 },
-                complete: function() {
+                complete: function () {
                     $('body').unblock();
                 }
             });
         }
 
         //REMOVE ITEM
-        $(document).on('click', '.remove-item', function(e) {
+        $(document).on('click', '.remove-item', function (e) {
             e.preventDefault();
             var ajax_return;
             let jobCardItemId = e.target.dataset.jobCardItemId;
@@ -441,19 +460,19 @@
                 type: 'red',
                 typeAnimated: true,
                 buttons: {
-                    confirm: function() {
+                    confirm: function () {
                         $.confirm({
-                            content: function() {
+                            content: function () {
                                 var self = this;
                                 return ajax_return = $.ajax({
                                     type: "DELETE",
                                     url: contextPath + "store/vehicle/job-card-item/delete/" + jobCardItemId
-                                }).done(function(response) {
+                                }).done(function (response) {
                                     self.setTitle("Success!");
                                     self.setType("green");
                                     self.setContent(response.message);
                                     getJobCardItemList();
-                                }).fail(function(e) {
+                                }).fail(function (e) {
                                     self.setTitle(e.responseJSON.httpStatus);
                                     self.setType("red");
                                     self.setContent("ERROR");
@@ -461,15 +480,15 @@
                                 return true;
                             },
                             buttons: {
-                                ok: function() {
-                                    ajax_return.done(function(message) {
+                                ok: function () {
+                                    ajax_return.done(function (message) {
                                         getBrandList();
                                     })
                                 }
                             }
                         });
                     },
-                    cancel: function() {}
+                    cancel: function () { }
                 }
             });
         });

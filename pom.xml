@@ -12,7 +12,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Vms_Maintenance</name>
 	<description>VMS Maintenace for Guwahati City Police</description>
-
+	<packaging>war</packaging>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
