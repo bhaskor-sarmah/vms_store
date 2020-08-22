@@ -533,9 +533,11 @@ public class StoreServiceBhaskor {
 
     public ByteArrayInputStream generateOrderPdf(Long orderId) {
         if (orderId == 0L) {
-            orderPdf.generateErrorPdf();
+            return orderPdf.generateErrorPdf();
         }
-        return orderPdf.generateOrderPdf(transJobCardItemOrderRepository.findById(orderId).get());
+        List<TransVehicleJobCardItems> itemList = transVehicleJobCardItemRepository
+                .findAllByOrder_idAndIsDeletedOrderByTransVendorItem_masterItemBrand_item_itemNameDesc(orderId, false);
+        return orderPdf.generateOrderPdf(transJobCardItemOrderRepository.findById(orderId).get(), itemList);
     }
 
     public TransJobCardItemOrder getOrderById(Long orderId) {

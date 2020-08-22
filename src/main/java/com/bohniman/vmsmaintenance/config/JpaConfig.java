@@ -17,8 +17,8 @@ public class JpaConfig {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.url(
                 "jdbc:mysql://localhost:3306/vms?characterEncoding=UTF-8&serverTimezone=IST&zeroDateTimeBehavior=convertToNull");
-        dataSourceBuilder.username("root");
-        dataSourceBuilder.password("root");
+        dataSourceBuilder.username("vms");
+        dataSourceBuilder.password("vms");
         return dataSourceBuilder.build();
     }
 }
