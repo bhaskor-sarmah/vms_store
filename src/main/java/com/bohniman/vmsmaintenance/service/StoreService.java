@@ -63,6 +63,7 @@ import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardItemRepository;
 import com.bohniman.vmsmaintenance.repository.TransVehicleJobCardRepository;
 import com.bohniman.vmsmaintenance.repository.TransVendorItemRepository;
 import com.bohniman.vmsmaintenance.repository.UserRepository;
+import com.bohniman.vmsmaintenance.utilities.AppSettings;
 import com.bohniman.vmsmaintenance.utilities.LoggedInUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -605,6 +606,11 @@ public class StoreService {
         transVehicleJobCard.setStatus("CREATED");
         transVehicleJobCard.setOpenedDate(new Date());
         transVehicleJobCard = transVehicleJobCardRepository.save(transVehicleJobCard);
+
+        MasterVehicle masterVehicle = transVehicleJobCard.getMasterVehicle();
+        masterVehicle.setVehicleStatus(AppSettings.MASTER_VEHICLE_STATUS_MAINTENANCE);
+        masterVehicleRepository.save(masterVehicle);
+
         res.setResult(true);
         res.setPayload(transVehicleJobCard.getId());
         res.setMessage("Job Card Opened Successfully");
@@ -785,6 +791,7 @@ public class StoreService {
             masterVehicle.setScrappedReason(scrapVehiclePayload.getScrappedReason());
             masterVehicle.setScrappedRemarks(scrapVehiclePayload.getScrappedRemarks());
             masterVehicle.setScrappedStatus("SCRAPPED");
+            masterVehicle.setVehicleStatus(AppSettings.MASTER_VEHICLE_STATUS_SCRAP);
             masterVehicleRepository.save(masterVehicle);
             res.setResult(true);
             res.setMessage("Vehicle Scrapped Successfully.");
@@ -1138,6 +1145,11 @@ public class StoreService {
             item.setStatus("CLOSED");
             item.setClosedDate(new Date());
             transVehicleJobCardRepository.save(item);
+
+            MasterVehicle masterVehicle = item.getMasterVehicle();
+            masterVehicle.setVehicleStatus(AppSettings.MASTER_VEHICLE_STATUS_ACTIVE);
+            masterVehicleRepository.save(masterVehicle);
+
             res.setResult(true);
             res.setMessage("Job Card Closed Successfully.");
         } catch (Exception e) {

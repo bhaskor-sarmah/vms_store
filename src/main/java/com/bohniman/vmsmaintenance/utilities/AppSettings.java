@@ -32,5 +32,5 @@ public class AppSettings {
 
     public static final String MASTER_VEHICLE_STATUS_ACTIVE = "ACTIVE";
     public static final String MASTER_VEHICLE_STATUS_MAINTENANCE = "MAINTENANCE";
-    public static final String MASTER_VEHICLE_STATUS_SCRAP = "SCRAP";
+    public static final String MASTER_VEHICLE_STATUS_SCRAP = "SCRAPED";
 }

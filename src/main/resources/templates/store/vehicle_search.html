@@ -34,11 +34,9 @@
                                         <div class="row">
                                             <div class="col-8">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Type vehicle registration no..." name="searchText">
+                                                    <input type="text" class="form-control" placeholder="Type vehicle registration no..." name="searchText">
                                                     <div class="input-group-append">
-                                                        <select class="custom-select" name="searchType"
-                                                            style="border-radius: 0; height: 60px;">
+                                                        <select class="custom-select" name="searchType" style="border-radius: 0; height: 60px;">
                                                             <option value="0">Hired + Own</option>
                                                             <th:block
                                                                 th:if="${not #lists.isEmpty(vehicleCategoryList)}">
@@ -48,14 +46,12 @@
                                                                 </option>
                                                             </th:block>
                                                         </select>
-                                                        <button class="btn btn-outline-secondary" type="button"
-                                                            id="btn-search">Search Vehicle</button>
+                                                        <button class="btn btn-outline-secondary" type="button" id="btn-search">Search Vehicle</button>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <button type="button" data-target="#modalVehicle" data-toggle="modal"
-                                                    class="btn btn-primary float-right" data-vehicle-id="0">New
+                                                <button type="button" data-target="#modalVehicle" data-toggle="modal" class="btn btn-primary float-right" data-vehicle-id="0">New
                                                     Vehicle</button>
                                             </div>
                                         </div>
@@ -79,8 +75,7 @@
         </div>
     </main>
     <!-- Modal Vehicle-->
-    <div class="modal fade" id="modalVehicle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="modalVehicle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -105,26 +100,19 @@
                             <label for="exampleFormControlInput1">Registration No Of Vehicle (<span
                                     class="text-success">eg: AS-01-XX-1234</span>)</label>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" id="regnPart1" maxlength="2" minlength="2"
-                                    required
-                                    onkeyup="this.value = this.value.toUpperCase(); if (/\d/g.test(this.value)) this.value = this.value.replace(/\d/g,'')">
+                                <input type="text" class="form-control" id="regnPart1" maxlength="2" minlength="2" required onkeyup="this.value = this.value.toUpperCase(); if (/\d/g.test(this.value)) this.value = this.value.replace(/\d/g,'')">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">-</span>
                                 </div>
-                                <input type="text" class="form-control" id="regnPart2" maxlength="2" minlength="2"
-                                    required
-                                    onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
+                                <input type="text" class="form-control" id="regnPart2" maxlength="2" minlength="2" required onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
                                 <div class="input-group-append">
                                     <span class="input-group-text">-</span>
                                 </div>
-                                <input type="text" class="form-control" id="regnPart3" maxlength="2"
-                                    onkeyup="this.value = this.value.toUpperCase(); if (/\d/g.test(this.value)) this.value = this.value.replace(/\d/g,'')">
+                                <input type="text" class="form-control" id="regnPart3" maxlength="2" onkeyup="this.value = this.value.toUpperCase(); if (/\d/g.test(this.value)) this.value = this.value.replace(/\d/g,'')">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">-</span>
                                 </div>
-                                <input type="text" class="form-control" id="regnPart4" maxlength="4" minlength="4"
-                                    required
-                                    onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
+                                <input type="text" class="form-control" id="regnPart4" maxlength="4" minlength="4" required onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
                             </div>
                             <span><span name="vehicleRegistrationNo"></span></span>
                         </div>
@@ -148,13 +136,14 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">Model No</label>
-                            <input type="text" class="form-control" name="vehicleModel">
+                            <label for="exampleFormControlInput1">Manufacturing Year</label>
+                            <select class="form-control" name="vehicleModel">
+                                    <option th:each="i: ${#numbers.sequence(currentYear, currentYear-35)}" th:value="${i}" th:text="${i}"></option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Mileage (Km/Litre)</label>
-                            <input type="number" class="form-control" name="mileage" onkeyup="checkMileage(this);"
-                                min="0">
+                            <input type="number" class="form-control" name="mileage" onkeyup="checkMileage(this);" min="0">
                         </div>
 
                         <div class="modal-footer">
@@ -172,7 +161,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script>
-        $(function () {
+        $(function() {
             $('#side-link-vehicle').addClass('list-group-item-secondary');
 
 
@@ -182,7 +171,7 @@
 
 
             // NEW ITEM
-            $(document).on("submit", "#form-vehicle", function (e) {
+            $(document).on("submit", "#form-vehicle", function(e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 let regnNo = "";
@@ -200,12 +189,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function () {
+                        confirm: function() {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/vehicle/add",
                                 timeout: 600000,
-                                beforeSend: function () {
+                                beforeSend: function() {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -216,7 +205,7 @@
                                 data: formData,
                                 contentType: false,
                                 processData: false,
-                                success: function (response) {
+                                success: function(response) {
                                     $('#form-vehicle').trigger('reset');
                                     $.alert({
                                         title: 'Success!',
@@ -227,15 +216,15 @@
                                     getVehicleList();
                                     $('#modalVehicle').modal('hide');
                                 },
-                                error: function (e) {
+                                error: function(e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function (key,
+                                        $.each(e.responseJSON.errorMessages, function(key,
                                             value) {
                                             $("#form-vehicle").contents().find(
                                                 '[name="' + key + '"]').after(
-                                                    '<span class="error-message">' +
-                                                    value + '</span>');
+                                                '<span class="error-message">' +
+                                                value + '</span>');
                                         });
                                     } else {
                                         $.alert({
@@ -246,18 +235,18 @@
                                         });
                                     }
                                 },
-                                complete: function () {
+                                complete: function() {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function () { }
+                        cancel: function() {}
                     }
                 });
             });
 
             //ON MODAL SHOW
-            $(document).on('show.bs.modal', '#modalVehicle', function (e) {
+            $(document).on('show.bs.modal', '#modalVehicle', function(e) {
                 $('.error-message').remove();
                 $("#form-vehicle").contents().find('[name=id]').val("");
                 $("#form-vehicle").contents().find('[name=vehicleModel]').val("");
@@ -278,7 +267,7 @@
                 type: "GET",
                 url: contextPath + "store/vehicle/search",
                 timeout: 600000,
-                beforeSend: function () {
+                beforeSend: function() {
                     $('body').block({
                         message: '<h3>Please wait...</h3>',
                         css: {
@@ -290,7 +279,7 @@
                     "searchText": searchText,
                     "searchType": searchType
                 },
-                success: function (response) {
+                success: function(response) {
                     var content = `
                         <table id="table-vehicle" class="table table-striped jambo_table text-black" style="width:100%">
                             <thead class="text-center">
@@ -299,7 +288,7 @@
                                     <th>Regn. No</th>
                                     <th>Type</th>
                                     <th>Category</th>
-                                    <th>Model No</th>
+                                    <th>Mfg Year</th>
                                     <th>Fuel</th>
                                     <th colspan="2">Action</th>
                                 </tr>
@@ -323,7 +312,7 @@
                         }]
                     });
 
-                    $.each(response.payload, function (key, vehicle) {
+                    $.each(response.payload, function(key, vehicle) {
                         let jobCardButton = `<a class="btn btn-primary p-1" href="${contextPath}store/vehicle/${vehicle.id}/open-job-card">OPEN JOB CARD</a>`;
                         if (vehicle.latestJobCardStatus == "CREATED") {
                             jobCardButton = `<a class="btn btn-success p-1" href="${contextPath}store/vehicle/job-card/${vehicle.latestJobCardId}">FORWARD JOB CARD</a>`;
@@ -347,10 +336,10 @@
                         ]).draw(false);
                     });
                 },
-                error: function (e) {
+                error: function(e) {
                     console.log(e);
                 },
-                complete: function () {
+                complete: function() {
                     $('body').unblock();
                 }
             });

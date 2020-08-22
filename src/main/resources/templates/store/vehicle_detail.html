@@ -25,8 +25,7 @@
                                 <li class="breadcrumb-item text-primary"><a th:href="@{/store}"><i
                                             class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                 <li class="breadcrumb-item"><a th:href="@{/store/vehicle}">Vehicle</a></li>
-                                <li class="breadcrumb-item text-success" th:if="${masterVehicle != null}"
-                                    th:text="${masterVehicle.vehicleRegistrationNo}"></li>
+                                <li class="breadcrumb-item text-success" th:if="${masterVehicle != null}" th:text="${masterVehicle.vehicleRegistrationNo}"></li>
                             </ol>
                         </nav>
                         <div class="row" th:if="${masterVehicle != null}">
@@ -52,8 +51,7 @@
                                                         <h5 class="card-title">Registration No</h5>
                                                     </div>
                                                     <div class="col-8">
-                                                        <h5 class="card-title">: <span
-                                                                th:text="${masterVehicle.vehicleRegistrationNo}"></span>
+                                                        <h5 class="card-title">: <span th:text="${masterVehicle.vehicleRegistrationNo}"></span>
                                                         </h5>
                                                     </div>
                                                 </div>
@@ -62,8 +60,7 @@
                                                         <h5 class="card-title">Vehicle Type</h5>
                                                     </div>
                                                     <div class="col-8">
-                                                        <h5 class="card-title">: <span
-                                                                th:text="${masterVehicle.vehicleType.vehicleType}"></span>
+                                                        <h5 class="card-title">: <span th:text="${masterVehicle.vehicleType.vehicleType}"></span>
                                                         </h5>
                                                     </div>
                                                 </div>
@@ -72,18 +69,16 @@
                                                         <h5 class="card-title">Category</h5>
                                                     </div>
                                                     <div class="col-8">
-                                                        <h5 class="card-title">: <span
-                                                                th:text="${masterVehicle.vehicleCategory.title}"></span>
+                                                        <h5 class="card-title">: <span th:text="${masterVehicle.vehicleCategory.title}"></span>
                                                         </h5>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-4">
-                                                        <h5 class="card-title">Model No</h5>
+                                                        <h5 class="card-title">Mfg Year</h5>
                                                     </div>
                                                     <div class="col-8">
-                                                        <h5 class="card-title">: <span
-                                                                th:text="${masterVehicle.vehicleModel}"></span></h5>
+                                                        <h5 class="card-title">: <span th:text="${masterVehicle.vehicleModel}"></span></h5>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -91,8 +86,7 @@
                                                         <h5 class="card-title">Mileage</h5>
                                                     </div>
                                                     <div class="col-8">
-                                                        <h5 class="card-title">: <span
-                                                                th:text="${masterVehicle.mileage + ' km/litre'}"></span>
+                                                        <h5 class="card-title">: <span th:text="${masterVehicle.mileage + ' km/litre'}"></span>
                                                         </h5>
                                                     </div>
                                                 </div>
@@ -101,38 +95,27 @@
                                                         <h5 class="card-title">Fuel Type</h5>
                                                     </div>
                                                     <div class="col-8">
-                                                        <h5 class="card-title">: <span
-                                                                th:text="${masterVehicle.fuelType.type}"></span></h5>
+                                                        <h5 class="card-title">: <span th:text="${masterVehicle.fuelType.type}"></span></h5>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-3">
                                                 <div class="row">
-                                                    <div class="col-12 mb-2"
-                                                        th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">
-                                                        <a class="btn btn-primary p-2 w-100" href="#modalVehicle"
-                                                            data-toggle="modal"
-                                                            th:attr="data-vehicle-id=${masterVehicle.id},data-vehicle-registration-no=${masterVehicle.vehicleRegistrationNo},data-vehicle-type-id=${masterVehicle.vehicleType.vehicleTypeId},data-vehicle-model=${masterVehicle.vehicleModel},data-vehicle-category-id=${masterVehicle.vehicleCategory.vehicleCategoryId}, data-fuel-type-id=${masterVehicle.fuelType.id}, data-mileage=${masterVehicle.mileage}">EDIT
+                                                    <div class="col-12 mb-2" th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">
+                                                        <a class="btn btn-primary p-2 w-100" href="#modalVehicle" data-toggle="modal" th:attr="data-vehicle-id=${masterVehicle.id},data-vehicle-registration-no=${masterVehicle.vehicleRegistrationNo},data-vehicle-type-id=${masterVehicle.vehicleType.vehicleTypeId},data-vehicle-model=${masterVehicle.vehicleModel},data-vehicle-category-id=${masterVehicle.vehicleCategory.vehicleCategoryId}, data-fuel-type-id=${masterVehicle.fuelType.id}, data-mileage=${masterVehicle.mileage}">EDIT
                                                             VEHICLE</a>
                                                     </div>
-                                                    <div class="col-12"
-                                                        th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">
-                                                        <a class="btn btn-danger p-2 w-100 delete-vehicle"
-                                                            href="#modalScrap" data-toggle="modal">SCRAP VEHICLE</a>
+                                                    <div class="col-12" th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">
+                                                        <a class="btn btn-danger p-2 w-100 delete-vehicle" href="#modalScrap" data-toggle="modal">SCRAP VEHICLE</a>
                                                     </div>
-                                                    <div class="col-12"
-                                                        th:if="${masterVehicle.scrappedStatus == 'SCRAPPED'}">
+                                                    <div class="col-12" th:if="${masterVehicle.scrappedStatus == 'SCRAPPED'}">
                                                         <strong class="text-danger">VEHICLE SCRAPPED</strong>
                                                     </div>
-                                                    <div class="col-12"
-                                                        th:if="${masterVehicle.scrappedStatus == 'SCRAPPED'}">
-                                                        <span
-                                                            th:text="${'Reason : '+masterVehicle.scrappedReason}"></span>
+                                                    <div class="col-12" th:if="${masterVehicle.scrappedStatus == 'SCRAPPED'}">
+                                                        <span th:text="${'Reason : '+masterVehicle.scrappedReason}"></span>
                                                     </div>
-                                                    <div class="col-12"
-                                                        th:if="${masterVehicle.scrappedStatus == 'SCRAPPED'}">
-                                                        <span
-                                                            th:text="${'Remarks : '+masterVehicle.scrappedRemarks}"></span>
+                                                    <div class="col-12" th:if="${masterVehicle.scrappedStatus == 'SCRAPPED'}">
+                                                        <span th:text="${'Remarks : '+masterVehicle.scrappedRemarks}"></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -142,43 +125,31 @@
                                             <div class="col-12">
                                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                                                     <li class="nav-item">
-                                                        <a class="nav-link active" id="home-tab" data-toggle="tab"
-                                                            href="#home" role="tab" aria-controls="home"
-                                                            aria-selected="true">Assigned Items</a>
+                                                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Assigned Items</a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link" id="log-tab" data-toggle="tab" href="#log"
-                                                            role="tab" aria-controls="log" aria-selected="false">Items
+                                                        <a class="nav-link" id="log-tab" data-toggle="tab" href="#log" role="tab" aria-controls="log" aria-selected="false">Items
                                                             Log</a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link" id="timeline-tab" data-toggle="tab"
-                                                            href="#timeline" role="tab" aria-controls="profile"
-                                                            aria-selected="false">Vehicle Health History</a>
+                                                        <a class="nav-link" id="timeline-tab" data-toggle="tab" href="#timeline" role="tab" aria-controls="profile" aria-selected="false">Vehicle Health History</a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link" id="job-card-tab" data-toggle="tab"
-                                                            href="#job-card" role="tab" aria-controls="profile"
-                                                            aria-selected="false">Job Cards</a>
+                                                        <a class="nav-link" id="job-card-tab" data-toggle="tab" href="#job-card" role="tab" aria-controls="profile" aria-selected="false">Job Cards</a>
                                                     </li>
                                                 </ul>
                                                 <div class="tab-content" id="myTabContent">
-                                                    <div class="tab-pane fade show active p-3" id="home" role="tabpanel"
-                                                        aria-labelledby="home-tab">
+                                                    <div class="tab-pane fade show active p-3" id="home" role="tabpanel" aria-labelledby="home-tab">
                                                         <div class="row">
                                                             <div class="col-4">
                                                                 <h5 class="card-title">Assigned Items to car</h5>
                                                             </div>
                                                             <div class="col-4">
-                                                                <a class="btn btn-success p-1 float-right"
-                                                                    href="#modalAssignItem" data-toggle="modal"
-                                                                    th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">Assign
+                                                                <a class="btn btn-success p-1 float-right" href="#modalAssignItem" data-toggle="modal" th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">Assign
                                                                     Item</a>
                                                             </div>
                                                             <div class="col-4">
-                                                                <a class="btn btn-primary p-1 float-right"
-                                                                    th:href="@{/store/inventory}"
-                                                                    th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">Add
+                                                                <a class="btn btn-primary p-1 float-right" th:href="@{/store/inventory}" th:if="${masterVehicle.scrappedStatus != 'SCRAPPED'}">Add
                                                                     Items to Inventory</a>
                                                             </div>
                                                         </div>
@@ -188,24 +159,20 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="tab-pane fade p-3" id="log" role="tabpanel"
-                                                        aria-labelledby="log-tab">
+                                                    <div class="tab-pane fade p-3" id="log" role="tabpanel" aria-labelledby="log-tab">
                                                         <div class="row">
                                                             <div class="col-12" id="div-item-log">
 
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="tab-pane fade p-3" id="timeline" role="tabpanel"
-                                                        aria-labelledby="timeline-tab">
-                                                        <div class="row"
-                                                            th:if="${not #lists.isEmpty(masterVehicle.health)}">
+                                                    <div class="tab-pane fade p-3" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">
+                                                        <div class="row" th:if="${not #lists.isEmpty(masterVehicle.health)}">
                                                             <div class="col-md-12">
                                                                 <h4>Health Timeline</h4>
                                                                 <ul class="timeline">
                                                                     <li th:each="x:${masterVehicle.health}">
-                                                                        <a target="_blank"
-                                                                            href="javascript:void(0)"><strong th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy')}"></strong></a>
+                                                                        <a target="_blank" href="javascript:void(0)"><strong th:text="${#dates.format(x.createdAt, 'dd-MMM-yyyy')}"></strong></a>
                                                                         <a href="javascript:void(0)" class="float-right"><small>By-<span th:text="${x.createdBy}"></span></small></a>
                                                                         <p class="mt-2 pl-3" th:text="${x.remarks}"></p>
                                                                         <hr>
@@ -304,8 +271,10 @@
                       </select>
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">Model No</label>
-                            <input type="text" class="form-control" name="vehicleModel">
+                            <label for="exampleFormControlInput1">Manufacturing Year</label>
+                            <select class="form-control" name="vehicleModel">
+                                <option th:each="i: ${#numbers.sequence(currentYear, currentYear-35)}" th:value="${i}" th:text="${i}"></option>
+                        </select>
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Mileage (Km/Litre)</label>
@@ -495,39 +464,39 @@
         var vehicleId = /*[[${masterVehicle.id}]]*/ '';
     </script>
     <script>
-        $(function () {
+        $(function() {
             $('#side-link-vehicle').addClass('list-group-item-secondary');
 
             $('.js-data-example-ajax').select2({
-                ajax: {
-                    url: contextPath + "store/inventory/search-item",
-                    dataType: 'json',
-                    data: function (params) {
-                        return {
-                            searchText: params.term
-                        };
+                    ajax: {
+                        url: contextPath + "store/inventory/search-item",
+                        dataType: 'json',
+                        data: function(params) {
+                            return {
+                                searchText: params.term
+                            };
+                        },
+                        processResults: function(response, params) {
+                            var data = $.map(response.payload.objectList1, function(org) {
+                                org.id = org.id;
+                                org.text = org.name + " (" + org.quantityInStore + " " + org.unit + " available.)";
+                                return org;
+                            });
+                            return {
+                                results: data,
+                            };
+                        },
+                        cache: true
                     },
-                    processResults: function (response, params) {
-                        var data = $.map(response.payload.objectList1, function (org) {
-                            org.id = org.id;
-                            org.text = org.name + " (" + org.quantityInStore + " " + org.unit + " available.)";
-                            return org;
-                        });
-                        return {
-                            results: data,
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: 'Search item',
-                minimumInputLength: 2
-            })
-                .on('select2:selecting', function (event) {
+                    placeholder: 'Search item',
+                    minimumInputLength: 2
+                })
+                .on('select2:selecting', function(event) {
                     $('.js-data-example-ajax').find('option').remove();
                 });
 
             // NEW ITEM
-            $(document).on("submit", "#form-vehicle", function (e) {
+            $(document).on("submit", "#form-vehicle", function(e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 let form = $(this)[0]; // You need to use standard javascript object here
@@ -538,12 +507,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function () {
+                        confirm: function() {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/vehicle/add",
                                 timeout: 600000,
-                                beforeSend: function () {
+                                beforeSend: function() {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -554,28 +523,28 @@
                                 data: formData,
                                 contentType: false,
                                 processData: false,
-                                success: function (response) {
+                                success: function(response) {
                                     $.alert({
                                         title: 'Success!',
                                         content: "Vehicle Saved Successfully",
                                         type: 'green',
                                         typeAnimated: true,
                                         buttons: {
-                                            ok: function () {
+                                            ok: function() {
                                                 location.reload();
                                             }
                                         }
                                     });
                                 },
-                                error: function (e) {
+                                error: function(e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function (key,
+                                        $.each(e.responseJSON.errorMessages, function(key,
                                             value) {
                                             $("#form-vehicle").contents().find(
                                                 '[name="' + key + '"]').after(
-                                                    '<span class="error-message">' +
-                                                    value + '</span>');
+                                                '<span class="error-message">' +
+                                                value + '</span>');
                                         });
                                     } else {
                                         $.alert({
@@ -586,18 +555,18 @@
                                         });
                                     }
                                 },
-                                complete: function () {
+                                complete: function() {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function () { }
+                        cancel: function() {}
                     }
                 });
             });
 
             // ASSIGN ITEM
-            $(document).on("submit", "#form-assign-item", function (e) {
+            $(document).on("submit", "#form-assign-item", function(e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -606,12 +575,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function () {
+                        confirm: function() {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/inventory/vehicle/assign-item",
                                 timeout: 600000,
-                                beforeSend: function () {
+                                beforeSend: function() {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -620,7 +589,7 @@
                                     });
                                 },
                                 data: $('#form-assign-item').serialize(),
-                                success: function (response) {
+                                success: function(response) {
                                     $.alert({
                                         title: 'Success!',
                                         content: "Item Added Successfully",
@@ -630,10 +599,10 @@
                                     getAssignedItemList();
                                     $('#modalAssignItem').modal('hide');
                                 },
-                                error: function (e) {
+                                error: function(e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function (key, value) {
+                                        $.each(e.responseJSON.errorMessages, function(key, value) {
                                             $("#assignItemErrors").append(`<li class="error-message text-center">${value}</li>`)
                                         });
                                     } else {
@@ -645,18 +614,18 @@
                                         });
                                     }
                                 },
-                                complete: function () {
+                                complete: function() {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function () { }
+                        cancel: function() {}
                     }
                 });
             });
 
             // ASSIGN ITEM
-            $(document).on("submit", "#form-remove-item", function (e) {
+            $(document).on("submit", "#form-remove-item", function(e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -665,12 +634,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function () {
+                        confirm: function() {
                             $.ajax({
                                 type: "POST",
                                 url: contextPath + "store/inventory/vehicle/remove-item",
                                 timeout: 600000,
-                                beforeSend: function () {
+                                beforeSend: function() {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -679,7 +648,7 @@
                                     });
                                 },
                                 data: $('#form-remove-item').serialize(),
-                                success: function (response) {
+                                success: function(response) {
                                     $.alert({
                                         title: 'Success!',
                                         content: "Item Removed Successfully",
@@ -689,10 +658,10 @@
                                     getAssignedItemList();
                                     $('#modalRemoveItem').modal('hide');
                                 },
-                                error: function (e) {
+                                error: function(e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function (key, value) {
+                                        $.each(e.responseJSON.errorMessages, function(key, value) {
                                             $("#removeItemErrors").append(`<li class="error-message text-center">${value}</li>`)
                                         });
                                     } else {
@@ -704,18 +673,18 @@
                                         });
                                     }
                                 },
-                                complete: function () {
+                                complete: function() {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function () { }
+                        cancel: function() {}
                     }
                 });
             });
 
             // SCRAP VEHICLE
-            $(document).on("submit", "#form-scrap", function (e) {
+            $(document).on("submit", "#form-scrap", function(e) {
                 e.preventDefault();
                 $('.error-message').remove();
                 $.confirm({
@@ -724,12 +693,12 @@
                     type: 'green',
                     typeAnimated: true,
                     buttons: {
-                        confirm: function () {
+                        confirm: function() {
                             $.ajax({
                                 type: "PUT",
                                 url: contextPath + "store/vehicle/scrap",
                                 timeout: 600000,
-                                beforeSend: function () {
+                                beforeSend: function() {
                                     $('body').block({
                                         message: '<h3>Processing...</h3>',
                                         css: {
@@ -738,7 +707,7 @@
                                     });
                                 },
                                 data: $('#form-scrap').serialize(),
-                                success: function (response) {
+                                success: function(response) {
                                     location.reload();
                                     $.alert({
                                         title: 'Success!',
@@ -748,15 +717,15 @@
                                     });
                                     $('#modalScrap').modal('hide');
                                 },
-                                error: function (e) {
+                                error: function(e) {
                                     if (e.responseJSON.httpStatus === 'BAD_REQUEST' && e
                                         .responseJSON.errorMessages != null) {
-                                        $.each(e.responseJSON.errorMessages, function (key,
+                                        $.each(e.responseJSON.errorMessages, function(key,
                                             value) {
                                             $("#form-scrap").contents().find(
                                                 '[name=' + key + ']').after(
-                                                    '<span class="error-message">' +
-                                                    value + '</span>');
+                                                '<span class="error-message">' +
+                                                value + '</span>');
                                         });
                                     } else {
                                         $.alert({
@@ -767,24 +736,24 @@
                                         });
                                     }
                                 },
-                                complete: function () {
+                                complete: function() {
                                     $('body').unblock();
                                 }
                             });
                         },
-                        cancel: function () { }
+                        cancel: function() {}
                     }
                 });
             });
 
             //ON ASSIGN MODAL SHOW
-            $(document).on('show.bs.modal', '#modalAssignItem', function (e) {
+            $(document).on('show.bs.modal', '#modalAssignItem', function(e) {
                 $('#form-assign-item').contents().find('[name="quantity"]').val(0);
                 $('.js-data-example-ajax').val(null).trigger('change');
             });
 
             //ON REMOVE MODAL SHOW
-            $(document).on('show.bs.modal', '#modalRemoveItem', function (e) {
+            $(document).on('show.bs.modal', '#modalRemoveItem', function(e) {
                 $('#modalRemoveItemName').html(e.relatedTarget.dataset.itemName);
                 $('#form-remove-item').contents().find('[name="id"]').val(e.relatedTarget.dataset.id);
                 $('#form-remove-item').contents().find('[name="quantity"]').val(e.relatedTarget.dataset.quantity);
@@ -799,7 +768,7 @@
             });
 
             //ON MODAL SHOW
-            $(document).on('show.bs.modal', '#modalVehicle', function (e) {
+            $(document).on('show.bs.modal', '#modalVehicle', function(e) {
                 $('.error-message').remove();
                 $("#form-vehicle").contents().find('[name=id]').val(e.relatedTarget.dataset.vehicleId);
                 $("#form-vehicle").contents().find('[name=vehicleModel]').val(e.relatedTarget.dataset.vehicleModel);
@@ -811,7 +780,7 @@
                 $('#txtRegistrationNo').html(e.relatedTarget.dataset.vehicleRegistrationNo);
             });
 
-            $(document).on('keyup change', '.input-remove', function (e) {
+            $(document).on('keyup change', '.input-remove', function(e) {
                 if ($(this).val() === "" || $(this).val() == undefined) {
                     $(this).val(0);
                 }
@@ -836,7 +805,7 @@
                     type: "GET",
                     url: contextPath + "store/inventory/vehicle/assigned-items/" + vehicleId,
                     timeout: 600000,
-                    beforeSend: function () {
+                    beforeSend: function() {
                         $('body').block({
                             message: '<h3>Please wait...</h3>',
                             css: {
@@ -844,7 +813,7 @@
                             }
                         });
                     },
-                    success: function (response) {
+                    success: function(response) {
                         var assignedContent = `
                         <table id="table-assigned-item" class="table table-striped text-center table-sm table-hover" style="width:100%">
                             <thead class="text-center">
@@ -884,7 +853,7 @@
                         </table>`;
                         $('#div-item-log').html(itemLog);
 
-                        $.each(response.payload.objectList1, function (key, item) {
+                        $.each(response.payload.objectList1, function(key, item) {
                             if (item.assignedStatus == "ASSIGNED") {
                                 $('#table-assigned-item').append(
                                     `<tr>
@@ -893,7 +862,7 @@
                                     <td>${item.quantity} ${item.vehicle_inventory.unit}</td>
                                     <td>${moment(item.assignedDate).format("Do MMM YYYY hh:mm A")}</td>
                                     <td >${item.createdBy}</td>
-                                    <td > <a class="btn btn-danger p-1 float-right" href="#modalRemoveItem" data-toggle="modal" data-id="${item.id}" data-item-name="${item.vehicle_inventory.name}"  data-quantity="${item.quantity}"  data-unit="${item.vehicle_inventory.unit}">Remove</a></td>
+                                    <td > <a class="btn btn-danger p-1 float-right" href="#modalRemoveItem" data-toggle="modal" data-id="${item.id}" data-item-name="${item.vehicle_inventory.name}"  data-quantity="${item.quantity}"  data-unit="${item.vehicle_inventory.unit}">Update Item</a></td>
                                 </tr>`
                                 );
                             }
@@ -914,10 +883,10 @@
                             );
                         });
                     },
-                    error: function (e) {
+                    error: function(e) {
                         console.log(e);
                     },
-                    complete: function () {
+                    complete: function() {
                         $('body').unblock();
                     }
                 });

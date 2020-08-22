@@ -392,6 +392,7 @@ public class StoreController {
         mv.addObject("vehicleTypeList", vehicleTypeList);
         List<FuelType> fuelTypeList = storeService.getAllFuelTypeList();
         mv.addObject("fuelTypeList", fuelTypeList);
+        mv.addObject("currentYear", Calendar.getInstance().get(Calendar.YEAR));
 
         return mv;
     }
@@ -501,6 +502,7 @@ public class StoreController {
         mv.addObject("vehicleTypeList", vehicleTypeList);
         List<FuelType> fuelTypeList = storeService.getAllFuelTypeList();
         mv.addObject("fuelTypeList", fuelTypeList);
+        mv.addObject("currentYear", Calendar.getInstance().get(Calendar.YEAR));
         return mv;
     }
 
@@ -1008,6 +1010,10 @@ public class StoreController {
         if (Double.parseDouble(transVendorItem.getMasterItemBrand().getMoq()) > transVehicleJobCardItem.getQuantity()) {
             bindingResult.rejectValue("quantity", "error.quantity",
                     " * Please enter minimum quantity : " + transVendorItem.getMasterItemBrand().getMoq());
+        }
+
+        if (transVehicleJobCardItem.getQuantity() % Double.parseDouble(transVendorItem.getMasterItemBrand().getMoq()) != 0) {
+            bindingResult.rejectValue("quantity", "error.quantity", " * Quantity must be multiples of : " + transVendorItem.getMasterItemBrand().getMoq()+".. Eg : "+transVendorItem.getMasterItemBrand().getMoq()+" , "+(Double.parseDouble(transVendorItem.getMasterItemBrand().getMoq())*2+" , "+Double.parseDouble(transVendorItem.getMasterItemBrand().getMoq())*3));
         }
 
         if (!bindingResult.hasErrors()) {
